@@ -1,4 +1,4 @@
-import { doesNotReject, strictEqual } from 'assert'
+import { strictEqual } from 'assert'
 import { NoopAdapter } from '../../packages/adapter-noop/index'
 
 describe ('Module @jsvfs/adapter-noop', () => {
@@ -12,20 +12,20 @@ describe ('Module @jsvfs/adapter-noop', () => {
 
     strictEqual(counter, 0)
 
-    await doesNotReject(async () => {
-      await noop.flush()
-    })
+    const result1 = await noop.flush()
 
-    await doesNotReject(async () => {
-      await noop.link('', '', 'softlink')
-    })
+    strictEqual(typeof result1, 'undefined')
 
-    await doesNotReject(async () => {
-      noop.mkdir('')
-    })
+    const result2 = await noop.link('', '', 'softlink')
 
-    await doesNotReject(async () => {
-      noop.write('')
-    })
+    strictEqual(typeof result2, 'undefined')
+
+    const result3 = await noop.mkdir('')
+
+    strictEqual(typeof result3, 'undefined')
+
+    const result4 = await noop.write('')
+
+    strictEqual(typeof result4, 'undefined')
   })
 })
