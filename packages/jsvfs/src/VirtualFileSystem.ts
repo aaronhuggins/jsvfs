@@ -3,8 +3,8 @@ import { basename, getItemAtPath, SEPARATOR, setItemAtPath } from './helpers'
 import { File, Folder, Item, Link, Root } from './Item'
 import type { Adapter } from '@jsvfs/types'
 
-/** Create a virtual file system in memory. */
-export class FileSystem {
+/** Create a JavaScript virtual file system in memory. */
+export class VirtualFileSystem {
   /** @param {Adapter} [adapter] - The adapter for this instance; if none is provided, then it defaults to noop. */
   constructor (adapter?: Adapter) {
     this.adapter = adapter

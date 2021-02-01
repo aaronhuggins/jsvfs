@@ -5,6 +5,7 @@
   "main": "index.js",
   "types": "index.d.ts",
   "scripts": {
+    "prepack": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
