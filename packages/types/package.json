@@ -8,6 +8,12 @@
     "prepack": "tsc",
     "test": "tsc --noEmit"
   },
-  "author": "",
+  "homepage": "https://github.com/ahuggins-nhs/jsvfs/tree/main/packages/jsvfs",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:ahuggins-nhs/jsvfs.git"
+  },
+  "author": "Aaron Huggins <aaron.huggins@gmail.com>",
+  "keywords": ["jsvfs", "vfs", "virtual file system", "file system", "typescript", "types"],
   "license": "MIT"
 }

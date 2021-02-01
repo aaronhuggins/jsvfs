@@ -13,10 +13,13 @@
     "prepack": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "engines": {
-    "node": ">=12.10.0"
+  "homepage": "https://github.com/ahuggins-nhs/jsvfs/tree/main/packages/jsvfs",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:ahuggins-nhs/jsvfs.git"
   },
-  "author": "",
+  "author": "Aaron Huggins <aaron.huggins@gmail.com>",
+  "keywords": ["jsvfs", "vfs", "virtual file system", "file system"],
   "license": "MIT",
   "dependencies": {
     "@jsvfs/adapter-noop": "^0.0.0",
