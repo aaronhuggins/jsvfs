@@ -75,15 +75,27 @@ export class VirtualFileSystem {
       }
     } else {
       if (typeof item === 'object') {
-        throw new ReferenceError(`Item of type ${item.type} already exists at path ${path}`)
+        switch (item.type) {
+          case 'file':
+            item.contents = Buffer.from(contents)
+            break
+          case 'hardlink':
+          case 'softlink':
+            if (item.contents.type === 'file') {
+              item.contents.contents = Buffer.from(contents)
+              break
+            }
+          default:
+            throw new ReferenceError(`Item of type ${item.type} already exists at path ${path}`)
+        }
+      } else {
+        setItemAtPath(this.root, new File({
+          adapter: this.adapter,
+          contents: Buffer.from(contents),
+          name: basename(path),
+          path
+        }))
       }
-
-      setItemAtPath(this.root, new File({
-        adapter: this.adapter,
-        contents: Buffer.from(contents),
-        name: basename(path),
-        path
-      }))
     }
   }
 
