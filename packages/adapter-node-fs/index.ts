@@ -1,6 +1,6 @@
 import { promises } from 'fs'
 import { dirname, join, posix, resolve } from 'path'
-import { Adapter, JournalEntry } from './Interfaces'
+import type { Adapter, JournalEntry } from '@jsvfs/types'
 
 const { link, mkdir, readdir, readFile, rmdir, symlink, unlink, writeFile } = promises
 

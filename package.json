@@ -1,0 +1,14 @@
+{
+  "name": "jsvfs",
+  "private": true,
+  "devDependencies": {
+    "@types/node": "^14.14.22",
+    "lerna": "^3.22.1"
+  },
+  "dependencies": {
+    "@jsvfs/adapter-node-fs": "file:packages\\adapter-node-fs",
+    "@jsvfs/adapter-noop": "file:packages\\adapter-noop",
+    "@jsvfs/jsvfs": "file:packages\\jsvfs",
+    "@jsvfs/types": "file:packages\\types"
+  }
+}

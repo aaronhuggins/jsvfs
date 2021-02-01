@@ -1,8 +1,9 @@
 {
-  "name": "@jsvfs/jsvfs",
+  "name": "@jsvfs/adapter-node-fs",
   "version": "0.0.0",
   "description": "",
   "main": "index.js",
+  "types": "index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -12,7 +13,6 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@jsvfs/adapter-noop": "^0.0.0",
     "@jsvfs/types": "^0.0.0"
   }
 }

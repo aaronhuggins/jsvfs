@@ -1,4 +1,5 @@
-import { ItemType } from './Item'
+/** The valid item types implemented by jsvfs. */
+export type ItemType = 'file' | 'folder' | 'hardlink' | 'root' | 'softlink'
 
 /** An adapter for the underlying persistent file storage.
  * 
@@ -25,11 +26,6 @@ export interface Adapter {
   journal: JournalEntry[]
   /** The handle for this adapter, basically an id. Should be something simple but descriptive, like 'node-fs' or 'blob'. */
   handle: string
-}
-
-export interface ListEntry {
-  type: ItemType
-  name: string
 }
 
 export interface JournalEntry {

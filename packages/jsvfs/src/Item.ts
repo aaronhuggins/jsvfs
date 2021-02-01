@@ -1,6 +1,5 @@
-import { Adapter } from './Interfaces'
+import type { Adapter, ItemType } from '@jsvfs/types'
 
-export type ItemType = 'file' | 'folder' | 'hardlink' | 'root' | 'softlink'
 export type Item = File | Folder | Link | Root
 
 abstract class ItemBase {

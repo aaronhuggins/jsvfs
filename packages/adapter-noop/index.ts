@@ -1,4 +1,4 @@
-import { Adapter, JournalEntry } from './Interfaces'
+import type { Adapter, JournalEntry } from '@jsvfs/types'
 
 /** An adapter for No-Operation; essentially makes the VFS a memory-only instance. */
 export class NoopAdapter implements Adapter {

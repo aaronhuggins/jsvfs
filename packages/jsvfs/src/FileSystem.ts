@@ -1,7 +1,7 @@
+import { NoopAdapter } from '@jsvfs/adapter-noop'
 import { basename, getItemAtPath, SEPARATOR, setItemAtPath } from './helpers'
-import { Adapter } from './Interfaces'
 import { File, Folder, Item, Link, Root } from './Item'
-import { NoopAdapter } from './NoopAdapter'
+import type { Adapter } from '@jsvfs/types'
 
 /** Create a virtual file system in memory. */
 export class FileSystem {
