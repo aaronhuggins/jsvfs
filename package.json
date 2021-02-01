@@ -3,8 +3,12 @@
   "private": true,
   "devDependencies": {
     "@istanbuljs/nyc-config-typescript": "^1.0.1",
+    "@types/gulp": "^4.0.8",
     "@types/mocha": "^8.2.0",
     "@types/node": "^14.14.22",
+    "del": "^6.0.0",
+    "gulp": "^4.0.2",
+    "gulp-shell": "^0.8.0",
     "lerna": "^3.22.1",
     "mocha": "^8.2.1",
     "nyc": "^15.1.0",

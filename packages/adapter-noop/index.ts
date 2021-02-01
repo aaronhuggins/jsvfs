@@ -24,7 +24,9 @@ export class NoopAdapter implements Adapter {
   async *snapshot (): AsyncGenerator<[string, 'folder' | Buffer]> {}
 
   /** Create a file or write the contents of a file to persistent storage. */
-  async write (path: string, contents?: Buffer): Promise<void> {}
+  async write (path: string, contents?: Buffer): Promise<void> {
+    console.log('hi')
+  }
 
   /** Make a directory or directory tree in persistent storage. */
   async mkdir (path: string): Promise<void> {}

@@ -5,7 +5,7 @@
     "lib": [
       "ES2020",
       "ESNext.AsyncIterable"
-    ],
-    "declaration": true
-  }
+    ]
+  },
+  "exclude": ["packages"]
 }

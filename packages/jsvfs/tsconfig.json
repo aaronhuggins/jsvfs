@@ -6,6 +6,7 @@
       "ES2020",
       "ESNext.AsyncIterable"
     ],
-    "declaration": true
+    "declaration": true,
+    "sourceMap": true
   }
 }
