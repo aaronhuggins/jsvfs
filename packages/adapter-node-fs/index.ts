@@ -4,19 +4,29 @@ import type { Adapter, JournalEntry } from '@jsvfs/types'
 
 const { link, mkdir, readdir, readFile, rmdir, symlink, unlink, writeFile } = promises
 
+export interface NodeFSAdapterOpts {
+  /** The desired working directory for this adater; defaults to process current working directory. */
+  cwd?: string
+  /** Enable flushing the file system before commiting; defaults to false, since flush is a destructive operation. */
+  flushEnabled?: boolean
+}
+
 /** An adapter for NodeJS local filesystems using the `fs` module. */
-export class FileSystemAdapter implements Adapter {
-  /** Creates an instance of file system adapter.
-   * @param {string} [cwd] - The desired working directory for this adater; defaults to process current working directory.
+export class NodeFSAdapter implements Adapter {
+  /** Creates an instance of Node file system adapter.
+   * @param {NodeFSAdapterOpts} [opts] - Options for this instance.
    */
-  constructor (cwd?: string) {
-    this.root = typeof cwd === 'string' ? resolve(cwd) : process.cwd()
+  constructor (opts: NodeFSAdapterOpts = {}) {
+    this.root = typeof opts.cwd === 'string' ? resolve(opts.cwd) : process.cwd()
+    this.flushEnabled = typeof opts.flushEnabled === 'boolean' ? opts.flushEnabled : false
     this.handle = 'node-fs'
     this.journal = []
   }
 
   /** The real root of this file system which will be committed to. */
   readonly root: string
+  /** Enable or disable flushing the file system. */
+  flushEnabled: boolean
   /** Log useful messages to the journal about file operations. */
   journal: JournalEntry[]
   /** The handle for this adapter, basically an id. Should be something simple but descriptive, like 'node-fs' or 'blob'. */
@@ -27,7 +37,7 @@ export class FileSystemAdapter implements Adapter {
    * @param {boolean} [read=true] - Whether to retrieve the underlying data.
    * @returns {AsyncGenerator<[string, 'folder' | Buffer]>} The asynchronous iterable to get the snapshot.
    */
-  async *snapshot (path: string = '/', read: boolean = true): AsyncGenerator<[string, 'folder' | Buffer]> {
+  async *snapshot (path: string = '/'): AsyncGenerator<[string, 'folder' | Buffer]> {
     const result = await promises.readdir(path === '/' ? this.root : join(this.root, path), { withFileTypes: true })
 
     for (const entry of result) {
@@ -41,7 +51,7 @@ export class FileSystemAdapter implements Adapter {
           }
           break
         case entry.isFile():
-          yield [newPath, read ? await readFile(join(this.root, newPath)) : Buffer.alloc(0)]
+          yield [newPath, await readFile(join(this.root, newPath))]
           break
       }
     }
@@ -51,6 +61,8 @@ export class FileSystemAdapter implements Adapter {
   async write (path: string, contents?: Buffer): Promise<void> {
     const newPath = join(this.root, path)
     const parent = dirname(newPath)
+
+    if (typeof contents === 'undefined') contents = Buffer.alloc(0)
 
     await mkdir(parent, { recursive: true })
     await writeFile(newPath, contents)
@@ -78,20 +90,22 @@ export class FileSystemAdapter implements Adapter {
     }
   }
 
-  /** Flush the underlying file system to prepare for a commit. This is a destructive operation. */
+  /** Flush the underlying file system to prepare for a commit. This is a destructive operation unless flush is disabled. */
   async flush (): Promise<void> {
-    const result = await readdir(this.root, { withFileTypes: true })
+    if (this.flushEnabled) {
+      const result = await readdir(this.root, { withFileTypes: true })
 
-    for (const entry of result) {
-      const path = join(this.root, entry.name)
-
-      switch (true) {
-        case entry.isDirectory():
-          await rmdir(path, { recursive: true })
-          break
-        case entry.isFile():
-          await unlink(path)
-          break
+      for (const entry of result) {
+        const path = join(this.root, entry.name)
+  
+        switch (true) {
+          case entry.isDirectory():
+            await rmdir(path, { recursive: true })
+            break
+          case entry.isFile():
+            await unlink(path)
+            break
+        }
       }
     }
   }
