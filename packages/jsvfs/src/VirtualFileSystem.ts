@@ -302,7 +302,7 @@ export class VirtualFileSystem {
     await this.root.commit()
 
     for (const [path, type] of this.rmCache) {
-      await this.adapter.rm(path, type)
+      await this.adapter.remove(path, type)
     }
   }
 }

@@ -91,7 +91,7 @@ export class NodeFSAdapter implements Adapter {
   }
 
   /** Remove items from persistent storage. */
-  async rm (path: string, type: ItemType): Promise<void> {
+  async remove (path: string, type: ItemType): Promise<void> {
     switch (type) {
       case 'root':
         // Ignore root; removal of root is probably unintentional.

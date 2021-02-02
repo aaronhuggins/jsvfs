@@ -33,7 +33,7 @@ export class NoopAdapter implements Adapter {
   async link (from: string, to: string, type: 'hardlink' | 'softlink'): Promise<void> {}
 
   /** Remove items from persistent storage. */
-  async rm (path: string, type: ItemType): Promise<void> {}
+  async remove (path: string, type: ItemType): Promise<void> {}
 
   /** Flush the underlying file system to prepare for a commit. */
   async flush (): Promise<void> {}

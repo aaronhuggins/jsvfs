@@ -19,7 +19,7 @@ export interface Adapter {
   /** Create a link in persistent storage. */
   link (from: string, to: string, type: 'hardlink' | 'softlink'): Promise<void>
   /** Remove items from persistent storage. */
-  rm (path: string, type: ItemType): Promise<void>
+  remove (path: string, type: ItemType): Promise<void>
   /** Flush the underlying file system to prepare for a commit. */
   flush (): Promise<void>
   /** The real root of this file system which will be committed to. */
