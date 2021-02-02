@@ -1,6 +1,7 @@
-import type { Adapter, ItemType } from '@jsvfs/types'
+import type { Adapter, FolderType, ItemType, LinkType } from '@jsvfs/types'
 
-export type Item = File | Folder | Link | Root
+export type RealItem = File | Folder | Root
+export type Item = RealItem | Link
 
 abstract class ItemBase {
   constructor (item: Partial<ItemBase>) {
@@ -43,7 +44,7 @@ export class ParentItem extends ItemBase {
   }
 
   /** The type of item, root or a folder. */
-  type: 'folder' | 'root'
+  type: FolderType
   /** The children of the folder. */
   contents: Map<string, Item>
 
@@ -164,8 +165,8 @@ export class Link extends ItemBase {
   }
 
   /** The type of item, either a hardlink or softlink. */
-  type: 'hardlink' | 'softlink'
-  contents: ParentItem | File
+  type: LinkType
+  contents: RealItem
 
   get size (): number {
     return 0
