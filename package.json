@@ -1,6 +1,9 @@
 {
   "name": "jsvfs",
   "private": true,
+  "engines": {
+    "node": ">=12.10.0"
+  },
   "devDependencies": {
     "@istanbuljs/nyc-config-typescript": "^1.0.1",
     "@types/gulp": "^4.0.8",
