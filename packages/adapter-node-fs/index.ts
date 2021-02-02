@@ -54,7 +54,7 @@ export class NodeFSAdapter implements Adapter {
     let result: Dirent[] = []
 
     try {
-      result = await promises.readdir(path === '/' ? this.root : join(this.root, path), { withFileTypes: true })
+      result = await readdir(path === '/' ? this.root : join(this.root, path), { withFileTypes: true })
     } catch (error) {
       this.journal.push({
         id: this.journal.length,
@@ -122,7 +122,7 @@ export class NodeFSAdapter implements Adapter {
           id: this.journal.length,
           level: 'warn',
           message: `Could not create directory '${parent}'.`,
-          op: 'snapshot',
+          op: 'write',
           error
         })
       }
@@ -133,7 +133,7 @@ export class NodeFSAdapter implements Adapter {
         id: this.journal.length,
         level: 'error',
         message: `Could not get contents of '${newPath}'.`,
-        op: 'snapshot',
+        op: 'write',
         error
       })
     }
@@ -143,7 +143,17 @@ export class NodeFSAdapter implements Adapter {
   async mkdir (path: string): Promise<void> {
     const newPath = join(this.root, path)
 
-    await mkdir(newPath, { recursive: true })
+    try {
+      await mkdir(newPath, { recursive: true })
+    } catch (error) {
+      this.journal.push({
+        id: this.journal.length,
+        level: 'warn',
+        message: `Could not create directory '${newPath}'.`,
+        op: 'mkdir',
+        error
+      })
+    }
   }
 
   /** Create a link in persistent storage. */
@@ -151,46 +161,91 @@ export class NodeFSAdapter implements Adapter {
     const newFrom = join(this.root, from)
     const newTo = join(this.root, to)
 
-    switch(type) {
-      case 'hardlink':
-        await link(newTo, newFrom)
-        break
-      case 'softlink':
-        await symlink(newTo, newFrom)
-        break
+    try {
+      switch(type) {
+        case 'hardlink':
+          await link(newTo, newFrom)
+          break
+        case 'softlink':
+          await symlink(newTo, newFrom)
+          break
+      }
+    } catch (error) {
+      this.journal.push({
+        id: this.journal.length,
+        level: 'error',
+        message: `Could not create link from '${newFrom}' to '${newTo}'.`,
+        op: 'link',
+        error
+      })
     }
   }
 
   /** Remove items from persistent storage. */
   async remove (path: string, type: ItemType): Promise<void> {
-    switch (type) {
-      case 'root':
-        // Ignore root; removal of root is probably unintentional.
-        break
-      case 'folder':
-        await rmdir(join(this.root, path), { recursive: true })
-        break
-      default:
-        await unlink(join(this.root, path))
-        break
+    const newPath = join(this.root, path)
+
+    try {
+      switch (type) {
+        case 'root':
+          // Ignore root; removal of root is probably unintentional.
+          break
+        case 'folder':
+          await rmdir(newPath, { recursive: true })
+          break
+        default:
+          await unlink(newPath)
+          break
+      }
+    } catch (error) {
+      this.journal.push({
+        id: this.journal.length,
+        level: 'error',
+        message: `Could not remove ${type} at path '${newPath}'.`,
+        op: 'remove',
+        error
+      })
     }
   }
 
   /** Flush the underlying file system to prepare for a commit. This is a destructive operation unless flush is disabled. */
   async flush (): Promise<void> {
     if (this.flushEnabled) {
-      const result = await readdir(this.root, { withFileTypes: true })
+      let result: Dirent[] = []
+
+      try {
+        result = await readdir(this.root, { withFileTypes: true })
+      } catch (error) {
+        this.journal.push({
+          id: this.journal.length,
+          level: 'error',
+          message: `Could not read directory '${this.root}'.`,
+          op: 'flush',
+          error
+        })
+      }
 
       for (const entry of result) {
         const path = join(this.root, entry.name)
-  
-        switch (true) {
-          case entry.isDirectory():
-            await rmdir(path, { recursive: true })
-            break
-          case entry.isFile():
-            await unlink(path)
-            break
+
+        try {
+          switch (true) {
+            case entry.isDirectory():
+              await rmdir(path, { recursive: true })
+              break
+            case entry.isFile():
+            case entry.isSymbolicLink():
+              await unlink(path)
+              break
+          }
+        } catch (error) {
+          this.journal.push({
+            id: this.journal.length,
+            level: 'error',
+            message: `Could not remove item at path '${path}'.`,
+            op: 'remove',
+            error
+          })
         }
       }
     }
