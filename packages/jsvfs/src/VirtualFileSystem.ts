@@ -1,7 +1,7 @@
 import { NoopAdapter } from '@jsvfs/adapter-noop'
-import { basename, getItemAtPath, SEPARATOR, setItemAtPath } from './helpers'
+import { basename, destructure, getItemAtPath, SEPARATOR, setItemAtPath } from './helpers'
 import { File, Folder, Item, Link, Root } from './Item'
-import type { Adapter } from '@jsvfs/types'
+import type { Adapter, ItemType } from '@jsvfs/types'
 
 /** Create a JavaScript virtual file system in memory. */
 export class VirtualFileSystem {
@@ -14,16 +14,32 @@ export class VirtualFileSystem {
     }
 
     this.root = new Root(this.adapter)
+    this.rmCache = new Map()
   }
 
   /** The file system adapter for this instance. */
   private adapter: Adapter
   /** The root of the file system tree. */
   private root: Root
+  /** An internal cache of paths removed from root. */
+  private rmCache: Map<string, ItemType>
 
   /** The separator character for this file system. */
   get separator (): '/' {
     return SEPARATOR
+  }
+
+  private isRmCached (path): boolean {
+    const tree = destructure(path)
+    let cachedPath = ''
+
+    for (const leaf of tree) {
+      cachedPath += '/' + leaf
+
+      if (this.rmCache.has(cachedPath)) return true
+    }
+
+    return false
   }
 
   /** Read the contents of a file. */
@@ -97,6 +113,8 @@ export class VirtualFileSystem {
         }))
       }
     }
+
+    if (this.isRmCached(path)) this.rmCache.delete(path)
   }
 
   /** Delete a file; if the target is a link, also deletes the link. Returns false if the item does not exist. */
@@ -107,14 +125,20 @@ export class VirtualFileSystem {
       item = getItemAtPath(this.root, path)
     } catch (error) {}
 
-    if (typeof item === 'undefined') return false
+    if (typeof item === 'undefined') {
+      this.rmCache.set(path, 'file')
+      return false
+    }
 
     switch (item.type) {
       case 'file':
+        this.rmCache.set(path, item.type)
         return item.parent.delete(item.name)
       case 'hardlink':
       case 'softlink':
         if (item.contents.type === 'file') {
+          this.rmCache.set(path, item.type)
+          this.rmCache.set(item.contents.path, item.contents.type)
           return item.parent.delete(item.name) &&
             item.contents.parent.delete(item.contents.name)
         }
@@ -131,6 +155,8 @@ export class VirtualFileSystem {
         name: basename(path),
         path
       }))
+
+      if (this.isRmCached(path)) this.rmCache.delete(path)
     }
   }
 
@@ -171,17 +197,23 @@ export class VirtualFileSystem {
       item = getItemAtPath(this.root, path)
     } catch (error) {}
 
-    if (typeof item === 'undefined') return false
+    if (typeof item === 'undefined') {
+      this.rmCache.set(path, 'folder')
+      return false
+    }
 
     switch (item.type) {
       case 'folder':
       case 'root':
+        this.rmCache.set(path, item.type)
         return item.parent.delete(item.name)
       case 'hardlink':
       case 'softlink':
         switch (item.contents.type) {
           case 'folder':
           case 'root':
+            this.rmCache.set(path, item.type)
+            this.rmCache.set(item.contents.path, item.contents.type)
             return item.parent.delete(item.name) &&
               item.contents.parent.delete(item.contents.name)
         }
@@ -225,18 +257,19 @@ export class VirtualFileSystem {
       item = getItemAtPath(this.root, path)
     } catch (error) {}
 
-    if (typeof item === 'undefined') return false
+    if (typeof item === 'undefined') {
+      this.rmCache.set(path, 'softlink')
+      return false
+    }
 
     switch (item.type) {
       case 'hardlink':
       case 'softlink':
-        item.parent.delete(item.name)
-        break
-      default:
-        return false
+        this.rmCache.set(path, item.type)
+        return item.parent.delete(item.name)
     }
 
-    return true
+    return false
   }
 
   /** Check to see if a path exists in the file system tree. */
@@ -267,5 +300,9 @@ export class VirtualFileSystem {
   async commit (): Promise<void> {
     await this.adapter.flush()
     await this.root.commit()
+
+    for (const [path, type] of this.rmCache) {
+      await this.adapter.rm(path, type)
+    }
   }
 }

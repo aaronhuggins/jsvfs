@@ -1,4 +1,4 @@
-import type { Adapter, JournalEntry } from '@jsvfs/types'
+import type { Adapter, ItemType, JournalEntry } from '@jsvfs/types'
 
 /** An adapter for No-Operation; essentially makes the VFS a memory-only instance. */
 export class NoopAdapter implements Adapter {
@@ -31,6 +31,9 @@ export class NoopAdapter implements Adapter {
 
   /** Create a link in persistent storage. */
   async link (from: string, to: string, type: 'hardlink' | 'softlink'): Promise<void> {}
+
+  /** Remove items from persistent storage. */
+  async rm (path: string, type: ItemType): Promise<void> {}
 
   /** Flush the underlying file system to prepare for a commit. */
   async flush (): Promise<void> {}
