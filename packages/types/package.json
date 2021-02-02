@@ -1,7 +1,7 @@
 {
   "name": "@jsvfs/types",
-  "version": "0.1.0",
-  "description": "",
+  "version": "0.0.0",
+  "description": "Type for the JavaScript Virtual File System and adapters.",
   "main": "index.js",
   "types": "index.d.ts",
   "scripts": {
@@ -12,6 +12,9 @@
   "repository": {
     "type": "git",
     "url": "git@github.com:ahuggins-nhs/jsvfs.git"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "author": "Aaron Huggins <aaron.huggins@gmail.com>",
   "keywords": [

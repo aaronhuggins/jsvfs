@@ -1,7 +1,7 @@
 {
   "name": "@jsvfs/core",
-  "version": "0.1.0",
-  "description": "",
+  "version": "0.0.0",
+  "description": "The JavaScript Virtual File System - an extensible engine for file operations.",
   "main": "index.js",
   "files": [
     "src/**/*.d.ts",
@@ -18,6 +18,9 @@
     "type": "git",
     "url": "git@github.com:ahuggins-nhs/jsvfs.git"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "author": "Aaron Huggins <aaron.huggins@gmail.com>",
   "keywords": [
     "jsvfs",
@@ -27,7 +30,7 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "@jsvfs/adapter-noop": "^0.1.0",
-    "@jsvfs/types": "^0.1.0"
+    "@jsvfs/adapter-noop": "^0.0.0",
+    "@jsvfs/types": "^0.0.0"
   }
 }

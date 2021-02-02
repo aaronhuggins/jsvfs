@@ -1,7 +1,7 @@
 {
   "name": "@jsvfs/adapter-node-fs",
-  "version": "0.1.0",
-  "description": "",
+  "version": "0.0.0",
+  "description": "The official `jsvfs` adapter for Node's `fs` module.",
   "main": "index.js",
   "types": "index.d.ts",
   "scripts": {
@@ -16,6 +16,9 @@
     "type": "git",
     "url": "git@github.com:ahuggins-nhs/jsvfs.git"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "author": "Aaron Huggins <aaron.huggins@gmail.com>",
   "keywords": [
     "jsvfs",
@@ -29,6 +32,6 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "@jsvfs/types": "^0.1.0"
+    "@jsvfs/types": "^0.0.0"
   }
 }
