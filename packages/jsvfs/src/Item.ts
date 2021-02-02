@@ -5,6 +5,7 @@ export type Item = RealItem | Link
 
 abstract class ItemBase {
   constructor (item: Partial<ItemBase>) {
+    this.adapter = item.adapter
     this.type = item.type
     this.path = item.path
     this.name = item.name
