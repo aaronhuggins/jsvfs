@@ -1,6 +1,6 @@
 {
   "name": "@jsvfs/core",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "",
   "main": "index.js",
   "files": [
@@ -19,10 +19,15 @@
     "url": "git@github.com:ahuggins-nhs/jsvfs.git"
   },
   "author": "Aaron Huggins <aaron.huggins@gmail.com>",
-  "keywords": ["jsvfs", "vfs", "virtual file system", "file system"],
+  "keywords": [
+    "jsvfs",
+    "vfs",
+    "virtual file system",
+    "file system"
+  ],
   "license": "MIT",
   "dependencies": {
-    "@jsvfs/adapter-noop": "^0.0.0",
-    "@jsvfs/types": "^0.0.0"
+    "@jsvfs/adapter-noop": "^0.1.0",
+    "@jsvfs/types": "^0.1.0"
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "@jsvfs/types",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "",
   "main": "index.js",
   "types": "index.d.ts",
@@ -14,6 +14,13 @@
     "url": "git@github.com:ahuggins-nhs/jsvfs.git"
   },
   "author": "Aaron Huggins <aaron.huggins@gmail.com>",
-  "keywords": ["jsvfs", "vfs", "virtual file system", "file system", "typescript", "types"],
+  "keywords": [
+    "jsvfs",
+    "vfs",
+    "virtual file system",
+    "file system",
+    "typescript",
+    "types"
+  ],
   "license": "MIT"
 }
