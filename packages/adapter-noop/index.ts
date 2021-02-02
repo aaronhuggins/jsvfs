@@ -1,3 +1,13 @@
+/**
+ * If you're looking to use `@jsvfs/jsvfs`, you're best to start with that module.
+ * 
+ * This module is the default noop backend for `jsvfs` and probably already imported if you have installed `jsvfs`.
+ * 
+ * If you're looking to create new adapters, please use `@jsvfs/types` and look to `@jsvfs/adapter-node-fs` as an example.
+ * @packageDocumentation
+ * @module @jsvfs/adapter-noop
+ */
+
 import type { Adapter, ItemType, JournalEntry } from '@jsvfs/types'
 
 /** An adapter for No-Operation; essentially makes the VFS a memory-only instance. */

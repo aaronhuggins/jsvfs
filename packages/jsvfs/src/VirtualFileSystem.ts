@@ -1,3 +1,4 @@
+/** @module @jsvfs/jsvfs */
 import { NoopAdapter } from '@jsvfs/adapter-noop'
 import { basename, destructure, getItemAtPath, join, normalize, SEPARATOR, setItemAtPath } from './helpers'
 import { File, Folder, Item, Link, RealItem, Root } from './Item'

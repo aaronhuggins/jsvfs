@@ -1,3 +1,16 @@
+/**
+ * A back-end for `@jsvfs/jsvfs` using Node's `fs` module.
+ * 
+ * Allows a developer to define the current working directory that acts as the root of the adapter, and to enable the
+ * `flush` functionality of the adapter. This second option is important, as flush in this adapter attempts to completely
+ * remove all files and folders from the root of the adapter. To protect developers against accidentally destroying files,
+ * this option defaults to `false` and must be intentionally enabled.
+ * 
+ * If you're looking to create new adapters, please use `@jsvfs/types` and look to this module as an example.
+ * @packageDocumentation
+ * @module @jsvfs/adapter-node-fs
+ */
+
 import { promises } from 'fs'
 import { dirname, join, posix, resolve } from 'path'
 import type { Adapter, ItemType, JournalEntry } from '@jsvfs/types'

@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>types | @jsvfs</title>
+	<title>@jsvfs/jsvfs | @jsvfs</title>
 	<meta name="description" content="Documentation for @jsvfs">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -55,33 +55,46 @@
 					<a href="../modules.html">@jsvfs</a>
 				</li>
 				<li>
-					<a href="types.html">types</a>
+					<a href="_jsvfs_jsvfs.html">@jsvfs/jsvfs</a>
 				</li>
 			</ul>
-			<h1>Module types</h1>
+			<h1>Module @jsvfs/jsvfs</h1>
 		</div>
 	</div>
 </header>
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>The JavaScript Virtual File System</p>
+					</div>
+					<p>This module is the main library needed to get started using a virtual file system.
+						If you need to snapshot files into the the virtual file system or commit changes to
+					persistent storage, you&#39;ll also need an adapter like <code>@jsvfs/adapter-node-fs</code>.</p>
+				</div>
+			</section>
 			<section class="tsd-panel-group tsd-index-group">
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
 						<section class="tsd-index-section ">
-							<h3>Interfaces</h3>
+							<h3>Classes</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-interface tsd-parent-kind-module"><a href="../interfaces/types.adapter.html" class="tsd-kind-icon">Adapter</a></li>
-								<li class="tsd-kind-interface tsd-parent-kind-module"><a href="../interfaces/types.journalentry.html" class="tsd-kind-icon">Journal<wbr>Entry</a></li>
+								<li class="tsd-kind-class tsd-parent-kind-module"><a href="../classes/_jsvfs_jsvfs.file.html" class="tsd-kind-icon">File</a></li>
+								<li class="tsd-kind-class tsd-parent-kind-module"><a href="../classes/_jsvfs_jsvfs.folder.html" class="tsd-kind-icon">Folder</a></li>
+								<li class="tsd-kind-class tsd-parent-kind-module"><a href="../classes/_jsvfs_jsvfs.link.html" class="tsd-kind-icon">Link</a></li>
+								<li class="tsd-kind-class tsd-parent-kind-module"><a href="../classes/_jsvfs_jsvfs.parentitem.html" class="tsd-kind-icon">Parent<wbr>Item</a></li>
+								<li class="tsd-kind-class tsd-parent-kind-module"><a href="../classes/_jsvfs_jsvfs.root.html" class="tsd-kind-icon">Root</a></li>
+								<li class="tsd-kind-class tsd-parent-kind-module"><a href="../classes/_jsvfs_jsvfs.virtualfilesystem.html" class="tsd-kind-icon">Virtual<wbr>File<wbr>System</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Type aliases</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-type-alias tsd-parent-kind-module"><a href="types.html#foldertype" class="tsd-kind-icon">Folder<wbr>Type</a></li>
-								<li class="tsd-kind-type-alias tsd-parent-kind-module"><a href="types.html#itemtype" class="tsd-kind-icon">Item<wbr>Type</a></li>
-								<li class="tsd-kind-type-alias tsd-parent-kind-module"><a href="types.html#linktype" class="tsd-kind-icon">Link<wbr>Type</a></li>
+								<li class="tsd-kind-type-alias tsd-parent-kind-module"><a href="_jsvfs_jsvfs.html#item" class="tsd-kind-icon">Item</a></li>
+								<li class="tsd-kind-type-alias tsd-parent-kind-module"><a href="_jsvfs_jsvfs.html#realitem" class="tsd-kind-icon">Real<wbr>Item</a></li>
 							</ul>
 						</section>
 					</div>
@@ -90,39 +103,24 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Type aliases</h2>
 				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-module">
-					<a name="foldertype" class="tsd-anchor"></a>
-					<h3>Folder<wbr>Type</h3>
-					<div class="tsd-signature tsd-kind-icon">Folder<wbr>Type<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;folder&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;root&quot;</span></div>
+					<a name="item" class="tsd-anchor"></a>
+					<h3>Item</h3>
+					<div class="tsd-signature tsd-kind-icon">Item<span class="tsd-signature-symbol">:</span> <a href="_jsvfs_jsvfs.html#realitem" class="tsd-signature-type" data-tsd-kind="Type alias">RealItem</a><span class="tsd-signature-symbol"> | </span><a href="../classes/_jsvfs_jsvfs.link.html" class="tsd-signature-type" data-tsd-kind="Class">Link</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/ahuggins-nhs/jsvfs/blob/c4562d9/packages/types/index.ts#L3">types/index.ts:3</a></li>
+							<li>Defined in <a href="https://github.com/ahuggins-nhs/jsvfs/blob/7e92c6d/packages/jsvfs/src/Item.ts#L5">jsvfs/src/Item.ts:5</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-module">
-					<a name="itemtype" class="tsd-anchor"></a>
-					<h3>Item<wbr>Type</h3>
-					<div class="tsd-signature tsd-kind-icon">Item<wbr>Type<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;file&quot;</span><span class="tsd-signature-symbol"> | </span><a href="types.html#foldertype" class="tsd-signature-type" data-tsd-kind="Type alias">FolderType</a><span class="tsd-signature-symbol"> | </span><a href="types.html#linktype" class="tsd-signature-type" data-tsd-kind="Type alias">LinkType</a></div>
+					<a name="realitem" class="tsd-anchor"></a>
+					<h3>Real<wbr>Item</h3>
+					<div class="tsd-signature tsd-kind-icon">Real<wbr>Item<span class="tsd-signature-symbol">:</span> <a href="../classes/_jsvfs_jsvfs.file.html" class="tsd-signature-type" data-tsd-kind="Class">File</a><span class="tsd-signature-symbol"> | </span><a href="../classes/_jsvfs_jsvfs.folder.html" class="tsd-signature-type" data-tsd-kind="Class">Folder</a><span class="tsd-signature-symbol"> | </span><a href="../classes/_jsvfs_jsvfs.root.html" class="tsd-signature-type" data-tsd-kind="Class">Root</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/ahuggins-nhs/jsvfs/blob/c4562d9/packages/types/index.ts#L4">types/index.ts:4</a></li>
+							<li>Defined in <a href="https://github.com/ahuggins-nhs/jsvfs/blob/7e92c6d/packages/jsvfs/src/Item.ts#L4">jsvfs/src/Item.ts:4</a></li>
 						</ul>
 					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-module">
-					<a name="linktype" class="tsd-anchor"></a>
-					<h3>Link<wbr>Type</h3>
-					<div class="tsd-signature tsd-kind-icon">Link<wbr>Type<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;hardlink&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;softlink&quot;</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/ahuggins-nhs/jsvfs/blob/c4562d9/packages/types/index.ts#L2">types/index.ts:2</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>The valid item types implemented by jsvfs.</p>
-						</div>
-					</div>
 				</section>
 			</section>
 		</div>
@@ -133,35 +131,44 @@
 						<a href="../modules.html">Modules</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="adapter_node_fs.html">adapter-<wbr>node-<wbr>fs</a>
+						<a href="_jsvfs_adapter_node_fs.html">@jsvfs/adapter-<wbr>node-<wbr>fs</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="adapter_noop.html">adapter-<wbr>noop</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="jsvfs.html">jsvfs</a>
+						<a href="_jsvfs_adapter_noop.html">@jsvfs/adapter-<wbr>noop</a>
 					</li>
 					<li class="current tsd-kind-module">
-						<a href="types.html">types</a>
+						<a href="_jsvfs_jsvfs.html">@jsvfs/jsvfs</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="_jsvfs_types.html">@jsvfs/types</a>
 					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-					<li class=" tsd-kind-interface tsd-parent-kind-module">
-						<a href="../interfaces/types.adapter.html" class="tsd-kind-icon">Adapter</a>
+					<li class=" tsd-kind-class tsd-parent-kind-module">
+						<a href="../classes/_jsvfs_jsvfs.file.html" class="tsd-kind-icon">File</a>
 					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-module">
-						<a href="../interfaces/types.journalentry.html" class="tsd-kind-icon">Journal<wbr>Entry</a>
+					<li class=" tsd-kind-class tsd-parent-kind-module">
+						<a href="../classes/_jsvfs_jsvfs.folder.html" class="tsd-kind-icon">Folder</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-module">
+						<a href="../classes/_jsvfs_jsvfs.link.html" class="tsd-kind-icon">Link</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-module">
+						<a href="../classes/_jsvfs_jsvfs.parentitem.html" class="tsd-kind-icon">Parent<wbr>Item</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-module">
+						<a href="../classes/_jsvfs_jsvfs.root.html" class="tsd-kind-icon">Root</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-module">
+						<a href="../classes/_jsvfs_jsvfs.virtualfilesystem.html" class="tsd-kind-icon">Virtual<wbr>File<wbr>System</a>
 					</li>
 					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
-						<a href="types.html#foldertype" class="tsd-kind-icon">Folder<wbr>Type</a>
+						<a href="_jsvfs_jsvfs.html#item" class="tsd-kind-icon">Item</a>
 					</li>
 					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
-						<a href="types.html#itemtype" class="tsd-kind-icon">Item<wbr>Type</a>
-					</li>
-					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
-						<a href="types.html#linktype" class="tsd-kind-icon">Link<wbr>Type</a>
+						<a href="_jsvfs_jsvfs.html#realitem" class="tsd-kind-icon">Real<wbr>Item</a>
 					</li>
 				</ul>
 			</nav>

@@ -1,3 +1,11 @@
+/**
+ * If you're looking to use `@jsvfs/jsvfs`, you're best to start with that module.
+ * 
+ * This module implements types and interfaces that can be used for developing `jsvfs` itself and adapters for it.
+ * @packageDocumentation
+ * @module @jsvfs/types
+ */
+
 /** The valid item types implemented by jsvfs. */
 export type LinkType = 'hardlink' | 'softlink'
 export type FolderType = 'folder'| 'root'
