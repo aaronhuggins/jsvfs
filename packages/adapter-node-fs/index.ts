@@ -52,7 +52,7 @@ export class NodeFSAdapter implements Adapter {
    */
   async *snapshot (path: string = '/'): AsyncGenerator<[string, SnapshotEntry]> {
     let result: Dirent[] = []
-    
+
     try {
       result = await promises.readdir(path === '/' ? this.root : join(this.root, path), { withFileTypes: true })
     } catch (error) {
@@ -109,12 +109,34 @@ export class NodeFSAdapter implements Adapter {
   /** Create a file or write the contents of a file to persistent storage. */
   async write (path: string, contents?: Buffer): Promise<void> {
     const newPath = join(this.root, path)
-    const parent = dirname(newPath)
 
-    if (typeof contents === 'undefined') contents = Buffer.alloc(0)
+    try {
+      const parent = dirname(newPath)
 
-    await mkdir(parent, { recursive: true })
-    await writeFile(newPath, contents)
+      if (typeof contents === 'undefined') contents = Buffer.alloc(0)
+
+      try {
+        await mkdir(parent, { recursive: true })
+      } catch (error) {
+        this.journal.push({
+          id: this.journal.length,
+          level: 'warn',
+          message: `Could not create directory '${parent}'.`,
+          op: 'snapshot',
+          error
+        })
+      }
+
+      await writeFile(newPath, contents)
+    } catch (error) {
+      this.journal.push({
+        id: this.journal.length,
+        level: 'error',
+        message: `Could not get contents of '${newPath}'.`,
+        op: 'snapshot',
+        error
+      })
+    }
   }
 
   /** Make a directory or directory tree in persistent storage. */
