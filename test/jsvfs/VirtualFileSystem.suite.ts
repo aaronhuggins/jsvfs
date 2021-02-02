@@ -235,10 +235,14 @@ describe('Module @jsvfs/core/index.ts', () => {
     const vfs = new VirtualFileSystem(adapter)
     const fakeFolder = '/doobie'
     const fakeFile = '/blunt.txt'
+    const fakeLink1 = '/blunt.hardlink.txt'
+    const fakeLink2 = '/blunt.softlink.txt'
 
     sinon.stub(adapter, 'snapshot').callsFake(async function* snapshot () {
-      yield [fakeFolder, 'folder']
-      yield [fakeFile, Buffer.alloc(0)]
+      yield [fakeFolder, { type: 'folder' }]
+      yield [fakeFile, { type: 'file', contents: Buffer.alloc(0) }]
+      yield [fakeLink1, { type: 'hardlink', contents: fakeFile }]
+      yield [fakeLink2, { type: 'softlink', contents: fakeFile }]
     })
 
     await doesNotReject(async () => {
