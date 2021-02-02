@@ -1,4 +1,4 @@
-import { Folder, Item, ParentItem, Root } from './Item'
+import { Folder, Item, ParentItem, RealItem, Root } from './Item'
 
 export const SEPARATOR = '/'
 
@@ -32,8 +32,11 @@ export function basename (path: string): string {
   return tree[tree.length - 1]
 }
 
-/** Get an item in the file system tree. */
-export function getItemAtPath (root: Root, path: string): Item {
+/** Get an item in the file system tree. Optionally return links at a path instead of link contents. */
+export function getItemAtPath (root: Root, path: string): RealItem
+export function getItemAtPath (root: Root, path: string, resolveLinks: false): Item
+export function getItemAtPath (root: Root, path: string, resolveLinks: true): RealItem
+export function getItemAtPath (root: Root, path: string, resolveLinks: boolean = true): Item {
   const tree = destructure(path)
   let item: Item = root
 
@@ -68,13 +71,20 @@ export function getItemAtPath (root: Root, path: string): Item {
       case 'softlink':
         switch (current.contents.type) {
           case 'folder':
-            item = current.contents
+            if (i + 1 === tree.length && !resolveLinks) {
+              item = current
+            } else {
+              item = current.contents
+            }
             break
           case 'file':
             if (i + 1 < tree.length) {
               throw new TypeError(`Expected a folder; encountered a ${current.contents.type} named '${current.name}' at path ${current.path}`)
+            } else if (i + 1 === tree.length && !resolveLinks) {
+              item = current
+            } else {
+              item = current.contents
             }
-            item = current.contents
             break
         }
         break
