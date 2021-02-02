@@ -13,7 +13,7 @@
 
 import { promises } from 'fs'
 import { dirname, join, posix, resolve } from 'path'
-import type { Adapter, ItemType, JournalEntry } from '@jsvfs/types'
+import type { Adapter, ItemType, JournalEntry, SnapshotEntry } from '@jsvfs/types'
 
 const { link, mkdir, readdir, readFile, rmdir, symlink, unlink, writeFile } = promises
 
@@ -48,9 +48,9 @@ export class NodeFSAdapter implements Adapter {
   /** Snapshot of the underlying file system; an asynchronous iterable which returns an entry of path and data.
    * @param {string} [path='/'] - The current path as the tree is descended.
    * @param {boolean} [read=true] - Whether to retrieve the underlying data.
-   * @returns {AsyncGenerator<[string, 'folder' | Buffer]>} The asynchronous iterable to get the snapshot.
+   * @returns {AsyncGenerator<[string, SnapshotEntry]>} The asynchronous iterable to get the snapshot.
    */
-  async *snapshot (path: string = '/'): AsyncGenerator<[string, 'folder' | Buffer]> {
+  async *snapshot (path: string = '/'): AsyncGenerator<[string, SnapshotEntry]> {
     const result = await promises.readdir(path === '/' ? this.root : join(this.root, path), { withFileTypes: true })
 
     for (const entry of result) {
@@ -58,13 +58,13 @@ export class NodeFSAdapter implements Adapter {
 
       switch (true) {
         case entry.isDirectory():
-          yield [newPath, 'folder']
+          yield [newPath, { type: 'folder' }]
           for await (const [path, data] of this.snapshot(newPath)) {
             yield [path, data]
           }
           break
         case entry.isFile():
-          yield [newPath, await readFile(join(this.root, newPath))]
+          yield [newPath, { type: 'file', contents: await readFile(join(this.root, newPath)) }]
           break
       }
     }
