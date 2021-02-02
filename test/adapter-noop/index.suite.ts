@@ -1,5 +1,5 @@
 import { strictEqual } from 'assert'
-import { NoopAdapter } from '../../packages/adapter-noop/index'
+import { NoopAdapter } from '../../packages/@jsvfs/adapter-noop/index'
 
 describe ('Module @jsvfs/adapter-noop', () => {
   it('should return void on all operations', async () => {

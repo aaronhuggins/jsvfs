@@ -1,8 +1,8 @@
 import * as sinon from 'sinon'
 import { doesNotReject, doesNotThrow, strictEqual, throws } from 'assert'
 import { dirname } from 'path'
-import { VirtualFileSystem } from '../../packages/jsvfs/index'
-import { NoopAdapter } from '../../packages/adapter-noop/index'
+import { VirtualFileSystem } from '../../packages/@jsvfs/jsvfs/index'
+import { NoopAdapter } from '../../packages/@jsvfs/adapter-noop/index'
 
 describe('Module @jsvfs/jsvfs/index.ts', () => {
   const testFolderPath = 'folder/subfolder'

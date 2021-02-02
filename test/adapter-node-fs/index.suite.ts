@@ -1,8 +1,8 @@
 import * as mockFs from 'mock-fs'
 import { join } from 'path'
-import { existsSync, mkdirSync, rmdirSync, writeFileSync } from 'fs'
+import { existsSync, mkdirSync, writeFileSync } from 'fs'
 import { doesNotReject, strictEqual } from 'assert'
-import { NodeFSAdapter } from '../../packages/adapter-node-fs/index'
+import { NodeFSAdapter } from '../../packages/@jsvfs/adapter-node-fs/index'
 
 describe ('Module @jsvfs/adapter-node-fs', () => {
   before(function () {
