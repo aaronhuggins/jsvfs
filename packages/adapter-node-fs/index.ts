@@ -11,11 +11,11 @@
  * @module @jsvfs/adapter-node-fs
  */
 
-import { promises } from 'fs'
-import { dirname, join, posix, resolve } from 'path'
-import type { Adapter, ItemType, JournalEntry } from '@jsvfs/types'
+import { Dirent, promises } from 'fs'
+import { dirname, join, posix, resolve, relative } from 'path'
+import type { Adapter, ItemType, JournalEntry, SnapshotEntry } from '@jsvfs/types'
 
-const { link, mkdir, readdir, readFile, rmdir, symlink, unlink, writeFile } = promises
+const { link, mkdir, readFile, readlink, rmdir, symlink, unlink, writeFile } = promises
 
 export interface NodeFSAdapterOpts {
   /** The desired working directory for this adater; defaults to process current working directory. */
@@ -48,24 +48,60 @@ export class NodeFSAdapter implements Adapter {
   /** Snapshot of the underlying file system; an asynchronous iterable which returns an entry of path and data.
    * @param {string} [path='/'] - The current path as the tree is descended.
    * @param {boolean} [read=true] - Whether to retrieve the underlying data.
-   * @returns {AsyncGenerator<[string, 'folder' | Buffer]>} The asynchronous iterable to get the snapshot.
+   * @returns {AsyncGenerator<[string, SnapshotEntry]>} The asynchronous iterable to get the snapshot.
    */
-  async *snapshot (path: string = '/'): AsyncGenerator<[string, 'folder' | Buffer]> {
-    const result = await promises.readdir(path === '/' ? this.root : join(this.root, path), { withFileTypes: true })
+  async *snapshot (path: string = '/'): AsyncGenerator<[string, SnapshotEntry]> {
+    let result: Dirent[] = []
+
+    try {
+      result = await promises.readdir(path === '/' ? this.root : join(this.root, path), { withFileTypes: true })
+    } catch (error) {
+      this.journal.push({
+        id: this.journal.length,
+        level: 'error',
+        message: `Could not read directory '${join(this.root, path)}'.`,
+        op: 'snapshot',
+        error
+      })
+    }
 
     for (const entry of result) {
       const newPath = posix.join(path, entry.name)
 
-      switch (true) {
-        case entry.isDirectory():
-          yield [newPath, 'folder']
-          for await (const [path, data] of this.snapshot(newPath)) {
-            yield [path, data]
-          }
-          break
-        case entry.isFile():
-          yield [newPath, await readFile(join(this.root, newPath))]
-          break
+      try {
+        switch (true) {
+          case entry.isDirectory():
+            yield [newPath, { type: 'folder' }]
+            for await (const [path, data] of this.snapshot(newPath)) {
+              yield [path, data]
+            }
+            break
+          case entry.isFile():
+            yield [newPath, {
+              type: 'file',
+              contents: await readFile(join(this.root, newPath))
+            }]
+            break
+          case entry.isSymbolicLink():
+            yield [newPath, {
+              type: 'softlink',
+              contents: relative(
+                join(this.root, newPath),
+                await readlink(join(this.root, newPath), 'utf8')
+              )
+                .replace(this.root, '')
+                .replace(/\\+|\/+/gu, '/')
+            }]
+            break
+        }
+      } catch (error) {
+        this.journal.push({
+          id: this.journal.length,
+          level: 'error',
+          message: `Could not get contents of '${join(this.root, newPath)}'.`,
+          op: 'snapshot',
+          error
+        })
       }
     }
   }
@@ -73,19 +109,51 @@ export class NodeFSAdapter implements Adapter {
   /** Create a file or write the contents of a file to persistent storage. */
   async write (path: string, contents?: Buffer): Promise<void> {
     const newPath = join(this.root, path)
-    const parent = dirname(newPath)
 
-    if (typeof contents === 'undefined') contents = Buffer.alloc(0)
+    try {
+      const parent = dirname(newPath)
 
-    await mkdir(parent, { recursive: true })
-    await writeFile(newPath, contents)
+      if (typeof contents === 'undefined') contents = Buffer.alloc(0)
+
+      try {
+        await mkdir(parent, { recursive: true })
+      } catch (error) {
+        this.journal.push({
+          id: this.journal.length,
+          level: 'warn',
+          message: `Could not create directory '${parent}'.`,
+          op: 'write',
+          error
+        })
+      }
+
+      await writeFile(newPath, contents)
+    } catch (error) {
+      this.journal.push({
+        id: this.journal.length,
+        level: 'error',
+        message: `Could not get contents of '${newPath}'.`,
+        op: 'write',
+        error
+      })
+    }
   }
 
   /** Make a directory or directory tree in persistent storage. */
   async mkdir (path: string): Promise<void> {
     const newPath = join(this.root, path)
 
-    await mkdir(newPath, { recursive: true })
+    try {
+      await mkdir(newPath, { recursive: true })
+    } catch (error) {
+      this.journal.push({
+        id: this.journal.length,
+        level: 'warn',
+        message: `Could not create directory '${newPath}'.`,
+        op: 'mkdir',
+        error
+      })
+    }
   }
 
   /** Create a link in persistent storage. */
@@ -93,46 +161,91 @@ export class NodeFSAdapter implements Adapter {
     const newFrom = join(this.root, from)
     const newTo = join(this.root, to)
 
-    switch(type) {
-      case 'hardlink':
-        await link(newTo, newFrom)
-        break
-      case 'softlink':
-        await symlink(newTo, newFrom)
-        break
+    try {
+      switch(type) {
+        case 'hardlink':
+          await link(newTo, newFrom)
+          break
+        case 'softlink':
+          await symlink(newTo, newFrom)
+          break
+      }
+    } catch (error) {
+      this.journal.push({
+        id: this.journal.length,
+        level: 'error',
+        message: `Could not create link from '${newFrom}' to '${newTo}'.`,
+        op: 'link',
+        error
+      })
     }
   }
 
   /** Remove items from persistent storage. */
   async remove (path: string, type: ItemType): Promise<void> {
-    switch (type) {
-      case 'root':
-        // Ignore root; removal of root is probably unintentional.
-        break
-      case 'folder':
-        await rmdir(join(this.root, path), { recursive: true })
-        break
-      default:
-        await unlink(join(this.root, path))
-        break
+    const newPath = join(this.root, path)
+
+    try {
+      switch (type) {
+        case 'root':
+          // Ignore root; removal of root is probably unintentional.
+          break
+        case 'folder':
+          await rmdir(newPath, { recursive: true })
+          break
+        default:
+          await unlink(newPath)
+          break
+      }
+    } catch (error) {
+      this.journal.push({
+        id: this.journal.length,
+        level: 'error',
+        message: `Could not remove ${type} at path '${newPath}'.`,
+        op: 'remove',
+        error
+      })
     }
   }
 
   /** Flush the underlying file system to prepare for a commit. This is a destructive operation unless flush is disabled. */
   async flush (): Promise<void> {
     if (this.flushEnabled) {
-      const result = await readdir(this.root, { withFileTypes: true })
+      let result: Dirent[] = []
+
+      try {
+        result = await promises.readdir(this.root, { withFileTypes: true })
+      } catch (error) {
+        this.journal.push({
+          id: this.journal.length,
+          level: 'error',
+          message: `Could not read directory '${this.root}'.`,
+          op: 'flush',
+          error
+        })
+      }
 
       for (const entry of result) {
         const path = join(this.root, entry.name)
-  
-        switch (true) {
-          case entry.isDirectory():
-            await rmdir(path, { recursive: true })
-            break
-          case entry.isFile():
-            await unlink(path)
-            break
+
+        try {
+          switch (true) {
+            case entry.isDirectory():
+              await rmdir(path, { recursive: true })
+              break
+            case entry.isFile():
+            case entry.isSymbolicLink():
+              await unlink(path)
+              break
+          }
+        } catch (error) {
+          this.journal.push({
+            id: this.journal.length,
+            level: 'error',
+            message: `Could not remove item at path '${path}'.`,
+            op: 'remove',
+            error
+          })
         }
       }
     }

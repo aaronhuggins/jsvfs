@@ -8,7 +8,7 @@
  * @module @jsvfs/adapter-noop
  */
 
-import type { Adapter, ItemType, JournalEntry } from '@jsvfs/types'
+import type { Adapter, ItemType, JournalEntry, LinkType, SnapshotEntry } from '@jsvfs/types'
 
 /** An adapter for No-Operation; essentially makes the VFS a memory-only instance. */
 export class NoopAdapter implements Adapter {
@@ -29,9 +29,9 @@ export class NoopAdapter implements Adapter {
   /** Snapshot of the underlying file system; an asynchronous iterable which returns an entry of path and data.
    * @param {string} [path='/'] - The current path as the tree is descended.
    * @param {boolean} [read=true] - Whether to retrieve the underlying data.
-   * @returns {AsyncGenerator<[string, 'folder' | Buffer]>} The asynchronous iterable to get the snapshot.
+   * @returns {AsyncGenerator<[string, SnapshotEntry]>} The asynchronous iterable to get the snapshot.
    */
-  async *snapshot (): AsyncGenerator<[string, 'folder' | Buffer]> {}
+  async *snapshot (): AsyncGenerator<[string, SnapshotEntry]> {}
 
   /** Create a file or write the contents of a file to persistent storage. */
   async write (path: string, contents?: Buffer): Promise<void> {}
@@ -40,7 +40,7 @@ export class NoopAdapter implements Adapter {
   async mkdir (path: string): Promise<void> {}
 
   /** Create a link in persistent storage. */
-  async link (from: string, to: string, type: 'hardlink' | 'softlink'): Promise<void> {}
+  async link (from: string, to: string, type: LinkType): Promise<void> {}
 
   /** Remove items from persistent storage. */
   async remove (path: string, type: ItemType): Promise<void> {}

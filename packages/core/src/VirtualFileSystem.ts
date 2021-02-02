@@ -1,7 +1,7 @@
 import { NoopAdapter } from '@jsvfs/adapter-noop'
 import { basename, destructure, getItemAtPath, join, normalize, SEPARATOR, setItemAtPath } from './helpers'
 import { File, Folder, Item, Link, RealItem, Root } from './Item'
-import type { Adapter, ItemType, LinkType } from '@jsvfs/types'
+import type { Adapter, ItemType, LinkType, SnapshotLinkEntry } from '@jsvfs/types'
 
 /** Create a JavaScript virtual file system in memory. */
 export class VirtualFileSystem {
@@ -269,11 +269,27 @@ export class VirtualFileSystem {
 
   /** Prepare the file system with a snapshot of the underlying persistent file system. */
   async snapshot (): Promise<void> {
+    const links: Array<[string, SnapshotLinkEntry]> = []
+
     for await (const [path, data] of this.adapter.snapshot()) {
-      if (data === 'folder') {
-        this.mkdir(path)
-      } else {
-        this.write(path, data)
+      switch (data.type) {
+        case 'folder':
+          this.mkdir(path)
+          break
+        case 'file':
+          this.write(path, data.contents)
+          break
+        case 'hardlink':
+        case 'softlink':
+          // Save links until all "real" data has been written to memory.
+          links.push([path, data])
+          break
+      }
+    }
+
+    if (links.length > 0) {
+      for (const [path, data] of links) {
+        this.link(path, data.contents, data.type)
       }
     }
   }
