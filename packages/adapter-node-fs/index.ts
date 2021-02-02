@@ -15,7 +15,7 @@ import { Dirent, promises } from 'fs'
 import { dirname, join, posix, resolve, relative } from 'path'
 import type { Adapter, ItemType, JournalEntry, SnapshotEntry } from '@jsvfs/types'
 
-const { link, mkdir, readdir, readFile, readlink, rmdir, symlink, unlink, writeFile } = promises
+const { link, mkdir, readFile, readlink, rmdir, symlink, unlink, writeFile } = promises
 
 export interface NodeFSAdapterOpts {
   /** The desired working directory for this adater; defaults to process current working directory. */
@@ -54,7 +54,7 @@ export class NodeFSAdapter implements Adapter {
     let result: Dirent[] = []
 
     try {
-      result = await readdir(path === '/' ? this.root : join(this.root, path), { withFileTypes: true })
+      result = await promises.readdir(path === '/' ? this.root : join(this.root, path), { withFileTypes: true })
     } catch (error) {
       this.journal.push({
         id: this.journal.length,
@@ -214,7 +214,7 @@ export class NodeFSAdapter implements Adapter {
       let result: Dirent[] = []
 
       try {
-        result = await readdir(this.root, { withFileTypes: true })
+        result = await promises.readdir(this.root, { withFileTypes: true })
       } catch (error) {
         this.journal.push({
           id: this.journal.length,
