@@ -1,5 +1,5 @@
 import { NoopAdapter } from '@jsvfs/adapter-noop'
-import { basename, destructure, getItemAtPath, join, SEPARATOR, setItemAtPath } from './helpers'
+import { basename, destructure, getItemAtPath, join, normalize, SEPARATOR, setItemAtPath } from './helpers'
 import { File, Folder, Item, Link, RealItem, Root } from './Item'
 import type { Adapter, ItemType, LinkType } from '@jsvfs/types'
 
@@ -97,7 +97,7 @@ export class VirtualFileSystem {
       }
     }
 
-    if (this.isRmCached(path)) this.rmCache.delete(path)
+    if (this.isRmCached(path)) this.rmCache.delete(normalize(path))
   }
 
   /** Delete a file; if the target is a hardlink, also deletes the link contents. Returns false if the item does not exist. */
@@ -109,24 +109,24 @@ export class VirtualFileSystem {
     } catch (error) {}
 
     if (typeof item === 'undefined') {
-      this.rmCache.set(path, 'file')
+      this.rmCache.set(normalize(path), 'file')
       return false
     }
 
     switch (item.type) {
       case 'file':
-        this.rmCache.set(path, item.type)
+        this.rmCache.set(normalize(path), item.type)
         return item.parent.delete(item.name)
       case 'hardlink':
         if (item.contents.type === 'file') {
-          this.rmCache.set(path, item.type)
-          this.rmCache.set(item.contents.path, item.contents.type)
+          this.rmCache.set(normalize(path), item.type)
+          this.rmCache.set(normalize(item.contents.path), item.contents.type)
           return item.parent.delete(item.name) &&
             item.contents.parent.delete(item.contents.name)
         }
       case 'softlink':
         if (item.contents.type === 'file') {
-          this.rmCache.set(path, item.type)
+          this.rmCache.set(normalize(path), item.type)
           return item.parent.delete(item.name)
         }
       default:
@@ -143,7 +143,7 @@ export class VirtualFileSystem {
         path
       }))
 
-      if (this.isRmCached(path)) this.rmCache.delete(path)
+      if (this.isRmCached(path)) this.rmCache.delete(normalize(path))
     }
   }
 
@@ -178,22 +178,22 @@ export class VirtualFileSystem {
     } catch (error) {}
 
     if (typeof item === 'undefined') {
-      this.rmCache.set(path, 'folder')
+      this.rmCache.set(normalize(path), 'folder')
       return false
     }
 
     switch (item.type) {
       case 'folder':
       case 'root':
-        this.rmCache.set(path, item.type)
+        this.rmCache.set(normalize(path), item.type)
         return item.parent.delete(item.name)
       case 'hardlink':
       case 'softlink':
         switch (item.contents.type) {
           case 'folder':
           case 'root':
-            this.rmCache.set(path, item.type)
-            this.rmCache.set(item.contents.path, item.contents.type)
+            this.rmCache.set(normalize(path), item.type)
+            this.rmCache.set(normalize(item.contents.path), item.contents.type)
             return item.parent.delete(item.name) &&
               item.contents.parent.delete(item.contents.name)
         }
@@ -234,14 +234,14 @@ export class VirtualFileSystem {
     } catch (error) {}
 
     if (typeof item === 'undefined') {
-      this.rmCache.set(path, 'softlink')
+      this.rmCache.set(normalize(path), 'softlink')
       return false
     }
 
     switch (item.type) {
       case 'hardlink':
       case 'softlink':
-        this.rmCache.set(path, item.type)
+        this.rmCache.set(normalize(path), item.type)
         return item.parent.delete(item.name)
     }
 
