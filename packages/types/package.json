@@ -1,6 +1,6 @@
 {
   "name": "@jsvfs/types",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Type for the JavaScript Virtual File System and adapters.",
   "main": "index.js",
   "types": "index.d.ts",
