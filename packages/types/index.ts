@@ -1,5 +1,7 @@
 /** The valid item types implemented by jsvfs. */
-export type ItemType = 'file' | 'folder' | 'hardlink' | 'root' | 'softlink'
+export type LinkType = 'hardlink' | 'softlink'
+export type FolderType = 'folder'| 'root'
+export type ItemType = 'file' | FolderType | LinkType
 
 /** An adapter for the underlying persistent file storage.
  * 
@@ -17,7 +19,7 @@ export interface Adapter {
   /** Make a directory or directory tree in persistent storage. */
   mkdir (path: string): Promise<void>
   /** Create a link in persistent storage. */
-  link (from: string, to: string, type: 'hardlink' | 'softlink'): Promise<void>
+  link (from: string, to: string, type: LinkType): Promise<void>
   /** Remove items from persistent storage. */
   remove (path: string, type: ItemType): Promise<void>
   /** Flush the underlying file system to prepare for a commit. */
@@ -32,7 +34,7 @@ export interface Adapter {
 
 export interface JournalEntry {
   id: string | number
-  op: 'delete' | 'exists' | 'list' | 'read' | 'write'
+  op: 'snapshot' | 'write' | 'mkdir' | 'link' | 'remove' | 'flush'
   level: 'info' | 'warn' | 'error' | 'crit'
   message: string
   [property: string]: any
