@@ -1,6 +1,6 @@
 import { promises } from 'fs'
 import { dirname, join, posix, resolve } from 'path'
-import type { Adapter, JournalEntry } from '@jsvfs/types'
+import type { Adapter, ItemType, JournalEntry } from '@jsvfs/types'
 
 const { link, mkdir, readdir, readFile, rmdir, symlink, unlink, writeFile } = promises
 
@@ -86,6 +86,21 @@ export class NodeFSAdapter implements Adapter {
         break
       case 'softlink':
         await symlink(newTo, newFrom)
+        break
+    }
+  }
+
+  /** Remove items from persistent storage. */
+  async rm (path: string, type: ItemType): Promise<void> {
+    switch (type) {
+      case 'root':
+        // Ignore root; removal of root is probably unintentional.
+        break
+      case 'folder':
+        await rmdir(path, { recursive: true })
+        break
+      default:
+        await unlink(path)
         break
     }
   }
