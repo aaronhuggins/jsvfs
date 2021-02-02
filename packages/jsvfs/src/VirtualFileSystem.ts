@@ -1,7 +1,7 @@
 import { NoopAdapter } from '@jsvfs/adapter-noop'
 import { basename, destructure, getItemAtPath, SEPARATOR, setItemAtPath } from './helpers'
-import { File, Folder, Item, Link, Root } from './Item'
-import type { Adapter, ItemType } from '@jsvfs/types'
+import { File, Folder, Item, Link, RealItem, Root } from './Item'
+import type { Adapter, ItemType, LinkType } from '@jsvfs/types'
 
 /** Create a JavaScript virtual file system in memory. */
 export class VirtualFileSystem {
@@ -49,11 +49,6 @@ export class VirtualFileSystem {
     switch (item.type) {
       case 'file':
         return item.contents
-      case 'hardlink':
-      case 'softlink':
-        if (item.contents.type === 'file') {
-          return item.contents.contents
-        }
       default:
         throw new TypeError(`Expected a file, encountered a folder at path ${path}`)
     }
@@ -63,11 +58,11 @@ export class VirtualFileSystem {
   write (path: string, contents?: string | String | Buffer, append: boolean = false): void {
     if (typeof contents === 'undefined') {
       contents = Buffer.alloc(0)
-    } else if (typeof contents === 'string' || contents instanceof String) {
+    } else if (contents instanceof String || typeof contents === 'string') {
       contents = Buffer.from(contents, 'utf8')
     }
 
-    let item: Item
+    let item: RealItem
 
     try {
       item = getItemAtPath(this.root, path)
@@ -80,12 +75,6 @@ export class VirtualFileSystem {
         case 'file':
           item.contents = Buffer.concat([item.contents, contents])
           break
-        case 'hardlink':
-        case 'softlink':
-          if (item.contents.type === 'file') {
-            item.contents.contents = Buffer.concat([item.contents.contents, contents])
-            break
-          }
         default:
           throw new TypeError(`Expected a file, encountered a folder at path ${path}`)
       }
@@ -95,12 +84,6 @@ export class VirtualFileSystem {
           case 'file':
             item.contents = Buffer.from(contents)
             break
-          case 'hardlink':
-          case 'softlink':
-            if (item.contents.type === 'file') {
-              item.contents.contents = Buffer.from(contents)
-              break
-            }
           default:
             throw new ReferenceError(`Item of type ${item.type} already exists at path ${path}`)
         }
@@ -117,12 +100,12 @@ export class VirtualFileSystem {
     if (this.isRmCached(path)) this.rmCache.delete(path)
   }
 
-  /** Delete a file; if the target is a link, also deletes the link. Returns false if the item does not exist. */
+  /** Delete a file; if the target is a hardlink, also deletes the link contents. Returns false if the item does not exist. */
   delete (path: string): boolean {
     let item: Item
 
     try {
-      item = getItemAtPath(this.root, path)
+      item = getItemAtPath(this.root, path, false)
     } catch (error) {}
 
     if (typeof item === 'undefined') {
@@ -135,12 +118,16 @@ export class VirtualFileSystem {
         this.rmCache.set(path, item.type)
         return item.parent.delete(item.name)
       case 'hardlink':
-      case 'softlink':
         if (item.contents.type === 'file') {
           this.rmCache.set(path, item.type)
           this.rmCache.set(item.contents.path, item.contents.type)
           return item.parent.delete(item.name) &&
             item.contents.parent.delete(item.contents.name)
+        }
+      case 'softlink':
+        if (item.contents.type === 'file') {
+          this.rmCache.set(path, item.type)
+          return item.parent.delete(item.name)
         }
       default:
         throw new TypeError(`Expected a file, encountered a folder at path ${path}`)
@@ -165,7 +152,7 @@ export class VirtualFileSystem {
   readdir (path: string, long: true): Item[]
   readdir (path: string, long: boolean): string[] | Item[]
   readdir (path: string, long: boolean = false): string[] | Item[] {
-    let item: Item
+    let item: RealItem
 
     try {
       item = getItemAtPath(this.root, path)
@@ -177,24 +164,17 @@ export class VirtualFileSystem {
       case 'folder':
       case 'root':
         return item.list(long)
-      case 'hardlink':
-      case 'softlink':
-        switch (item.contents.type) {
-          case 'folder':
-          case 'root':
-            return item.contents.list(long)
-        }
       default:
         throw new TypeError(`Expected a folder, encountered a file at path ${path}`)
     }
   }
 
-  /** Remove a directory and it's contents. */
+  /** Remove a directory and it's contents. If the path is a folder link, both the link and the link target will be removed. */
   rmdir (path: string): boolean {
     let item: Item
 
     try {
-      item = getItemAtPath(this.root, path)
+      item = getItemAtPath(this.root, path, false)
     } catch (error) {}
 
     if (typeof item === 'undefined') {
@@ -223,16 +203,10 @@ export class VirtualFileSystem {
   }
 
   /** Create a link to a folder or file; optionally create as a hardlink. Returns false if the link cannot be created. */
-  link (from: string, to: string, type: Link['type'] = 'softlink'): boolean {
+  link (from: string, to: string, type: LinkType = 'softlink'): boolean {
     if (!this.exists(from)) {
       try {
         const item = getItemAtPath(this.root, to)
-
-        switch (item.type) {
-          case 'hardlink':
-          case 'softlink':
-            return false
-        }
 
         setItemAtPath(this.root, new Link({
           adapter: this.adapter,
@@ -243,18 +217,20 @@ export class VirtualFileSystem {
         }))
 
         return true
-      } catch (error) {}
+      } catch (error) {
+        return false
+      }
     }
 
     return false
   }
 
-  /** Remove a link; returns false if not a link. */
+  /** Remove a link; returns false if not a link. Does not delete files, this is not a Node API. */
   unlink (path: string): boolean {
     let item: Item
 
     try {
-      item = getItemAtPath(this.root, path)
+      item = getItemAtPath(this.root, path, false)
     } catch (error) {}
 
     if (typeof item === 'undefined') {
@@ -277,7 +253,7 @@ export class VirtualFileSystem {
     let item: Item
 
     try {
-      item = getItemAtPath(this.root, path)
+      item = getItemAtPath(this.root, path, false)
     } catch (error) {
       // Ignore errors; just checking for existence.
     }
