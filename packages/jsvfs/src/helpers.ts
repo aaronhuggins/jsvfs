@@ -4,7 +4,7 @@ export const SEPARATOR = '/'
 
 /** Normalize a path to match expectations. */
 export function normalize (path: string): string {
-  return path.replace(/\\|\\\\|\/\//gu, SEPARATOR)
+  return path.replace(/(\\+|\/+)/gu, SEPARATOR)
 }
 
 /** Destructure a path to an array. */

@@ -1,5 +1,5 @@
 import { NoopAdapter } from '@jsvfs/adapter-noop'
-import { basename, destructure, getItemAtPath, SEPARATOR, setItemAtPath } from './helpers'
+import { basename, destructure, getItemAtPath, join, SEPARATOR, setItemAtPath } from './helpers'
 import { File, Folder, Item, Link, RealItem, Root } from './Item'
 import type { Adapter, ItemType, LinkType } from '@jsvfs/types'
 
@@ -34,7 +34,7 @@ export class VirtualFileSystem {
     let cachedPath = ''
 
     for (const leaf of tree) {
-      cachedPath += '/' + leaf
+      cachedPath = join(cachedPath, leaf)
 
       if (this.rmCache.has(cachedPath)) return true
     }
