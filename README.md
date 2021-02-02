@@ -1,6 +1,6 @@
 # JavaScript Virtual File System
 
-A library `jsvfs` and a set of modules for creating an in-memory (hence "virtual") representation of a file system and adapting that system to different back-end persistent stores.
+A library `@jsvfs/core` and a set of modules for creating an in-memory (hence "virtual") representation of a file system and adapting that system to different back-end persistent stores.
 
 ## Why
 

@@ -1,7 +1,7 @@
 import * as sinon from 'sinon'
 import { doesNotReject, doesNotThrow, strictEqual, throws } from 'assert'
 import { dirname } from 'path'
-import { VirtualFileSystem } from '../../packages/jsvfs/index'
+import { VirtualFileSystem } from '../../packages/core/index'
 import { NoopAdapter } from '../../packages/adapter-noop/index'
 
 describe('Module @jsvfs/core/index.ts', () => {
