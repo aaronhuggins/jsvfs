@@ -4,7 +4,9 @@ export const SEPARATOR = '/'
 
 /** Normalize a path to match expectations. */
 export function normalize (path: string): string {
-  return path.replace(/(\\+|\/+)/gu, SEPARATOR)
+  const absolute = SEPARATOR + path
+
+  return absolute.replace(/(\\+|\/+)/gu, SEPARATOR)
 }
 
 /** Destructure a path to an array. */
@@ -14,7 +16,7 @@ export function destructure (path: string): string[] {
 
 /** Perform a POSIX join on one or more strings. */
 export function join (...paths: string[]) {
-  return normalize(SEPARATOR + paths.join(SEPARATOR))
+  return normalize(paths.join(SEPARATOR))
 }
 
 /** Get the base name of the given path. */
