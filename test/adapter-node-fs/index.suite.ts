@@ -1,6 +1,6 @@
 import * as mockFs from 'mock-fs'
 import { join } from 'path'
-import { existsSync, mkdirSync, writeFileSync } from 'fs'
+import { existsSync, mkdirSync, symlinkSync, writeFileSync } from 'fs'
 import { doesNotReject, strictEqual } from 'assert'
 import { NodeFSAdapter } from '../../packages/adapter-node-fs/index'
 
@@ -37,6 +37,7 @@ describe ('Module @jsvfs/adapter-node-fs', () => {
     mkdirSync('fake')
     mkdirSync('fake/folder')
     mkdirSync('fake/folder/subfolder')
+    symlinkSync('fake/folder/subfolder', 'fake/folder/sublink', 'dir')
     writeFileSync('fake/file.txt', Buffer.alloc(0))
 
     const nodeFs = new NodeFSAdapter({ cwd: 'fake' })
@@ -50,14 +51,14 @@ describe ('Module @jsvfs/adapter-node-fs', () => {
       strictEqual(counter, expected)
     }
 
-    await checkSnapshot(3)
+    await checkSnapshot(4)
 
     // With flushEnabled === false
     await doesNotReject(async () => {
       await nodeFs.flush()
     })
 
-    await checkSnapshot(3)
+    await checkSnapshot(4)
 
     // With flushEnabled === true
     await doesNotReject(async () => {

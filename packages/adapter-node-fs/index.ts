@@ -12,10 +12,10 @@
  */
 
 import { promises } from 'fs'
-import { dirname, join, posix, resolve } from 'path'
+import { dirname, join, posix, resolve, relative } from 'path'
 import type { Adapter, ItemType, JournalEntry, SnapshotEntry } from '@jsvfs/types'
 
-const { link, mkdir, readdir, readFile, rmdir, symlink, unlink, writeFile } = promises
+const { link, mkdir, readdir, readFile, readlink, rmdir, symlink, unlink, writeFile } = promises
 
 export interface NodeFSAdapterOpts {
   /** The desired working directory for this adater; defaults to process current working directory. */
@@ -64,7 +64,21 @@ export class NodeFSAdapter implements Adapter {
           }
           break
         case entry.isFile():
-          yield [newPath, { type: 'file', contents: await readFile(join(this.root, newPath)) }]
+          yield [newPath, {
+            type: 'file',
+            contents: await readFile(join(this.root, newPath))
+          }]
+          break
+        case entry.isSymbolicLink():
+          yield [newPath, {
+            type: 'softlink',
+            contents: relative(
+              join(this.root, newPath),
+              await readlink(join(this.root, newPath), 'utf8')
+            )
+              .replace(this.root, '')
+              .replace(/\\+|\/+/gu, '/')
+          }]
           break
       }
     }
