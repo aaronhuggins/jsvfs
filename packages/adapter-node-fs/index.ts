@@ -1,5 +1,5 @@
 /**
- * A back-end for `@jsvfs/jsvfs` using Node's `fs` module.
+ * A back-end for `@jsvfs/core` using Node's `fs` module.
  * 
  * Allows a developer to define the current working directory that acts as the root of the adapter, and to enable the
  * `flush` functionality of the adapter. This second option is important, as flush in this adapter attempts to completely

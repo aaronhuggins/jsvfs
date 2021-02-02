@@ -1,4 +1,3 @@
-/** @module @jsvfs/jsvfs */
 import type { Adapter, FolderType, ItemType, LinkType } from '@jsvfs/types'
 
 export type RealItem = File | Folder | Root

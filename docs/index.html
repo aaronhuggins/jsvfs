@@ -70,7 +70,7 @@
 				<a href="#how-does-it-work" id="how-does-it-work" style="color: inherit; text-decoration: none;">
 					<h2>How does it work</h2>
 				</a>
-				<p>The main module <code>@jsvfs/jsvfs</code> provides a class <code>VirtualFileSystem</code> that uses a noop back-end <code>@jsvfs/adapter-noop</code> by default. Other back-ends can be passed when constructing this class, such as <code>@jsvfs/adapter-node-fs</code> to allow backing the virtual fs with real storage.</p>
+				<p>The main module <code>@jsvfs/core</code> provides a class <code>VirtualFileSystem</code> that uses a noop back-end <code>@jsvfs/adapter-noop</code> by default. Other back-ends can be passed when constructing this class, such as <code>@jsvfs/adapter-node-fs</code> to allow backing the virtual fs with real storage.</p>
 				<ul>
 					<li>Before using the virtual file system, the class method <code>snapshot</code> can be used to pre-fill the vfs with data for an adapter which supports snapshotting.</li>
 					<li>During the lifecycle of the application, synchronous methods can be called to manage the files, folders, and links of the vfs.</li>
@@ -102,7 +102,7 @@
 						<a href="modules/_jsvfs_adapter_noop.html">@jsvfs/adapter-<wbr>noop</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/_jsvfs_jsvfs.html">@jsvfs/jsvfs</a>
+						<a href="modules/_jsvfs_core.html">@jsvfs/core</a>
 					</li>
 					<li class=" tsd-kind-module">
 						<a href="modules/_jsvfs_types.html">@jsvfs/types</a>

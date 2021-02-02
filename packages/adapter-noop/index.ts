@@ -1,5 +1,5 @@
 /**
- * If you're looking to use `@jsvfs/jsvfs`, you're best to start with that module.
+ * If you're looking to use `jsvfs`, you're best to start with `@jsvfs/core`.
  * 
  * This module is the default noop backend for `jsvfs` and probably already imported if you have installed `jsvfs`.
  * 

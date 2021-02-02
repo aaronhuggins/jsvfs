@@ -1,5 +1,5 @@
 /**
- * If you're looking to use `@jsvfs/jsvfs`, you're best to start with that module.
+ * If you're looking to use `jsvfs`, you're best to start with `@jsvfs/core`.
  * 
  * This module implements types and interfaces that can be used for developing `jsvfs` itself and adapters for it.
  * @packageDocumentation

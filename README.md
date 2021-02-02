@@ -10,7 +10,7 @@ Evaluating other solutions similar to this one, it was clear that there was no c
 
 ## How does it work
 
-The main module `@jsvfs/jsvfs` provides a class `VirtualFileSystem` that uses a noop back-end `@jsvfs/adapter-noop` by default. Other back-ends can be passed when constructing this class, such as `@jsvfs/adapter-node-fs` to allow backing the virtual fs with real storage.
+The main module `@jsvfs/core` provides a class `VirtualFileSystem` that uses a noop back-end `@jsvfs/adapter-noop` by default. Other back-ends can be passed when constructing this class, such as `@jsvfs/adapter-node-fs` to allow backing the virtual fs with real storage.
 
 - Before using the virtual file system, the class method `snapshot` can be used to pre-fill the vfs with data for an adapter which supports snapshotting.
 - During the lifecycle of the application, synchronous methods can be called to manage the files, folders, and links of the vfs.

@@ -4,7 +4,7 @@ import { dirname } from 'path'
 import { VirtualFileSystem } from '../../packages/jsvfs/index'
 import { NoopAdapter } from '../../packages/adapter-noop/index'
 
-describe('Module @jsvfs/jsvfs/index.ts', () => {
+describe('Module @jsvfs/core/index.ts', () => {
   const testFolderPath = 'folder/subfolder'
   const testFilePath = testFolderPath + '/file.txt'
 

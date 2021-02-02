@@ -5,7 +5,7 @@
  * If you need to snapshot files into the the virtual file system or commit changes to
  * persistent storage, you'll also need an adapter like `@jsvfs/adapter-node-fs`.
  * @packageDocumentation
- * @module @jsvfs/jsvfs
+ * @module @jsvfs/core
  */
 
 export * from './src/Item'
