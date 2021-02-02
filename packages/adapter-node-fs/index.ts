@@ -97,10 +97,10 @@ export class NodeFSAdapter implements Adapter {
         // Ignore root; removal of root is probably unintentional.
         break
       case 'folder':
-        await rmdir(path, { recursive: true })
+        await rmdir(join(this.root, path), { recursive: true })
         break
       default:
-        await unlink(path)
+        await unlink(join(this.root, path))
         break
     }
   }
