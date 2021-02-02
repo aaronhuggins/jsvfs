@@ -11,7 +11,7 @@
  * @module @jsvfs/adapter-node-fs
  */
 
-import { promises } from 'fs'
+import { Dirent, promises } from 'fs'
 import { dirname, join, posix, resolve, relative } from 'path'
 import type { Adapter, ItemType, JournalEntry, SnapshotEntry } from '@jsvfs/types'
 
@@ -51,35 +51,57 @@ export class NodeFSAdapter implements Adapter {
    * @returns {AsyncGenerator<[string, SnapshotEntry]>} The asynchronous iterable to get the snapshot.
    */
   async *snapshot (path: string = '/'): AsyncGenerator<[string, SnapshotEntry]> {
-    const result = await promises.readdir(path === '/' ? this.root : join(this.root, path), { withFileTypes: true })
+    let result: Dirent[] = []
+    
+    try {
+      result = await promises.readdir(path === '/' ? this.root : join(this.root, path), { withFileTypes: true })
+    } catch (error) {
+      this.journal.push({
+        id: this.journal.length,
+        level: 'error',
+        message: `Could not read directory '${join(this.root, path)}'.`,
+        op: 'snapshot',
+        error
+      })
+    }
 
     for (const entry of result) {
       const newPath = posix.join(path, entry.name)
 
-      switch (true) {
-        case entry.isDirectory():
-          yield [newPath, { type: 'folder' }]
-          for await (const [path, data] of this.snapshot(newPath)) {
-            yield [path, data]
-          }
-          break
-        case entry.isFile():
-          yield [newPath, {
-            type: 'file',
-            contents: await readFile(join(this.root, newPath))
-          }]
-          break
-        case entry.isSymbolicLink():
-          yield [newPath, {
-            type: 'softlink',
-            contents: relative(
-              join(this.root, newPath),
-              await readlink(join(this.root, newPath), 'utf8')
-            )
-              .replace(this.root, '')
-              .replace(/\\+|\/+/gu, '/')
-          }]
-          break
+      try {
+        switch (true) {
+          case entry.isDirectory():
+            yield [newPath, { type: 'folder' }]
+            for await (const [path, data] of this.snapshot(newPath)) {
+              yield [path, data]
+            }
+            break
+          case entry.isFile():
+            yield [newPath, {
+              type: 'file',
+              contents: await readFile(join(this.root, newPath))
+            }]
+            break
+          case entry.isSymbolicLink():
+            yield [newPath, {
+              type: 'softlink',
+              contents: relative(
+                join(this.root, newPath),
+                await readlink(join(this.root, newPath), 'utf8')
+              )
+                .replace(this.root, '')
+                .replace(/\\+|\/+/gu, '/')
+            }]
+            break
+        }
+      } catch (error) {
+        this.journal.push({
+          id: this.journal.length,
+          level: 'error',
+          message: `Could not get contents of '${join(this.root, newPath)}'.`,
+          op: 'snapshot',
+          error
+        })
       }
     }
   }
