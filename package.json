@@ -1,6 +1,9 @@
 {
   "name": "@jsvfs/monorepo",
   "private": true,
+  "scripts": {
+    "postpack": "gulp cleanup"
+  },
   "engines": {
     "node": ">=12.10.0"
   },
