@@ -20,3 +20,7 @@ The main module `@jsvfs/jsvfs` provides a class `VirtualFileSystem` that uses a 
 ## A word about engines
 
 Node 12.10.0 or higher is required to run the tests in this repository. Only certain modules in this monorepo depend on more recent features of Node, so it's not an overall requirement for using `jsvfs`.
+
+## Documentation
+
+Complete documentation of `jsvfs` can be found at the [jsvfs site](https://ahuggins-nhs.github.io/jsvfs/).
