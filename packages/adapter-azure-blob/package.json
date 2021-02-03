@@ -1,0 +1,34 @@
+{
+  "name": "@jsvfs/adapter-azure-blob",
+  "version": "0.1.0",
+  "description": "The default adapter for `@jsvfs/core`.",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "scripts": {
+    "prepack": "tsc"
+  },
+  "homepage": "https://github.com/ahuggins-nhs/jsvfs/tree/main/packages/adapter-azure-blob",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:ahuggins-nhs/jsvfs.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "author": "Aaron Huggins <aaron.huggins@gmail.com>",
+  "keywords": [
+    "jsvfs",
+    "vfs",
+    "virtual file system",
+    "file system",
+    "adapter",
+    "jsvfs adapter",
+    "azure",
+    "azure blob",
+    "azure storage blob"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "@jsvfs/types": "^0.1.0"
+  }
+}
