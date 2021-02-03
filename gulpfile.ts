@@ -35,3 +35,5 @@ export const coverage = series(cleanup, nyc)
 export async function typedoc () {
   await shell.task('typedoc')()
 }
+
+export const postpack = series(cleanup, typedoc)
