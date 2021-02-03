@@ -57,42 +57,27 @@
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
-			<div class="tsd-panel tsd-typography">
-				<a href="#javascript-virtual-file-system" id="javascript-virtual-file-system" style="color: inherit; text-decoration: none;">
-					<h1>JavaScript Virtual File System</h1>
-				</a>
-				<p>A library <code>@jsvfs/core</code> and a set of modules for creating an in-memory (hence &quot;virtual&quot;) representation of a file system and adapting that system to different back-end persistent stores.</p>
-				<a href="#why" id="why" style="color: inherit; text-decoration: none;">
-					<h2>Why</h2>
-				</a>
-				<p>For a lot of different reasons there was a need to have an in-memory representation of files, folders, and links, not the least of which was the ability to easily mockup different files. The main driver was the need to quickly switch the persistent storage of a particular application, wether it be a local file system, a cloud provider such as S3, or anything else.</p>
-				<p>Evaluating other solutions similar to this one, it was clear that there was no consistent API or modular approach. That&#39;s why <code>jsvfs</code> exists.</p>
-				<a href="#how-does-it-work" id="how-does-it-work" style="color: inherit; text-decoration: none;">
-					<h2>How does it work</h2>
-				</a>
-				<p>The main module <code>@jsvfs/core</code> provides a class <code>VirtualFileSystem</code> that uses a noop back-end <code>@jsvfs/adapter-noop</code> by default. Other back-ends can be passed when constructing this class, such as <code>@jsvfs/adapter-node-fs</code> to allow backing the virtual fs with real storage.</p>
-				<ul>
-					<li>Before using the virtual file system, the class method <code>snapshot</code> can be used to pre-fill the vfs with data for an adapter which supports snapshotting.</li>
-					<li>During the lifecycle of the application, synchronous methods can be called to manage the files, folders, and links of the vfs.</li>
-					<li>When it makes sense, the class method <code>commit</code> can be called to persist any uncommitted changes in the vfs to persistent storage.<blockquote>
-							<p>NOTE: If the adapter supports flushing the persistent storage, the back-end will be flushed (whatever that means for the particular adapter) before persisting the vfs.</p>
-						</blockquote>
-					</li>
-				</ul>
-				<a href="#a-word-about-engines" id="a-word-about-engines" style="color: inherit; text-decoration: none;">
-					<h2>A word about engines</h2>
-				</a>
-				<p>Node 12.10.0 or higher is required to run the tests in this repository. Only certain modules in this monorepo depend on more recent features of Node, so it&#39;s not an overall requirement for using <code>jsvfs</code>.</p>
-				<a href="#documentation" id="documentation" style="color: inherit; text-decoration: none;">
-					<h2>Documentation</h2>
-				</a>
-				<p>Complete documentation of <code>jsvfs</code> can be found at the <a href="https://ahuggins-nhs.github.io/jsvfs/">jsvfs site</a>.</p>
-			</div>
+			<section class="tsd-panel-group tsd-index-group">
+				<h2>Index</h2>
+				<section class="tsd-panel tsd-index-panel">
+					<div class="tsd-index-content">
+						<section class="tsd-index-section ">
+							<h3>Modules</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-module"><a href="modules/_jsvfs_adapter_node_fs.html" class="tsd-kind-icon">@jsvfs/adapter-<wbr>node-<wbr>fs</a></li>
+								<li class="tsd-kind-module"><a href="modules/_jsvfs_adapter_noop.html" class="tsd-kind-icon">@jsvfs/adapter-<wbr>noop</a></li>
+								<li class="tsd-kind-module"><a href="modules/_jsvfs_core.html" class="tsd-kind-icon">@jsvfs/core</a></li>
+								<li class="tsd-kind-module"><a href="modules/_jsvfs_types.html" class="tsd-kind-icon">@jsvfs/types</a></li>
+							</ul>
+						</section>
+					</div>
+				</section>
+			</section>
 		</div>
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
 			<nav class="tsd-navigation primary">
 				<ul>
-					<li class=" ">
+					<li class="current ">
 						<a href="modules.html">Modules</a>
 					</li>
 					<li class=" tsd-kind-module">
