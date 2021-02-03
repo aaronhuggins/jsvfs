@@ -27,8 +27,6 @@ export class NoopAdapter implements Adapter {
   handle: 'noop'
 
   /** Snapshot of the underlying file system; an asynchronous iterable which returns an entry of path and data.
-   * @param {string} [path='/'] - The current path as the tree is descended.
-   * @param {boolean} [read=true] - Whether to retrieve the underlying data.
    * @returns {AsyncGenerator<[string, SnapshotEntry]>} The asynchronous iterable to get the snapshot.
    */
   async *snapshot (): AsyncGenerator<[string, SnapshotEntry]> {}
