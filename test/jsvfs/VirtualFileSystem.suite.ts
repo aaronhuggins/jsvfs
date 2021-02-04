@@ -1,9 +1,10 @@
-import { doesNotThrow, strictEqual, throws } from 'assert'
+import * as sinon from 'sinon'
+import { doesNotReject, doesNotThrow, strictEqual, throws } from 'assert'
 import { dirname } from 'path'
-import { VirtualFileSystem } from '../../packages/jsvfs/index'
+import { VirtualFileSystem } from '../../packages/core/index'
 import { NoopAdapter } from '../../packages/adapter-noop/index'
 
-describe('Module @jsvfs/jsvfs/index.ts', () => {
+describe('Module @jsvfs/core/index.ts', () => {
   const testFolderPath = 'folder/subfolder'
   const testFilePath = testFolderPath + '/file.txt'
 
@@ -86,6 +87,10 @@ describe('Module @jsvfs/jsvfs/index.ts', () => {
     strictEqual(result2, false)
 
     doesNotThrow(() => {
+      vfs.write(testFilePath)
+    })
+
+    doesNotThrow(() => {
       vfs.delete('/cats')
     })
 
@@ -125,6 +130,10 @@ describe('Module @jsvfs/jsvfs/index.ts', () => {
       vfs.rmdir('/dogs')
     })
 
+    doesNotThrow(() => {
+      vfs.mkdir('/dogs')
+    })
+
     vfs.write(testFilePath)
 
     throws(() => {
@@ -159,6 +168,97 @@ describe('Module @jsvfs/jsvfs/index.ts', () => {
 
     throws(() => {
       vfs.readdir(testFilePath)
+    })
+  })
+
+  it('should handle links', () => {
+    const vfs = new VirtualFileSystem()
+    const linkFolderPath = '/link1'
+    const linkFilePath = '/link2.log'
+
+    vfs.mkdir(testFolderPath)
+    vfs.write(testFilePath)
+
+    doesNotThrow(() => {
+      vfs.link(linkFolderPath, testFolderPath)
+    })
+
+    doesNotThrow(() => {
+      vfs.link(linkFilePath, testFilePath, 'hardlink')
+    })
+
+    const result1 = vfs.link(linkFilePath, testFilePath)
+
+    strictEqual(result1, false)
+
+    const result2 = vfs.link(linkFilePath + '/nah', testFilePath)
+
+    strictEqual(result2, false)
+
+    const result3 = vfs.unlink(linkFilePath)
+
+    strictEqual(result3, true)
+
+    const result4 = vfs.unlink(linkFilePath + '/nope')
+
+    strictEqual(result4, false)
+
+    const result5 = vfs.unlink(testFilePath)
+
+    strictEqual(result5, false)
+
+    doesNotThrow(() => {
+      vfs.link(linkFilePath, testFilePath, 'hardlink')
+      vfs.delete(linkFilePath)
+    })
+
+    doesNotThrow(() => {
+      vfs.write(testFilePath)
+      vfs.link(linkFilePath, testFilePath)
+      vfs.delete(linkFilePath)
+    })
+
+    doesNotThrow(() => {
+      vfs.link(linkFolderPath, testFolderPath)
+      vfs.rmdir(linkFolderPath)
+    })
+
+    doesNotThrow(() => {
+      vfs.mkdir(testFolderPath)
+      vfs.link(linkFolderPath, testFolderPath, 'hardlink')
+      vfs.rmdir(linkFolderPath)
+    })
+  })
+
+  it('should snapshot a persistent storage and commit changes', async () => {
+    const adapter = new NoopAdapter()
+    const vfs = new VirtualFileSystem(adapter)
+    const fakeFolder = '/doobie'
+    const fakeFile = '/blunt.txt'
+    const fakeLink1 = '/blunt.hardlink.txt'
+    const fakeLink2 = '/blunt.softlink.txt'
+
+    sinon.stub(adapter, 'snapshot').callsFake(async function* snapshot () {
+      yield [fakeFolder, { type: 'folder' }]
+      yield [fakeFile, { type: 'file', contents: Buffer.alloc(0) }]
+      yield [fakeLink1, { type: 'hardlink', contents: fakeFile }]
+      yield [fakeLink2, { type: 'softlink', contents: fakeFile }]
+    })
+
+    await doesNotReject(async () => {
+      await vfs.snapshot()
+    })
+
+    const result1 = vfs.exists(fakeFolder)
+    const result2 = vfs.exists(fakeFile)
+
+    strictEqual(result1, true)
+    strictEqual(result2, true)
+
+    vfs.delete(fakeFile)
+
+    await doesNotReject(async () => {
+      await vfs.commit()
     })
   })
 })

@@ -1,11 +1,17 @@
 import * as mockFs from 'mock-fs'
-import { join } from 'path'
-import { mkdirSync, writeFileSync } from 'fs'
+import * as sinon from 'sinon'
+import * as fs from 'fs'
+import { join, resolve } from 'path'
 import { doesNotReject, strictEqual } from 'assert'
 import { NodeFSAdapter } from '../../packages/adapter-node-fs/index'
 
+const { existsSync, mkdirSync, symlinkSync, writeFileSync } = fs
+
 describe ('Module @jsvfs/adapter-node-fs', () => {
-  before(async () => {
+  before(function () {
+    // Weird issue where, sometimes, the before hook times out in Mocha.
+    this.timeout(5000)
+
     mockFs({
       // Allows the files to be accessible during the filesystem mock, without actually being deleted.
       '.nyc_output': mockFs.load(join(process.cwd(), '.nyc_output'), { lazy: true }),
@@ -15,7 +21,7 @@ describe ('Module @jsvfs/adapter-node-fs', () => {
     })
   })
 
-  after(async () => {
+  after(() => {
     mockFs.restore()
   })
 
@@ -31,9 +37,58 @@ describe ('Module @jsvfs/adapter-node-fs', () => {
   })
 
   it('should handle flush API', async () => {
+    sinon.stub(fs.promises, 'readdir').callsFake(async (path: any): Promise<any[]> => {
+      switch (path) {
+        case resolve('fake'):
+          return [
+            {
+              name: 'folder',
+              isDirectory: () => true,
+              isFile: () => false,
+              isSymbolicLink: () => false
+            },
+            {
+              name: 'error',
+              isDirectory: () => true,
+              isFile: () => false,
+              isSymbolicLink: () => false
+            },
+            {
+              name: 'error.file',
+              isDirectory: () => false,
+              isFile: () => true,
+              isSymbolicLink: () => false
+            },
+            {
+              name: 'file.txt',
+              isDirectory: () => false,
+              isFile: () => true,
+              isSymbolicLink: () => false
+            }
+          ]
+        case resolve('fake/folder'):
+          return [
+            {
+              name: 'subfolder',
+              isDirectory: () => true,
+              isFile: () => false,
+              isSymbolicLink: () => false
+            },
+            {
+              name: 'sublink',
+              isDirectory: () => false,
+              isFile: () => false,
+              isSymbolicLink: () => true
+            }
+          ]
+        case resolve('fake/error'):
+          throw new Error('FAKE')
+      }
+    })
     mkdirSync('fake')
     mkdirSync('fake/folder')
     mkdirSync('fake/folder/subfolder')
+    symlinkSync('fake/folder/subfolder', 'fake/folder/sublink', 'dir')
     writeFileSync('fake/file.txt', Buffer.alloc(0))
 
     const nodeFs = new NodeFSAdapter({ cwd: 'fake' })
@@ -47,14 +102,16 @@ describe ('Module @jsvfs/adapter-node-fs', () => {
       strictEqual(counter, expected)
     }
 
-    await checkSnapshot(3)
+    await checkSnapshot(5)
 
     // With flushEnabled === false
     await doesNotReject(async () => {
       await nodeFs.flush()
     })
 
-    await checkSnapshot(3)
+    await checkSnapshot(5)
+
+    sinon.restore()
 
     // With flushEnabled === true
     await doesNotReject(async () => {
@@ -87,6 +144,37 @@ describe ('Module @jsvfs/adapter-node-fs', () => {
 
     await doesNotReject(async () => {
       nodeFs.mkdir('/folder')
+    })
+  })
+
+  it('should handle remove item API', async () => {
+    const cwd = 'fake2'
+    const folder = '/folder'
+    const file = '/file.txt'
+
+    mkdirSync(cwd)
+    mkdirSync(cwd + folder)
+    writeFileSync(cwd + file, Buffer.alloc(0))
+
+    const nodeFs = new NodeFSAdapter({ cwd })
+
+    strictEqual(existsSync(cwd + folder), true)
+    strictEqual(existsSync(cwd + file), true)
+
+    await doesNotReject(async () => {
+      await nodeFs.remove(folder, 'folder')
+    })
+
+    strictEqual(existsSync(cwd + folder), false)
+
+    await doesNotReject(async () => {
+      await nodeFs.remove(file, 'file')
+    })
+
+    strictEqual(existsSync(cwd + file), false)
+
+    await doesNotReject(async () => {
+      await nodeFs.remove('/', 'root')
     })
   })
 })

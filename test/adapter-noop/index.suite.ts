@@ -27,5 +27,9 @@ describe ('Module @jsvfs/adapter-noop', () => {
     const result4 = await noop.write('')
 
     strictEqual(typeof result4, 'undefined')
+
+    const result5 = await noop.remove('', 'file')
+
+    strictEqual(typeof result5, 'undefined')
   })
 })

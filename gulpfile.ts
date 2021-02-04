@@ -31,3 +31,9 @@ export async function nyc () {
 
 export const test = series(cleanup, mocha)
 export const coverage = series(cleanup, nyc)
+
+export async function typedoc () {
+  await shell.task('typedoc')()
+}
+
+export const postpack = series(cleanup, typedoc)

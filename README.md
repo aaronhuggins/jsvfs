@@ -1,6 +1,6 @@
 # JavaScript Virtual File System
 
-A library `jsvfs` and a set of modules for creating an in-memory (hence "virtual") representation of a file system and adapting that system to different back-end persistent stores.
+A library `@jsvfs/core` and a set of modules for creating an in-memory (hence "virtual") representation of a file system and adapting that system to different back-end persistent stores.
 
 ## Why
 
@@ -10,7 +10,7 @@ Evaluating other solutions similar to this one, it was clear that there was no c
 
 ## How does it work
 
-The main module `@jsvfs/jsvfs` provides a class `VirtualFileSystem` that uses a noop back-end `@jsvfs/adapter-noop` by default. Other back-ends can be passed when constructing this class, such as `@jsvfs/adapter-node-fs` to allow backing the virtual fs with real storage.
+The main module `@jsvfs/core` provides a class `VirtualFileSystem` that uses a noop back-end `@jsvfs/adapter-noop` by default. Other back-ends can be passed when constructing this class, such as `@jsvfs/adapter-node-fs` to allow backing the virtual fs with real storage.
 
 - Before using the virtual file system, the class method `snapshot` can be used to pre-fill the vfs with data for an adapter which supports snapshotting.
 - During the lifecycle of the application, synchronous methods can be called to manage the files, folders, and links of the vfs.
@@ -20,3 +20,7 @@ The main module `@jsvfs/jsvfs` provides a class `VirtualFileSystem` that uses a 
 ## A word about engines
 
 Node 12.10.0 or higher is required to run the tests in this repository. Only certain modules in this monorepo depend on more recent features of Node, so it's not an overall requirement for using `jsvfs`.
+
+## Documentation
+
+Complete documentation of `jsvfs` can be found at the [jsvfs site](https://ahuggins-nhs.github.io/jsvfs/).

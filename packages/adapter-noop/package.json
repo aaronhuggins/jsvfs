@@ -1,7 +1,7 @@
 {
   "name": "@jsvfs/adapter-noop",
-  "version": "0.0.0",
-  "description": "",
+  "version": "0.1.0",
+  "description": "The default adapter for `@jsvfs/core`.",
   "main": "index.js",
   "types": "index.d.ts",
   "scripts": {
@@ -13,10 +13,21 @@
     "type": "git",
     "url": "git@github.com:ahuggins-nhs/jsvfs.git"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "author": "Aaron Huggins <aaron.huggins@gmail.com>",
-  "keywords": ["jsvfs", "vfs", "virtual file system", "file system", "adapter", "jsvfs adapter", "noop"],
+  "keywords": [
+    "jsvfs",
+    "vfs",
+    "virtual file system",
+    "file system",
+    "adapter",
+    "jsvfs adapter",
+    "noop"
+  ],
   "license": "MIT",
   "dependencies": {
-    "@jsvfs/types": "^0.0.0"
+    "@jsvfs/types": "^0.1.0"
   }
 }
