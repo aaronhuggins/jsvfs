@@ -14,6 +14,14 @@ export async function cleanup () {
   })
 }
 
+export async function lint () {
+  await shell.task('ts-standard --report codeframe')()
+}
+
+export async function fix () {
+  await shell.task('ts-standard --fix --report codeframe')()
+}
+
 export async function compile () {
   const packages = readdirSync('packages')
 
