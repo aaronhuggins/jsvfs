@@ -18,11 +18,11 @@ export class VirtualFileSystem {
   }
 
   /** The file system adapter for this instance. */
-  private adapter: Adapter
+  private readonly adapter: Adapter
   /** The root of the file system tree. */
-  private root: Root
+  private readonly root: Root
   /** An internal cache of paths removed from root. */
-  private rmCache: Map<string, ItemType>
+  private readonly rmCache: Map<string, ItemType>
 
   /** The separator character for this file system. */
   get separator (): '/' {

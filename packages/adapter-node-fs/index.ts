@@ -1,11 +1,11 @@
 /**
  * A back-end for `@jsvfs/core` using Node's `fs` module.
- * 
+ *
  * Allows a developer to define the current working directory that acts as the root of the adapter, and to enable the
  * `flush` functionality of the adapter. This second option is important, as flush in this adapter attempts to completely
  * remove all files and folders from the root of the adapter. To protect developers against accidentally destroying files,
  * this option defaults to `false` and must be intentionally enabled.
- * 
+ *
  * If you're looking to create new adapters, please use `@jsvfs/types` and look to this module as an example.
  * @packageDocumentation
  * @module @jsvfs/adapter-node-fs
@@ -50,7 +50,7 @@ export class NodeFSAdapter implements Adapter {
    * @param {boolean} [read=true] - Whether to retrieve the underlying data.
    * @returns {AsyncGenerator<[string, SnapshotEntry]>} The asynchronous iterable to get the snapshot.
    */
-  async *snapshot (path: string = '/'): AsyncGenerator<[string, SnapshotEntry]> {
+  async * snapshot (path: string = '/'): AsyncGenerator<[string, SnapshotEntry]> {
     let result: Dirent[] = []
 
     try {
@@ -162,7 +162,7 @@ export class NodeFSAdapter implements Adapter {
     const newTo = join(this.root, to)
 
     try {
-      switch(type) {
+      switch (type) {
         case 'hardlink':
           await link(newTo, newFrom)
           break

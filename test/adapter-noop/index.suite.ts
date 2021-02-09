@@ -1,7 +1,7 @@
 import { strictEqual } from 'assert'
 import { NoopAdapter } from '../../packages/adapter-noop/index'
 
-describe ('Module @jsvfs/adapter-noop', () => {
+describe('Module @jsvfs/adapter-noop', () => {
   it('should return void on all operations', async () => {
     const noop = new NoopAdapter()
     let counter = 0

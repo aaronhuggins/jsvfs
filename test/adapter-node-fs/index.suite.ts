@@ -7,7 +7,7 @@ import { NodeFSAdapter } from '../../packages/adapter-node-fs/index'
 
 const { existsSync, mkdirSync, symlinkSync, writeFileSync } = fs
 
-describe ('Module @jsvfs/adapter-node-fs', () => {
+describe('Module @jsvfs/adapter-node-fs', () => {
   before(function () {
     // Weird issue where, sometimes, the before hook times out in Mocha.
     this.timeout(5000)
@@ -98,7 +98,7 @@ describe ('Module @jsvfs/adapter-node-fs', () => {
       for await (const a of nodeFs.snapshot()) {
         counter += 1
       }
-  
+
       strictEqual(counter, expected)
     }
 
@@ -123,7 +123,7 @@ describe ('Module @jsvfs/adapter-node-fs', () => {
     await checkSnapshot(0)
   })
 
-  it ('should handle individual file/folder APIs', async () => {
+  it('should handle individual file/folder APIs', async () => {
     const nodeFs = new NodeFSAdapter({ cwd: 'fake' })
 
     await doesNotReject(async () => {

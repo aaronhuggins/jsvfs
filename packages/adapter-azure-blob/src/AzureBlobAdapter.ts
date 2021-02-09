@@ -50,7 +50,7 @@ export class AzureBlobAdapter implements Adapter {
   /** Snapshot of the underlying file system; an asynchronous iterable which returns an entry of path and data.
    * @returns {AsyncGenerator<[string, SnapshotEntry]>} The asynchronous iterable to get the snapshot.
    */
-  async *snapshot (): AsyncGenerator<[string, SnapshotEntry]> {}
+  async * snapshot (): AsyncGenerator<[string, SnapshotEntry]> {}
 
   /** Create a file or write the contents of a file to persistent storage. */
   async write (path: string, contents?: Buffer): Promise<void> {}
