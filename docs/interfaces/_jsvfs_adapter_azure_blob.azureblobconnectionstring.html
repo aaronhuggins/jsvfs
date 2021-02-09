@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>SnapshotFileEntry | @jsvfs</title>
+	<title>AzureBlobConnectionString | @jsvfs</title>
 	<meta name="description" content="Documentation for @jsvfs">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -55,29 +55,31 @@
 					<a href="../modules.html">@jsvfs</a>
 				</li>
 				<li>
-					<a href="../modules/_jsvfs_types.html">@jsvfs/types</a>
+					<a href="../modules/_jsvfs_adapter_azure_blob.html">@jsvfs/adapter-azure-blob</a>
 				</li>
 				<li>
-					<a href="_jsvfs_types.snapshotfileentry.html">SnapshotFileEntry</a>
+					<a href="_jsvfs_adapter_azure_blob.azureblobconnectionstring.html">AzureBlobConnectionString</a>
 				</li>
 			</ul>
-			<h1>Interface SnapshotFileEntry</h1>
+			<h1>Interface AzureBlobConnectionString</h1>
 		</div>
 	</div>
 </header>
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>Options to connect to an Azure Storage account by connection string.</p>
+					</div>
+				</div>
+			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="tsd-signature-type">SnapshotEntryBase</span>
-						<ul class="tsd-hierarchy">
-							<li>
-								<span class="target">SnapshotFileEntry</span>
-							</li>
-						</ul>
+						<span class="target">AzureBlobConnectionString</span>
 					</li>
 				</ul>
 			</section>
@@ -88,8 +90,7 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_jsvfs_types.snapshotfileentry.html#contents" class="tsd-kind-icon">contents</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_jsvfs_types.snapshotfileentry.html#type" class="tsd-kind-icon">type</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_jsvfs_adapter_azure_blob.azureblobconnectionstring.html#connectionstring" class="tsd-kind-icon">connection<wbr>String</a></li>
 							</ul>
 						</section>
 					</div>
@@ -98,29 +99,19 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="contents" class="tsd-anchor"></a>
-					<h3>contents</h3>
-					<div class="tsd-signature tsd-kind-icon">contents<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Buffer</span></div>
+					<a name="connectionstring" class="tsd-anchor"></a>
+					<h3>connection<wbr>String</h3>
+					<div class="tsd-signature tsd-kind-icon">connection<wbr>String<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/ahuggins-nhs/jsvfs/blob/96a6ca3/packages/types/index.ts#L66">types/index.ts:66</a></li>
+							<li>Defined in <a href="https://github.com/ahuggins-nhs/jsvfs/blob/96a6ca3/packages/adapter-azure-blob/src/types.ts#L4">adapter-azure-blob/src/types.ts:4</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>The contents of the file as a buffer.</p>
+							<p>If provided, the connection string is the only piece needed to access a storage account.</p>
 						</div>
 					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="type" class="tsd-anchor"></a>
-					<h3>type</h3>
-					<div class="tsd-signature tsd-kind-icon">type<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;file&quot;</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/ahuggins-nhs/jsvfs/blob/96a6ca3/packages/types/index.ts#L64">types/index.ts:64</a></li>
-						</ul>
-					</aside>
 				</section>
 			</section>
 		</div>
@@ -130,7 +121,7 @@
 					<li class=" ">
 						<a href="../modules.html">Modules</a>
 					</li>
-					<li class=" tsd-kind-module">
+					<li class="current tsd-kind-module">
 						<a href="../modules/_jsvfs_adapter_azure_blob.html">@jsvfs/adapter-<wbr>azure-<wbr>blob</a>
 					</li>
 					<li class=" tsd-kind-module">
@@ -142,52 +133,34 @@
 					<li class=" tsd-kind-module">
 						<a href="../modules/_jsvfs_core.html">@jsvfs/core</a>
 					</li>
-					<li class="current tsd-kind-module">
+					<li class=" tsd-kind-module">
 						<a href="../modules/_jsvfs_types.html">@jsvfs/types</a>
 					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-					<li class=" tsd-kind-interface tsd-parent-kind-module">
-						<a href="_jsvfs_types.adapter.html" class="tsd-kind-icon">Adapter</a>
+					<li class=" tsd-kind-class tsd-parent-kind-module">
+						<a href="../classes/_jsvfs_adapter_azure_blob.azureblobadapter.html" class="tsd-kind-icon">Azure<wbr>Blob<wbr>Adapter</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-module">
-						<a href="_jsvfs_types.journalentry.html" class="tsd-kind-icon">Journal<wbr>Entry</a>
+						<a href="_jsvfs_adapter_azure_blob.azureblobaccountandkey.html" class="tsd-kind-icon">Azure<wbr>Blob<wbr>Account<wbr>And<wbr>Key</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="_jsvfs_adapter_azure_blob.azureblobadapteropts.html" class="tsd-kind-icon">Azure<wbr>Blob<wbr>Adapter<wbr>Opts</a>
 					</li>
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface tsd-parent-kind-module">
-						<a href="_jsvfs_types.snapshotfileentry.html" class="tsd-kind-icon">Snapshot<wbr>File<wbr>Entry</a>
+						<a href="_jsvfs_adapter_azure_blob.azureblobconnectionstring.html" class="tsd-kind-icon">Azure<wbr>Blob<wbr>Connection<wbr>String</a>
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_jsvfs_types.snapshotfileentry.html#contents" class="tsd-kind-icon">contents</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_jsvfs_types.snapshotfileentry.html#type" class="tsd-kind-icon">type</a>
+								<a href="_jsvfs_adapter_azure_blob.azureblobconnectionstring.html#connectionstring" class="tsd-kind-icon">connection<wbr>String</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
-					<li class=" tsd-kind-interface tsd-parent-kind-module">
-						<a href="_jsvfs_types.snapshotfolderentry.html" class="tsd-kind-icon">Snapshot<wbr>Folder<wbr>Entry</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-module">
-						<a href="_jsvfs_types.snapshotlinkentry.html" class="tsd-kind-icon">Snapshot<wbr>Link<wbr>Entry</a>
-					</li>
-					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
-						<a href="../modules/_jsvfs_types.html#foldertype" class="tsd-kind-icon">Folder<wbr>Type</a>
-					</li>
-					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
-						<a href="../modules/_jsvfs_types.html#itemtype" class="tsd-kind-icon">Item<wbr>Type</a>
-					</li>
-					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
-						<a href="../modules/_jsvfs_types.html#linktype" class="tsd-kind-icon">Link<wbr>Type</a>
-					</li>
-					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
-						<a href="../modules/_jsvfs_types.html#snapshotentry" class="tsd-kind-icon">Snapshot<wbr>Entry</a>
-					</li>
 				</ul>
 			</nav>
 		</div>

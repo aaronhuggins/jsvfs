@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>@jsvfs/adapter-noop | @jsvfs</title>
+	<title>@jsvfs/adapter-azure-blob | @jsvfs</title>
 	<meta name="description" content="Documentation for @jsvfs">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -55,10 +55,10 @@
 					<a href="../modules.html">@jsvfs</a>
 				</li>
 				<li>
-					<a href="_jsvfs_adapter_noop.html">@jsvfs/adapter-noop</a>
+					<a href="_jsvfs_adapter_azure_blob.html">@jsvfs/adapter-azure-blob</a>
 				</li>
 			</ul>
-			<h1>Module @jsvfs/adapter-noop</h1>
+			<h1>Module @jsvfs/adapter-azure-blob</h1>
 		</div>
 	</div>
 </header>
@@ -68,9 +68,14 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>If you&#39;re looking to use <code>jsvfs</code>, you&#39;re best to start with <code>@jsvfs/core</code>.</p>
+						<p>A back-end for <code>@jsvfs/core</code> using Microsoft&#39;s <code>@azure/storage-blob</code> module with block blobs.</p>
 					</div>
-					<p>This module is the default noop backend for <code>jsvfs</code> and probably already imported if you have installed <code>@jsvfs/core</code>.</p>
+					<p>Allows a developer to set either a storage account or a blob container as the root of the adapter. When the root is a
+						storage account, the first name in a path will be parsed as the container name, with the remaining part of the path
+					considered the blob name. When a container is the root, all file paths are considered a blob name.</p>
+					<p>Additionally, snapshots and flushes can be limited by setting one or more globs in the <code>include</code> option. This limits
+						any potentially destructive behavior to just those blob names which match the given patterns. Flushes are disabled by
+					default and must be enabled by intentionally setting <code>flushEnabled</code> to true.</p>
 					<p>If you&#39;re looking to create new adapters, please use <code>@jsvfs/types</code> and look to <code>@jsvfs/adapter-node-fs</code> as an example.</p>
 				</div>
 			</section>
@@ -81,7 +86,15 @@
 						<section class="tsd-index-section ">
 							<h3>Classes</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-class tsd-parent-kind-module"><a href="../classes/_jsvfs_adapter_noop.noopadapter.html" class="tsd-kind-icon">Noop<wbr>Adapter</a></li>
+								<li class="tsd-kind-class tsd-parent-kind-module"><a href="../classes/_jsvfs_adapter_azure_blob.azureblobadapter.html" class="tsd-kind-icon">Azure<wbr>Blob<wbr>Adapter</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Interfaces</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-interface tsd-parent-kind-module"><a href="../interfaces/_jsvfs_adapter_azure_blob.azureblobaccountandkey.html" class="tsd-kind-icon">Azure<wbr>Blob<wbr>Account<wbr>And<wbr>Key</a></li>
+								<li class="tsd-kind-interface tsd-parent-kind-module"><a href="../interfaces/_jsvfs_adapter_azure_blob.azureblobadapteropts.html" class="tsd-kind-icon">Azure<wbr>Blob<wbr>Adapter<wbr>Opts</a></li>
+								<li class="tsd-kind-interface tsd-parent-kind-module"><a href="../interfaces/_jsvfs_adapter_azure_blob.azureblobconnectionstring.html" class="tsd-kind-icon">Azure<wbr>Blob<wbr>Connection<wbr>String</a></li>
 							</ul>
 						</section>
 					</div>
@@ -94,13 +107,13 @@
 					<li class=" ">
 						<a href="../modules.html">Modules</a>
 					</li>
-					<li class=" tsd-kind-module">
+					<li class="current tsd-kind-module">
 						<a href="_jsvfs_adapter_azure_blob.html">@jsvfs/adapter-<wbr>azure-<wbr>blob</a>
 					</li>
 					<li class=" tsd-kind-module">
 						<a href="_jsvfs_adapter_node_fs.html">@jsvfs/adapter-<wbr>node-<wbr>fs</a>
 					</li>
-					<li class="current tsd-kind-module">
+					<li class=" tsd-kind-module">
 						<a href="_jsvfs_adapter_noop.html">@jsvfs/adapter-<wbr>noop</a>
 					</li>
 					<li class=" tsd-kind-module">
@@ -114,7 +127,16 @@
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
 					<li class=" tsd-kind-class tsd-parent-kind-module">
-						<a href="../classes/_jsvfs_adapter_noop.noopadapter.html" class="tsd-kind-icon">Noop<wbr>Adapter</a>
+						<a href="../classes/_jsvfs_adapter_azure_blob.azureblobadapter.html" class="tsd-kind-icon">Azure<wbr>Blob<wbr>Adapter</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="../interfaces/_jsvfs_adapter_azure_blob.azureblobaccountandkey.html" class="tsd-kind-icon">Azure<wbr>Blob<wbr>Account<wbr>And<wbr>Key</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="../interfaces/_jsvfs_adapter_azure_blob.azureblobadapteropts.html" class="tsd-kind-icon">Azure<wbr>Blob<wbr>Adapter<wbr>Opts</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="../interfaces/_jsvfs_adapter_azure_blob.azureblobconnectionstring.html" class="tsd-kind-icon">Azure<wbr>Blob<wbr>Connection<wbr>String</a>
 					</li>
 				</ul>
 			</nav>
