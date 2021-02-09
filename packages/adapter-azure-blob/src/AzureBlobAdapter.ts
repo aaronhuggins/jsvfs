@@ -3,6 +3,11 @@ import { isContainerName } from './helpers'
 import type { Adapter, ItemType, JournalEntry, LinkType, SnapshotEntry } from '@jsvfs/types'
 import type { AzureBlobAdapterOpts } from './types'
 
+interface ParseResult {
+  container: string
+  blobName: string
+}
+
 /** An adapter for Azure Storage Blobs. */
 export class AzureBlobAdapter implements Adapter {
   /** Creates an instance of Azure blob adapter. */
@@ -78,23 +83,101 @@ export class AzureBlobAdapter implements Adapter {
   }
 
   /** Create a file or write the contents of a file to persistent storage. */
-  async write (path: string, contents?: Buffer): Promise<void> {}
+  async write (path: string, contents: Buffer = Buffer.alloc(0)): Promise<void> {
+    const parsed = this.parse(path)
+    const container = await this.getContainer(parsed.container)
+    const blobClient = container.getBlockBlobClient(parsed.blobName)
 
-  /** Make a directory or directory tree in persistent storage. */
+    try {
+      blobClient.uploadData(contents)
+    } catch (error) {
+      // Log error to journal.
+    }
+  }
+
+  /** Make a directory or directory tree in persistent storage. Technically unsupported by Microsoft, as 'directories' are virtual. */
   async mkdir (path: string): Promise<void> {}
 
-  /** Create a link in persistent storage. */
-  async link (from: string, to: string, type: LinkType): Promise<void> {}
+  /** Create a link in persistent storage. Definitely unsupported by Microsoft, so we copy the file contents from an existing blob. */
+  async link (linkPath: string, linkTarget: string, type: LinkType): Promise<void> {
+    const parsedPath = this.parse(linkPath)
+    const parsedTarget = this.parse(linkTarget)
+    const containerFrom = await this.getContainer(parsedTarget.container)
+    const containerTo = await this.getContainer(parsedPath.container)
+    const blobFrom = containerFrom.getBlockBlobClient(parsedTarget.blobName)
+    const blobTo = containerTo.getBlockBlobClient(parsedPath.blobName)
+
+    try {
+      await blobTo.syncCopyFromURL(blobFrom.url)
+    } catch (error) {
+      // Log error to journal.
+    }
+  }
 
   /** Remove items from persistent storage. */
-  async remove (path: string, type: ItemType): Promise<void> {}
+  async remove (path: string, type: ItemType): Promise<void> {
+    const parsed = this.parse(path)
+    const container = await this.getContainer(parsed.container)
+    const blobClient = container.getBlockBlobClient(parsed.blobName)
+
+    switch (type) {
+      case 'file':
+      case 'hardlink':
+      case 'softlink':
+        try {
+          await blobClient.deleteIfExists()
+        } catch (error) {
+          // Log error to journal.
+        }
+    }
+  }
 
   /** Flush the underlying file system to prepare for a commit. */
-  async flush (): Promise<void> {}
+  async flush (): Promise<void> {
+    if (this.flushEnabled) {
+      for await (const [name, client] of this.listContainers()) {
+        for await (const blobItem of client.listBlobsFlat()) {
+          const blobClient = client.getBlockBlobClient(blobItem.name)
 
+          // Need to add glob behavior to include files from the options.
+          try {
+            await blobClient.deleteIfExists()
+          } catch (error) {
+            // Log error to journal.
+          }
+        }
+      }
+    }
+  }
+
+  /** Gets the container name for a given path. */
+  private parse (path: string): ParseResult {
+    if (this.isGlobal) {
+      const parts = path.split('/')
+
+      if (parts[0] === '') {
+        return {
+          container: parts[1],
+          blobName: parts.slice(2).join('/')
+        }
+      }
+
+      return {
+        container: parts[0],
+        blobName: parts.slice(1).join('/')
+      }
+    }
+
+    return {
+      container: this.root,
+      blobName: path[0] === '/' ? path.substring(1) : path
+    }
+  }
+
+  /** Reads a blob from blob storage. */
   private async readBlob (container: string | ContainerClient, blobName: string): Promise<Buffer> {
     const containerClient = typeof container === 'string' ? await this.getContainer(container) : container
-    const blobClient = containerClient.getBlobClient(blobName)
+    const blobClient = containerClient.getBlockBlobClient(blobName)
 
     try {
       return await blobClient.downloadToBuffer()
@@ -135,6 +218,10 @@ export class AzureBlobAdapter implements Adapter {
         }
       } else {
         yield [this.root, await this.getContainer(this.root)]
+      }
+    } else {
+      for (const item of this.containerCache.entries()) {
+        yield item
       }
     }
   }
