@@ -5,7 +5,7 @@ import type { AzureBlobAdapterOpts } from './types'
 
 /** An adapter for Azure Storage Blobs. */
 export class AzureBlobAdapter implements Adapter {
-  /** Creates an instance of noop adapter. */
+  /** Creates an instance of Azure blob adapter. */
   constructor (opts: AzureBlobAdapterOpts) {
     const { access } = opts
 
