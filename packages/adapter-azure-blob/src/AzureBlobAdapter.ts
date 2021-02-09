@@ -89,7 +89,7 @@ export class AzureBlobAdapter implements Adapter {
     const blobClient = container.getBlockBlobClient(parsed.blobName)
 
     try {
-      blobClient.uploadData(contents)
+      await blobClient.uploadData(contents)
     } catch (error) {
       // Log error to journal.
     }
@@ -135,7 +135,9 @@ export class AzureBlobAdapter implements Adapter {
   /** Flush the underlying file system to prepare for a commit. */
   async flush (): Promise<void> {
     if (this.flushEnabled) {
-      for await (const [name, client] of this.listContainers()) {
+      for await (const item of this.listContainers()) {
+        const client = item[1]
+
         for await (const blobItem of client.listBlobsFlat()) {
           const blobClient = client.getBlockBlobClient(blobItem.name)
 
@@ -212,7 +214,7 @@ export class AzureBlobAdapter implements Adapter {
     if (this.containerCache.size === 0) {
       if (this.isGlobal) {
         for await (const containerItem of this.blobService.listContainers()) {
-          if (!containerItem.deleted) {
+          if (typeof containerItem.deleted === 'undefined' || !containerItem.deleted) {
             yield [containerItem.name, await this.getContainer(containerItem.name, true)]
           }
         }
