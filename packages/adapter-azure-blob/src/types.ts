@@ -29,3 +29,9 @@ export interface AzureBlobAdapterOpts {
   /** Enable creating containers if they do not exist; defaults to false. */
   createIfNotExist?: boolean
 }
+
+/** The result of parsing a path. */
+export interface PathParseResult {
+  container: string
+  blobName: string
+}
