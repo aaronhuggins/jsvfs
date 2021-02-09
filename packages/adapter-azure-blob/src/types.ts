@@ -26,4 +26,6 @@ export interface AzureBlobAdapterOpts {
   container?: string
   /** Enable flushing the file system before commiting; defaults to false, since flush is a destructive operation. */
   flushEnabled?: boolean
+  /** Enable creating containers if they do not exist; defaults to false. */
+  createIfNotExist?: boolean
 }
