@@ -39,7 +39,7 @@ describe('Module @jsvfs/core/index.ts', () => {
     strictEqual(result2.toString('utf8'), testMsg)
 
     doesNotThrow(() => {
-      vfs.write(testFilePath, new String(testMsg))
+      vfs.write(testFilePath, String(testMsg))
     })
 
     const result3 = vfs.read(testFilePath)

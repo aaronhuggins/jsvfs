@@ -4,13 +4,13 @@ import { NoopAdapter } from '../../packages/adapter-noop/index'
 describe('Module @jsvfs/adapter-noop', () => {
   it('should return void on all operations', async () => {
     const noop = new NoopAdapter()
-    let counter = 0
+    const accumulator = []
 
     for await (const a of noop.snapshot()) {
-      counter += 1
+      accumulator.push(a)
     }
 
-    strictEqual(counter, 0)
+    strictEqual(accumulator.length, 0)
 
     const result1 = await noop.flush()
 
