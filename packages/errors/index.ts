@@ -6,6 +6,8 @@
 import { JournalEntry, JSON_SCHEMA } from '@jsvfs/types'
 import Ajv, { ValidateFunction } from 'ajv'
 
+type JournalOp = JournalEntry['op']
+
 /** Journal class for error handling, extending built-in Array class. */
 export class Journal<T extends JournalEntry> extends Array<T> {
   /** Constructs an instance of Journal with the given length. */
@@ -28,10 +30,10 @@ export class Journal<T extends JournalEntry> extends Array<T> {
   }
 
   /** Journal entry validator function. */
-  private validate: ValidateFunction<T>
+  private readonly validate: ValidateFunction<T>
 
   /** Get all journal entries matching an operation and optionally a certain level. */
-  getEntries (op: JournalEntry['op'] | 'all', ...level: Array<JournalEntry['level']>): T[] {
+  getEntries (op: JournalOp | 'all', ...level: Array<JournalEntry['level']>): T[] {
     return this.filter(entry => {
       if (Array.isArray(level) && level.length > 0) {
         return (op === 'all' || entry.op === op) && level.includes(entry.level)
@@ -81,22 +83,22 @@ export class Journal<T extends JournalEntry> extends Array<T> {
   }
 
   /** Get critical errors by operation name. */
-  getCritical (op: JournalEntry['op']): T[] {
+  getCritical (op: JournalOp): T[] {
     return this.getEntries(op, 'crit')
   }
 
   /** Get errors, including critical, by operation name. */
-  getErrors (op: JournalEntry['op']): T[] {
+  getErrors (op: JournalOp): T[] {
     return this.getEntries(op, 'error', 'crit')
   }
 
   /** Get information by operation name. */
-  getInfo (op: JournalEntry['op']): T[] {
+  getInfo (op: JournalOp): T[] {
     return this.getEntries(op, 'info')
   }
 
   /** Get warnings by operation name. */
-  getWarnings (op: JournalEntry['op']): T[] {
+  getWarnings (op: JournalOp): T[] {
     return this.getEntries(op, 'warn')
   }
 

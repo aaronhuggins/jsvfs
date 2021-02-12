@@ -185,7 +185,7 @@ export class AzureBlobAdapter implements Adapter {
     } catch (error) {
       this.journal.push({
         level: 'error',
-        message: `Could not read blob '${blobName}' from container '${container}'.`,
+        message: `Could not read blob '${blobName}' from container '${containerClient.containerName}'.`,
         op,
         error
       })
