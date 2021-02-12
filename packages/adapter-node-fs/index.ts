@@ -3,12 +3,16 @@
  * @packageDocumentation
  * @module @jsvfs/adapter-node-fs
  */
-
+import { Journal } from '@jsvfs/errors'
 import { Dirent, promises } from 'fs'
 import { dirname, join, posix, resolve, relative } from 'path'
 import type { Adapter, ItemType, JournalEntry, SnapshotEntry } from '@jsvfs/types'
 
 const { link, mkdir, readFile, readlink, rmdir, symlink, unlink, writeFile } = promises
+
+export interface NodeFSJournalEntry extends JournalEntry {
+  error: Error
+}
 
 export interface NodeFSAdapterOpts {
   /** The desired working directory for this adater; defaults to process current working directory. */
@@ -26,7 +30,7 @@ export class NodeFSAdapter implements Adapter {
     this.root = typeof opts.cwd === 'string' ? resolve(opts.cwd) : process.cwd()
     this.flushEnabled = typeof opts.flushEnabled === 'boolean' ? opts.flushEnabled : false
     this.handle = 'node-fs'
-    this.journal = []
+    this.journal = new Journal()
   }
 
   /** The real root of this file system which will be committed to. */
@@ -34,7 +38,7 @@ export class NodeFSAdapter implements Adapter {
   /** Enable or disable flushing the file system. */
   flushEnabled: boolean
   /** Log useful messages to the journal about file operations. */
-  journal: JournalEntry[]
+  journal: Journal<NodeFSJournalEntry>
   /** The handle for this adapter, basically an id. Should be something simple but descriptive, like 'node-fs' or 'blob'. */
   handle: 'node-fs'
 
@@ -50,7 +54,6 @@ export class NodeFSAdapter implements Adapter {
       result = await promises.readdir(path === '/' ? this.root : join(this.root, path), { withFileTypes: true })
     } catch (error) {
       this.journal.push({
-        id: this.journal.length,
         level: 'error',
         message: `Could not read directory '${join(this.root, path)}'.`,
         op: 'snapshot',
@@ -89,7 +92,6 @@ export class NodeFSAdapter implements Adapter {
         }
       } catch (error) {
         this.journal.push({
-          id: this.journal.length,
           level: 'error',
           message: `Could not get contents of '${join(this.root, newPath)}'.`,
           op: 'snapshot',
@@ -112,7 +114,6 @@ export class NodeFSAdapter implements Adapter {
         await mkdir(parent, { recursive: true })
       } catch (error) {
         this.journal.push({
-          id: this.journal.length,
           level: 'warn',
           message: `Could not create directory '${parent}'.`,
           op: 'write',
@@ -123,7 +124,6 @@ export class NodeFSAdapter implements Adapter {
       await writeFile(newPath, contents)
     } catch (error) {
       this.journal.push({
-        id: this.journal.length,
         level: 'error',
         message: `Could not get contents of '${newPath}'.`,
         op: 'write',
@@ -140,7 +140,6 @@ export class NodeFSAdapter implements Adapter {
       await mkdir(newPath, { recursive: true })
     } catch (error) {
       this.journal.push({
-        id: this.journal.length,
         level: 'warn',
         message: `Could not create directory '${newPath}'.`,
         op: 'mkdir',
@@ -165,7 +164,6 @@ export class NodeFSAdapter implements Adapter {
       }
     } catch (error) {
       this.journal.push({
-        id: this.journal.length,
         level: 'error',
         message: `Could not create link from '${newFrom}' to '${newTo}'.`,
         op: 'link',
@@ -192,7 +190,6 @@ export class NodeFSAdapter implements Adapter {
       }
     } catch (error) {
       this.journal.push({
-        id: this.journal.length,
         level: 'error',
         message: `Could not remove ${type} at path '${newPath}'.`,
         op: 'remove',
@@ -210,7 +207,6 @@ export class NodeFSAdapter implements Adapter {
         result = await promises.readdir(this.root, { withFileTypes: true })
       } catch (error) {
         this.journal.push({
-          id: this.journal.length,
           level: 'error',
           message: `Could not read directory '${this.root}'.`,
           op: 'flush',
@@ -233,7 +229,6 @@ export class NodeFSAdapter implements Adapter {
           }
         } catch (error) {
           this.journal.push({
-            id: this.journal.length,
             level: 'error',
             message: `Could not remove item at path '${path}'.`,
             op: 'remove',
