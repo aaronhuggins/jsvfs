@@ -1,5 +1,5 @@
 {
-  "name": "@jsvfs",
+  "name": "JSVFS",
   "entryPoints": [
     "packages/core/index.ts",
     "packages/types/index.ts",

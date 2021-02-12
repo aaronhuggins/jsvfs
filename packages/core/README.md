@@ -1,4 +1,4 @@
-# @jsvfs/core - The JavaScript Virtual File System
+# JSVFS Core: JavaScript Virtual File System
 
 The core module for JS Virtual File System. Provides the main `VirtualFileSystem` class with just enough back-end to get started with in-memory file hierarchy.
 
