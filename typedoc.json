@@ -7,6 +7,9 @@
     "packages/adapter-node-fs/index.ts",
     "packages/adapter-azure-blob/index.ts"
   ],
+  "includes": [
+    "./"
+  ],
   "exclude": [
     "**/node_modules/**"
   ]
