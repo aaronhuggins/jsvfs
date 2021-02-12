@@ -7,12 +7,12 @@ import { JournalEntry, JSON_SCHEMA } from '@jsvfs/types'
 import Ajv, { ValidateFunction } from 'ajv'
 
 /** Journal class for error handling, extending built-in Array class. */
-export class Journal extends Array<JournalEntry> {
+export class Journal<T extends JournalEntry> extends Array<T> {
   /** Constructs an instance of Journal with the given length. */
   constructor (length: number)
   /** Constructs an instance of Journal; typical usage will not pass options, and if options are passed they will be validated. */
-  constructor (...items: JournalEntry[])
-  constructor (...inputs: [number] | JournalEntry[]) {
+  constructor (...items: T[])
+  constructor (...inputs: [number] | T[]) {
     if (inputs.length === 1 && typeof inputs[0] === 'number') {
       super(inputs[0])
     } else {
@@ -23,15 +23,15 @@ export class Journal extends Array<JournalEntry> {
     this.validate = ajv.compile(JSON_SCHEMA.JournalEntry)
 
     if (inputs.length > 0 && typeof inputs[0] === 'object') {
-      this.push(...inputs as JournalEntry[])
+      this.push(...inputs as T[])
     }
   }
 
   /** Journal entry validator function. */
-  private validate: ValidateFunction<JournalEntry>
+  private validate: ValidateFunction<T>
 
   /** Get all journal entries matching an operation and optionally a certain level. */
-  getEntries (op: JournalEntry['op'] | 'all', ...level: Array<JournalEntry['level']>): JournalEntry[] {
+  getEntries (op: JournalEntry['op'] | 'all', ...level: Array<JournalEntry['level']>): T[] {
     return this.filter(entry => {
       if (Array.isArray(level) && level.length > 0) {
         return (op === 'all' || entry.op === op) && level.includes(entry.level)
@@ -61,47 +61,47 @@ export class Journal extends Array<JournalEntry> {
   }
 
   /** List all critical errors. */
-  get critical (): JournalEntry[] {
+  get critical (): T[] {
     return this.getEntries('all', 'crit')
   }
 
   /** List all errors including critical. */
-  get errors (): JournalEntry[] {
+  get errors (): T[] {
     return this.getEntries('all', 'error', 'crit')
   }
 
   /** List all information entries. */
-  get info (): JournalEntry[] {
+  get info (): T[] {
     return this.getEntries('all', 'info')
   }
 
   /** List all warning entries. */
-  get warnings (): JournalEntry[] {
+  get warnings (): T[] {
     return this.getEntries('all', 'crit')
   }
 
   /** Get critical errors by operation name. */
-  getCritical (op: JournalEntry['op']): JournalEntry[] {
+  getCritical (op: JournalEntry['op']): T[] {
     return this.getEntries(op, 'crit')
   }
 
   /** Get errors, including critical, by operation name. */
-  getErrors (op: JournalEntry['op']): JournalEntry[] {
+  getErrors (op: JournalEntry['op']): T[] {
     return this.getEntries(op, 'error', 'crit')
   }
 
   /** Get information by operation name. */
-  getInfo (op: JournalEntry['op']): JournalEntry[] {
+  getInfo (op: JournalEntry['op']): T[] {
     return this.getEntries(op, 'info')
   }
 
   /** Get warnings by operation name. */
-  getWarnings (op: JournalEntry['op']): JournalEntry[] {
+  getWarnings (op: JournalEntry['op']): T[] {
     return this.getEntries(op, 'warn')
   }
 
   /** Only valid journal entries will be added to the array; invalid entries will be dropped. If no entry `id` is provided, it will be added. */
-  push (...entries: JournalEntry[]): number {
+  push (...entries: T[]): number {
     for (const entry of entries) {
       const result = this.validate(entry)
 
