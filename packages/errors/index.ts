@@ -8,8 +8,9 @@ import Ajv, { ValidateFunction } from 'ajv'
 
 /** Journal class for error handling, extending built-in Array class. */
 export class Journal extends Array<JournalEntry> {
-  /** Constructs an instance of Journal; typical usage will not pass options, and if options are passed they will be validated. */
+  /** Constructs an instance of Journal with the given length. */
   constructor (length: number)
+  /** Constructs an instance of Journal; typical usage will not pass options, and if options are passed they will be validated. */
   constructor (...items: JournalEntry[])
   constructor (...inputs: [number] | JournalEntry[]) {
     if (inputs.length === 1 && typeof inputs[0] === 'number') {
