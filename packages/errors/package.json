@@ -1,14 +1,14 @@
 {
-  "name": "@jsvfs/types",
+  "name": "@jsvfs/errors",
   "version": "0.1.0",
-  "description": "Types for the JavaScript Virtual File System and adapters.",
+  "description": "Shared error-handling for JSVFS adapters.",
   "main": "index.js",
   "types": "index.d.ts",
   "scripts": {
     "prepack": "tsc",
     "test": "tsc --noEmit"
   },
-  "homepage": "https://github.com/ahuggins-nhs/jsvfs/tree/main/packages/types",
+  "homepage": "https://github.com/ahuggins-nhs/jsvfs/tree/main/packages/errors",
   "repository": {
     "type": "git",
     "url": "git@github.com:ahuggins-nhs/jsvfs.git"
@@ -23,7 +23,11 @@
     "virtual file system",
     "file system",
     "typescript",
-    "types"
+    "errors"
   ],
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "@jsvfs/types": "^0.1.0",
+    "ajv": "^7.1.0"
+  }
 }
