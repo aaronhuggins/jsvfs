@@ -1,8 +1,8 @@
 /**
  * If you're looking to use `jsvfs`, you're best to start with `@jsvfs/core`.
- * 
+ *
  * This module is the default noop backend for `jsvfs` and probably already imported if you have installed `@jsvfs/core`.
- * 
+ *
  * If you're looking to create new adapters, please use `@jsvfs/types` and look to `@jsvfs/adapter-node-fs` as an example.
  * @packageDocumentation
  * @module @jsvfs/adapter-noop
@@ -27,11 +27,9 @@ export class NoopAdapter implements Adapter {
   handle: 'noop'
 
   /** Snapshot of the underlying file system; an asynchronous iterable which returns an entry of path and data.
-   * @param {string} [path='/'] - The current path as the tree is descended.
-   * @param {boolean} [read=true] - Whether to retrieve the underlying data.
    * @returns {AsyncGenerator<[string, SnapshotEntry]>} The asynchronous iterable to get the snapshot.
    */
-  async *snapshot (): AsyncGenerator<[string, SnapshotEntry]> {}
+  async * snapshot (): AsyncGenerator<[string, SnapshotEntry]> {}
 
   /** Create a file or write the contents of a file to persistent storage. */
   async write (path: string, contents?: Buffer): Promise<void> {}
