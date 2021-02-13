@@ -1,0 +1,33 @@
+{
+  "name": "@jsvfs/errors",
+  "version": "0.1.0",
+  "description": "Shared error-handling for JSVFS adapters.",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "scripts": {
+    "prepack": "tsc",
+    "test": "tsc --noEmit"
+  },
+  "homepage": "https://github.com/ahuggins-nhs/jsvfs/tree/main/packages/errors",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:ahuggins-nhs/jsvfs.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "author": "Aaron Huggins <aaron.huggins@gmail.com>",
+  "keywords": [
+    "jsvfs",
+    "vfs",
+    "virtual file system",
+    "file system",
+    "typescript",
+    "errors"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "@jsvfs/types": "^0.1.0",
+    "ajv": "^7.1.0"
+  }
+}

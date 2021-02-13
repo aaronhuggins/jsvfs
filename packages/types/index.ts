@@ -1,13 +1,51 @@
 /**
- * If you're looking to use `jsvfs`, you're best to start with `@jsvfs/core`.
- * 
- * This module implements types and interfaces that can be used for developing `jsvfs` itself and adapters for it.
+ * [[include:packages/types/README.md]]
  * @packageDocumentation
  * @module @jsvfs/types
  */
 
+export const JSON_SCHEMA = {
+  JournalEntry: {
+    type: 'object',
+    required: [
+      'op',
+      'level',
+      'message'
+    ],
+    properties: {
+      id: {
+        type: ['string', 'number']
+      },
+      op: {
+        type: 'string',
+        enum: [
+          'snapshot',
+          'write',
+          'mkdir',
+          'link',
+          'remove',
+          'flush'
+        ]
+      },
+      level: {
+        type: 'string',
+        enum: [
+          'info',
+          'warn',
+          'error',
+          'crit'
+        ]
+      },
+      message: {
+        type: 'string'
+      }
+    },
+    additionalProperties: true
+  }
+}
+
 /** An adapter for the underlying persistent file storage.
- * 
+ *
  * Rules for implementing an adapter:
  * 1. Throwing errors is unacceptable; log errors to the journal.
  * 2. Adapters must create paths recursively.
@@ -16,17 +54,17 @@
  */
 export interface Adapter {
   /** Snapshot of the underlying file system; an asynchronous iterable which returns an entry of path and data. */
-  snapshot (): AsyncGenerator<[string, SnapshotEntry]>
+  snapshot: () => AsyncGenerator<[string, SnapshotEntry]>
   /** Create a file or write the contents of a file to persistent storage. */
-  write (path: string, contents?: Buffer): Promise<void>
+  write: (path: string, contents?: Buffer) => Promise<void>
   /** Make a directory or directory tree in persistent storage. */
-  mkdir (path: string): Promise<void>
+  mkdir: (path: string) => Promise<void>
   /** Create a link in persistent storage. */
-  link (from: string, to: string, type: LinkType): Promise<void>
+  link: (from: string, to: string, type: LinkType) => Promise<void>
   /** Remove items from persistent storage. */
-  remove (path: string, type: ItemType): Promise<void>
+  remove: (path: string, type: ItemType) => Promise<void>
   /** Flush the underlying file system to prepare for a commit. */
-  flush (): Promise<void>
+  flush: () => Promise<void>
   /** The real root of this file system which will be committed to. */
   readonly root: string
   /** Log useful messages to the journal about file operations. */
@@ -46,7 +84,7 @@ export type SnapshotEntry = SnapshotFileEntry | SnapshotFolderEntry | SnapshotLi
 
 /** Metadata about an event for the adapter journal. */
 export interface JournalEntry {
-  id: string | number
+  id?: string | number
   op: 'snapshot' | 'write' | 'mkdir' | 'link' | 'remove' | 'flush'
   level: 'info' | 'warn' | 'error' | 'crit'
   message: string

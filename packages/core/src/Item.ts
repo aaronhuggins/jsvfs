@@ -161,7 +161,7 @@ export class Link extends ItemBase {
   constructor (item: Partial<Link>) {
     super({
       ...item,
-      type: item.type || 'softlink'
+      type: item.type ?? 'softlink'
     })
   }
 

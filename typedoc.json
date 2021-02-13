@@ -1,9 +1,16 @@
 {
+  "name": "JSVFS",
   "entryPoints": [
     "packages/core/index.ts",
     "packages/types/index.ts",
     "packages/adapter-noop/index.ts",
-    "packages/adapter-node-fs/index.ts"
+    "packages/adapter-node-fs/index.ts",
+    "packages/adapter-azure-blob/index.ts"
   ],
-  "name": "@jsvfs"
+  "includes": [
+    "./"
+  ],
+  "exclude": [
+    "**/node_modules/**"
+  ]
 }
