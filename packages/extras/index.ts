@@ -1,7 +1,7 @@
 /**
- * [[include:packages/errors/README.md]]
+ * [[include:packages/extras/README.md]]
  * @packageDocumentation
- * @module @jsvfs/errors
+ * @module @jsvfs/extras
  */
 import { JournalEntry, JSON_SCHEMA } from '@jsvfs/types'
 import Ajv from 'ajv'

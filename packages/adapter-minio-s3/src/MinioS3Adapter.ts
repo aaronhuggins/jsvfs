@@ -1,6 +1,6 @@
 import { BucketItem, Client, ClientOptions, CopyConditions } from 'minio'
 import { isValidBucketName } from 'minio/dist/main/helpers'
-import { Journal } from '@jsvfs/errors'
+import { Journal } from '@jsvfs/extras'
 import { parse, streamToAsyncGenerator } from './helpers'
 import type { Adapter, ItemType, LinkType, SnapshotEntry } from '@jsvfs/types'
 import type { JournalOp, MinioS3AdapterOpts, MinioS3JournalEntry } from './types'

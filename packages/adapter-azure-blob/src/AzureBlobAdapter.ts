@@ -1,4 +1,4 @@
-import { Journal } from '@jsvfs/errors'
+import { Journal } from '@jsvfs/extras'
 import { BlobServiceClient, ContainerClient, StorageSharedKeyCredential as BlobCredential } from '@azure/storage-blob'
 import { isContainerName, parse } from './helpers'
 import type { Adapter, ItemType, LinkType, SnapshotEntry } from '@jsvfs/types'

@@ -1,7 +1,7 @@
 import { doesNotThrow, strictEqual } from 'assert'
-import { Journal } from '../../packages/errors/index'
+import { Journal } from '../../packages/extras/index'
 
-describe('Module @jsvfs/errors', () => {
+describe('Module @jsvfs/extras', () => {
   it('should construct a journal', () => {
     const result1 = new Journal()
     const result2 = new Journal(3)

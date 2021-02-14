@@ -100,7 +100,5 @@ describe('Module @jsvfs/adapter-minio-s3', () => {
     await doesNotReject(async () => {
       await adapter.remove('/no-bucket/file.txt', 'file')
     })
-
-    console.log(adapter.journal.getEntries('all', 'error', 'crit'))
   })
 })

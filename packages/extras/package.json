@@ -1,14 +1,14 @@
 {
-  "name": "@jsvfs/errors",
+  "name": "@jsvfs/extras",
   "version": "0.1.0",
-  "description": "Shared error-handling for JSVFS adapters.",
+  "description": "Shared classes and helpers for JSVFS adapters.",
   "main": "index.js",
   "types": "index.d.ts",
   "scripts": {
     "prepack": "tsc",
     "test": "tsc --noEmit"
   },
-  "homepage": "https://github.com/ahuggins-nhs/jsvfs/tree/main/packages/errors",
+  "homepage": "https://github.com/ahuggins-nhs/jsvfs/tree/main/packages/extras",
   "repository": {
     "type": "git",
     "url": "git@github.com:ahuggins-nhs/jsvfs.git"

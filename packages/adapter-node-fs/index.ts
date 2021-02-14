@@ -3,7 +3,7 @@
  * @packageDocumentation
  * @module @jsvfs/adapter-node-fs
  */
-import { Journal } from '@jsvfs/errors'
+import { Journal } from '@jsvfs/extras'
 import { Dirent, promises } from 'fs'
 import { dirname, join, posix, resolve, relative } from 'path'
 import type { Adapter, ItemType, JournalEntry, SnapshotEntry } from '@jsvfs/types'
