@@ -89,9 +89,10 @@ export class MinioS3Adapter implements Adapter {
   /** Create a file or write the contents of a file to persistent storage. */
   async write (path: string, contents: Buffer = Buffer.alloc(0)): Promise<void> {
     const parsed = parse(path, this.root)
+    const bucketName = await this.getBucket(parsed.bucketName, 'write')
 
     try {
-      await this.minioClient.putObject(parsed.bucketName, parsed.objectName, contents)
+      await this.minioClient.putObject(bucketName, parsed.objectName, contents)
     } catch (error) {
       this.journal.push({
         level: 'error',
@@ -108,12 +109,14 @@ export class MinioS3Adapter implements Adapter {
   /** Create a link in persistent storage. Definitely unsupported by S3, so we try copy the file contents from an existing object. */
   async link (linkPath: string, linkTarget: string, type: LinkType): Promise<void> {
     const parsedPath = parse(linkPath, this.root)
+    const bucketNamePath = await this.getBucket(parsedPath.bucketName, 'link')
     const parsedTarget = parse(linkTarget, this.root)
+    const bucketNameTarget = await this.getBucket(parsedTarget.bucketName, 'link')
 
     try {
       const conditions = new CopyConditions()
 
-      await this.minioClient.copyObject(parsedPath.bucketName, parsedPath.objectName, `/${parsedTarget.bucketName}/${parsedTarget.objectName}`, conditions)
+      await this.minioClient.copyObject(bucketNamePath, parsedPath.objectName, `/${bucketNameTarget}/${parsedTarget.objectName}`, conditions)
     } catch (error) {
       this.journal.push({
         level: 'error',
@@ -127,13 +130,14 @@ export class MinioS3Adapter implements Adapter {
   /** Remove items from persistent storage. */
   async remove (path: string, type: ItemType): Promise<void> {
     const parsed = parse(path, this.root)
+    const bucketName = await this.getBucket(parsed.bucketName, 'remove')
 
     switch (type) {
       case 'file':
       case 'hardlink':
       case 'softlink':
         try {
-          await this.minioClient.removeObject(parsed.bucketName, parsed.objectName)
+          await this.minioClient.removeObject(bucketName, parsed.objectName)
         } catch (error) {
           this.journal.push({
             level: 'error',

@@ -2,7 +2,7 @@ import { doesNotReject, strictEqual, throws } from 'assert'
 import { BlobServiceClient } from '@azure/storage-blob'
 import { AzureBlobAdapter } from '../../packages/adapter-azure-blob/index'
 import { azurite, connection } from './helpers'
-import { SnapshotEntry } from '../../packages/core/node_modules/@jsvfs/types'
+import { SnapshotEntry } from '../../packages/types/index'
 
 const blobService = BlobServiceClient.fromConnectionString(connection)
 

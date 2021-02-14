@@ -33,9 +33,11 @@ export async function * streamToAsyncGenerator<T> (reader: Readable, chunkSize?:
 
   while (!reader.readableEnded) {
     while (reader.readable) {
-      const val: T = reader.read(chunkSize) ?? reader.read()
+      const val: T = typeof chunkSize === 'number'
+        ? reader.read(chunkSize) ?? reader.read()
+        : reader.read()
 
-      if (typeof val !== 'undefined') {
+      if (typeof val !== 'undefined' && val !== null) {
         yield val
       } else {
         break
