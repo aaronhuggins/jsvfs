@@ -105,6 +105,7 @@ export class VirtualFileSystem {
       switch (item.type) {
         case 'file':
           item.contents = Buffer.concat([item.contents, contents])
+          item.committed = false
           break
         default:
           throw new TypeError(`Expected a file, encountered a folder at path ${path}`)
@@ -114,6 +115,7 @@ export class VirtualFileSystem {
         switch (item.type) {
           case 'file':
             item.contents = Buffer.from(contents)
+            item.committed = false
             break
           default:
             throw new ReferenceError(`Item of type ${item.type} already exists at path ${path}`)
@@ -279,7 +281,7 @@ export class VirtualFileSystem {
     return false
   }
 
-  /** Check to see if a path exists in the file system tree. */
+  /** Check to see if a path exists in the virtual file system tree. */
   exists (path: string): boolean {
     let item: Item
 
