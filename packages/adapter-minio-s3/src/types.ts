@@ -1,4 +1,11 @@
 import type { ClientOptions } from 'minio'
+import { JournalEntry } from '@jsvfs/types'
+
+export interface MinioS3JournalEntry extends JournalEntry {
+  error: Error
+}
+
+export type JournalOp = MinioS3JournalEntry['op']
 
 /** Options to construct an adapter instance. */
 export interface MinioS3AdapterOpts {
