@@ -13,9 +13,14 @@ npm install --save @jsvfs/core
 
 Without an adapter which implements a persistent storage, the JS Virtual File System will simply be a non-persistent store. These are the officially supported adapters.
 
+- Amazon S3-compatible `@jsvfs/adapter-minio-s3`
 - Microsoft Azure Storage `@jsvfs/adapter-azure-blob`
 - Node's `fs` module `@jsvfs/adapter-node-fs`
 - Non-persistent noop `@jsvfs/adapter-noop`; this is included as the default adapter.
+
+### Other adapters
+
+Other adapters can be found using the keyword ["jsvfs adapter"](https://www.npmjs.com/search?q=keywords:jsvfs%20adapter).
 
 ### Using adapters
 
@@ -31,7 +36,7 @@ const vfs = new VirtualFileSystem(adapter)
 
 ### Developing adapters
 
-Work on complete documentation for writing adapters is coming. For now, start with the code for `@jsvfs/types` and read through the interface provided for adapters. Consider the Node `fs` adapter the reference implementation and take a look at how it implements the interface.
+Work on complete documentation for writing adapters is coming. For now, start with the code for `@jsvfs/types` and read through the interface provided for adapters. Consider the Node `fs` adapter to be the reference implementation and take a look at how it implements the interface.
 
 If the adapter implements a storage which is widely used, consider forking the jsvfs repository and contributing the adapter as a module. Assuming that this is the route you take, familiarity with TypeScript and Lerna are a must.
 
