@@ -1,4 +1,4 @@
-import { Journal } from '@jsvfs/extras'
+import { Journal, Matcher } from '@jsvfs/extras'
 import { BlobServiceClient, ContainerClient, StorageSharedKeyCredential as BlobCredential } from '@azure/storage-blob'
 import { isContainerName, parse } from './helpers'
 import type { Adapter, ItemType, LinkType, SnapshotEntry } from '@jsvfs/types'
@@ -33,7 +33,7 @@ export class AzureBlobAdapter implements Adapter {
     }
 
     this.containerCache = new Map()
-    this.include = Array.isArray(opts.include) ? Object.freeze(Array.from(opts.include)) : Object.freeze([])
+    this.include = new Matcher(Array.isArray(opts.include) ? opts.include : [])
     this.flushEnabled = opts.flushEnabled ?? false
     this.createIfNotExist = opts.createIfNotExist ?? false
     this.handle = 'azure-blob'
@@ -47,7 +47,7 @@ export class AzureBlobAdapter implements Adapter {
   /** The real root of this file system which will be committed to. */
   readonly root: string
   /** The file globs to apply to `snapshot` and `flush` operations. */
-  readonly include: readonly string[]
+  readonly include: Matcher
   /** Whether to create a container if it does not yet exist. */
   createIfNotExist: boolean
   /** Enable or disable flushing the file system. */
@@ -74,8 +74,9 @@ export class AzureBlobAdapter implements Adapter {
             ? '/' + name + '/' + blobItem.name
             : '/' + blobItem.name
 
-          // Need to add glob behavior to include files from the options.
-          yield [snapshotName, { type: 'file', contents }]
+          if (this.include.match(snapshotName)) {
+            yield [snapshotName, { type: 'file', contents }]
+          }
         }
       } catch (error) {
         this.journal.push({
@@ -158,18 +159,23 @@ export class AzureBlobAdapter implements Adapter {
     if (this.flushEnabled) {
       for await (const [name, client] of this.listContainers('flush')) {
         for await (const blobItem of client.listBlobsFlat()) {
-          const blobClient = client.getBlockBlobClient(blobItem.name)
+          const snapshotName = this.isGlobal
+            ? '/' + name + '/' + blobItem.name
+            : '/' + blobItem.name
 
-          // Need to add glob behavior to include files from the options.
-          try {
-            await blobClient.deleteIfExists()
-          } catch (error) {
-            this.journal.push({
-              level: 'error',
-              message: `Could not delete blob '${blobItem.name}' from container '${name}'.`,
-              op: 'flush',
-              error
-            })
+          if (this.include.match(snapshotName)) {
+            const blobClient = client.getBlockBlobClient(blobItem.name)
+
+            try {
+              await blobClient.deleteIfExists()
+            } catch (error) {
+              this.journal.push({
+                level: 'error',
+                message: `Could not delete blob '${blobItem.name}' from container '${name}'.`,
+                op: 'flush',
+                error
+              })
+            }
           }
         }
       }

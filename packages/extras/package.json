@@ -28,6 +28,10 @@
   "license": "MIT",
   "dependencies": {
     "@jsvfs/types": "^0.1.0",
-    "ajv": "^7.1.0"
+    "ajv": "^7.1.0",
+    "picomatch": "^2.2.2"
+  },
+  "devDependencies": {
+    "@types/picomatch": "^2.2.1"
   }
 }

@@ -1,6 +1,6 @@
 import { BucketItem, Client, ClientOptions, CopyConditions } from 'minio'
 import { isValidBucketName } from 'minio/dist/main/helpers'
-import { Journal } from '@jsvfs/extras'
+import { Journal, Matcher } from '@jsvfs/extras'
 import { parse, streamToAsyncGenerator } from './helpers'
 import type { Adapter, ItemType, LinkType, SnapshotEntry } from '@jsvfs/types'
 import type { JournalOp, MinioS3AdapterOpts, MinioS3JournalEntry } from './types'
@@ -25,7 +25,7 @@ export class MinioS3Adapter implements Adapter {
 
     this.bucketCache = new Set()
     this.region = opts.region
-    this.include = Array.isArray(opts.include) ? Object.freeze(Array.from(opts.include)) : Object.freeze([])
+    this.include = new Matcher(Array.isArray(opts.include) ? opts.include : [])
     this.flushEnabled = opts.flushEnabled ?? false
     this.createIfNotExist = typeof opts.region === 'string'
       ? true
@@ -43,7 +43,7 @@ export class MinioS3Adapter implements Adapter {
   /** The set of encountered buckets. */
   readonly bucketCache: Set<string>
   /** The file globs to apply to `snapshot` and `flush` operations. */
-  readonly include: readonly string[]
+  readonly include: Matcher
   /** The region to create new buckets in. */
   readonly region?: string
   /** Whether to create a bucket if it does not yet exist. */
@@ -72,8 +72,9 @@ export class MinioS3Adapter implements Adapter {
             ? '/' + bucketName + '/' + bucketItem.name
             : '/' + bucketItem.name
 
-          // Need to add glob behavior to include files from the options.
-          yield [snapshotName, { type: 'file', contents }]
+          if (this.include.match(snapshotName)) {
+            yield [snapshotName, { type: 'file', contents }]
+          }
         }
       } catch (error) {
         this.journal.push({
@@ -156,20 +157,27 @@ export class MinioS3Adapter implements Adapter {
         const objectNames: string[] = []
 
         for await (const bucketItem of this.listObjects(bucketName, 'flush')) {
-          // Need to add glob behavior to include files from the options.
-          objectNames.push(bucketItem.name)
+          const snapshotName = this.isGlobal
+            ? '/' + bucketName + '/' + bucketItem.name
+            : '/' + bucketItem.name
+
+          if (this.include.match(snapshotName)) {
+            objectNames.push(bucketItem.name)
+          }
         }
 
-        try {
-          await this.minioClient.removeObjects(bucketName, objectNames)
-        } catch (error) {
-          this.journal.push({
-            level: 'error',
-            message: `Could not delete list of ${objectNames.length} objects from bucket '${bucketName}'.`,
-            op: 'flush',
-            error,
-            objectNames
-          })
+        if (objectNames.length > 0) {
+          try {
+            await this.minioClient.removeObjects(bucketName, objectNames)
+          } catch (error) {
+            this.journal.push({
+              level: 'error',
+              message: `Could not delete list of ${objectNames.length} objects from bucket '${bucketName}'.`,
+              op: 'flush',
+              error,
+              objectNames
+            })
+          }
         }
       }
     }

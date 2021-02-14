@@ -5,6 +5,7 @@
  */
 import { JournalEntry, JSON_SCHEMA } from '@jsvfs/types'
 import Ajv from 'ajv'
+import * as picomatch from 'picomatch'
 
 type JournalOp = JournalEntry['op']
 
@@ -119,4 +120,14 @@ export class Journal<T extends JournalEntry> extends Array<T> {
 
     return this.length
   }
+}
+
+export class Matcher {
+  constructor (include: string[] | readonly string[] = []) {
+    this.include = Array.isArray(include) && include.length > 0 ? Array.from(include) : ['*']
+    this.match = picomatch(this.include)
+  }
+
+  readonly include: string[]
+  readonly match: ReturnType<typeof picomatch>
 }
