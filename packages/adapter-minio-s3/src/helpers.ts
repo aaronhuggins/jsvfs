@@ -26,38 +26,26 @@ export function parse (path: string, root: string): PathParseResult {
 }
 
 /** Convert a Readable stream to an Async Generator. Based on https://www.derpturkey.com/nodejs-async-generators-for-streaming */
-export function streamToAsyncGenerator<T> (reader: Readable, chunkSize?: number): AsyncGenerator<T, void, unknown> {
-  async function signalReadable (reader: Readable): Promise<void> {
-    return await new Promise(resolve => {
+export async function * streamToAsyncGenerator<T> (reader: Readable, chunkSize?: number): AsyncGenerator<T> {
+  const signalEnd = new Promise<void>(resolve => {
+    reader.once('end', resolve)
+  })
+
+  while (!reader.readableEnded) {
+    while (reader.readable) {
+      const val: T = reader.read(chunkSize) ?? reader.read()
+
+      if (typeof val !== 'undefined') {
+        yield val
+      } else {
+        break
+      }
+    }
+
+    const signalReadable = new Promise<void>(resolve => {
       reader.once('readable', resolve)
     })
+
+    await Promise.race([signalEnd, signalReadable])
   }
-
-  async function signalEnd (reader: Readable): Promise<void> {
-    return await new Promise(resolve => {
-      reader.once('end', resolve)
-    })
-  }
-
-  async function * generator () {
-    const endPromise = signalEnd(reader)
-
-    while (!reader.readableEnded) {
-      while (reader.readable) {
-        const val = reader.read(chunkSize) || reader.read()
-
-        if (typeof val !== 'undefined') {
-          yield val
-        } else {
-          break
-        }
-      }
-
-      const readablePromise = signalReadable(reader)
-
-      await Promise.race([endPromise, readablePromise])
-    }
-  }
-
-  return generator()
 }
