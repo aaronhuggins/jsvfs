@@ -1,7 +1,7 @@
-import { Client } from 'minio'
+import { BucketItem, Client, ClientOptions } from 'minio'
 import { isValidBucketName } from 'minio/dist/main/helpers'
 import { Journal } from '@jsvfs/errors'
-import { parse } from './helpers'
+import { parse, streamToAsyncGenerator } from './helpers'
 import type { Adapter, ItemType, LinkType, SnapshotEntry } from '@jsvfs/types'
 import type { JournalOp, MinioS3AdapterOpts, MinioS3JournalEntry } from './types'
 
@@ -23,19 +23,29 @@ export class MinioS3Adapter implements Adapter {
       this.root = '/'
     }
 
+    this.bucketCache = new Set()
+    this.region = opts.region
     this.include = Array.isArray(opts.include) ? Object.freeze(Array.from(opts.include)) : Object.freeze([])
     this.flushEnabled = opts.flushEnabled ?? false
-    this.createIfNotExist = opts.createIfNotExist ?? false
+    this.createIfNotExist = typeof opts.region === 'string'
+      ? true
+      : opts.createIfNotExist ?? false
     this.handle = 'minio-s3'
     this.journal = new Journal<MinioS3JournalEntry>()
   }
 
-  /** The backing instance of blob service client. */
+  /** The backing options for MinIO client. */
+  readonly minioOptions: ClientOptions
+  /** The backing instance of MinIO client. */
   readonly minioClient: Client
   /** The real root of this file system which will be committed to. */
   readonly root: string
+  /** The set of encountered buckets. */
+  readonly bucketCache: Set<string>
   /** The file globs to apply to `snapshot` and `flush` operations. */
   readonly include: readonly string[]
+  /** The region to create new buckets in. */
+  readonly region?: string
   /** Whether to create a container if it does not yet exist. */
   createIfNotExist: boolean
   /** Enable or disable flushing the file system. */
@@ -54,9 +64,9 @@ export class MinioS3Adapter implements Adapter {
    * @returns {AsyncGenerator<[string, SnapshotEntry]>} The asynchronous iterable to get the snapshot.
    */
   async * snapshot (): AsyncGenerator<[string, SnapshotEntry]> {
-    for await (const [name, client] of this.listContainers('snapshot')) {
+    for await (const bucketName of this.listBuckets('snapshot')) {
       try {
-        for await (const blobItem of client.listBlobsFlat()) {
+        for await (const blobItem of this.listObjects(bucketName, 'snapshot')) {
           const contents = await this.readBlob(client, blobItem.name, 'snapshot')
           const snapshotName = this.isGlobal
             ? '/' + name + '/' + blobItem.name
@@ -144,7 +154,7 @@ export class MinioS3Adapter implements Adapter {
   /** Flush the underlying file system to prepare for a commit. */
   async flush (): Promise<void> {
     if (this.flushEnabled) {
-      for await (const [name, client] of this.listContainers('flush')) {
+      for await (const [name, client] of this.listBuckets('flush')) {
         for await (const blobItem of client.listBlobsFlat()) {
           const blobClient = client.getBlockBlobClient(blobItem.name)
 
@@ -182,46 +192,52 @@ export class MinioS3Adapter implements Adapter {
     }
   }
 
+  private async * listObjects (name: string, op: JournalOp): AsyncGenerator<BucketItem> {
+    const generator = streamToAsyncGenerator<BucketItem>(this.minioClient.listObjects(name, '', false))
+
+    for await (const item of generator) {
+      yield item
+    }
+  }
+
   /** Get or initialize the given container by name. */
-  private async getContainer (name: string, op: JournalOp, exists: boolean = false): Promise<ContainerClient> {
-    let containerClient = this.containerCache.get(name)
+  private async getBucket (name: string, op: JournalOp, exists: boolean = false): Promise<string> {
+    const bucketCached = this.bucketCache.has(name)
 
-    if (typeof containerClient === 'undefined') {
-      containerClient = this.blobService.getContainerClient(name)
-
+    if (!bucketCached) {
       if (!exists && this.createIfNotExist) {
         try {
-          await containerClient.createIfNotExists()
+          await this.minioClient.makeBucket(name, this.region ?? 'us-east-1')
         } catch (error) {
           this.journal.push({
             level: 'error',
-            message: `Could not create blob container '${name}'.`,
+            message: `Could not create bucket '${name}' in region '${this.region ?? 'us-east-1'}'.`,
             op,
             error
           })
         }
       }
 
-      this.containerCache.set(name, containerClient)
+      this.bucketCache.add(name)
     }
 
-    return containerClient
+    return name
   }
 
   /** List the buckets for this instance and optionally cache them. */
-  private async * listBuckets (op: JournalOp): AsyncGenerator<[string, ContainerClient]> {
-    if (this.containerCache.size === 0) {
+  private async * listBuckets (op: JournalOp): AsyncGenerator<string> {
+    if (this.bucketCache.size === 0) {
       if (this.isGlobal) {
-        for await (const containerItem of this.blobService.listContainers()) {
-          if (typeof containerItem.deleted === 'undefined' || !containerItem.deleted) {
-            yield [containerItem.name, await this.getContainer(containerItem.name, op, true)]
-          }
+        const bucketItems = await this.minioClient.listBuckets()
+
+        for (const containerItem of bucketItems) {
+          yield await this.getBucket(containerItem.name, op, true)
         }
       } else {
-        yield [this.root, await this.getContainer(this.root, op)]
+        yield await this.getBucket(this.root, op)
       }
     } else {
-      for (const item of this.containerCache.entries()) {
+      for (const item of this.bucketCache.values()) {
         yield item
       }
     }

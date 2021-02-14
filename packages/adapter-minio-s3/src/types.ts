@@ -22,6 +22,11 @@ export interface MinioS3AdapterOpts {
   flushEnabled?: boolean
   /** Enable creating buckets if they do not exist; defaults to false. */
   createIfNotExist?: boolean
+  /**
+   * Region to create buckets in; if provided, option `createIfNotExist` defaults to true.
+   * If not provided and `createIfNotExist` is true, region defaults to 'us-east-1'.
+   */
+  region?: string
 }
 
 /** The result of parsing a path. */
