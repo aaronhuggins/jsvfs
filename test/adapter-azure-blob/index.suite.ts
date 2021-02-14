@@ -38,12 +38,12 @@ describe('Module @jsvfs/adapter-azure-blob', () => {
 
     throws(() => {
       const opts: any = {}
-
+      // eslint-disable-next-line no-new
       new AzureBlobAdapter(opts)
     })
     throws(() => {
       const opts: any = { access: {} }
-
+      // eslint-disable-next-line no-new
       new AzureBlobAdapter(opts)
     })
   })

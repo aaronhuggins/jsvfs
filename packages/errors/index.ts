@@ -4,7 +4,7 @@
  * @module @jsvfs/errors
  */
 import { JournalEntry, JSON_SCHEMA } from '@jsvfs/types'
-import Ajv, { ValidateFunction } from 'ajv'
+import Ajv from 'ajv'
 
 type JournalOp = JournalEntry['op']
 
