@@ -32,5 +32,5 @@ export interface MinioS3AdapterOpts {
 /** The result of parsing a path. */
 export interface PathParseResult {
   bucketName: string
-  blobName: string
+  objectName: string
 }

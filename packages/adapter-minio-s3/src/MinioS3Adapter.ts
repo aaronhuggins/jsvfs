@@ -1,4 +1,4 @@
-import { BucketItem, Client, ClientOptions } from 'minio'
+import { BucketItem, Client, ClientOptions, CopyConditions } from 'minio'
 import { isValidBucketName } from 'minio/dist/main/helpers'
 import { Journal } from '@jsvfs/errors'
 import { parse, streamToAsyncGenerator } from './helpers'
@@ -46,7 +46,7 @@ export class MinioS3Adapter implements Adapter {
   readonly include: readonly string[]
   /** The region to create new buckets in. */
   readonly region?: string
-  /** Whether to create a container if it does not yet exist. */
+  /** Whether to create a bucket if it does not yet exist. */
   createIfNotExist: boolean
   /** Enable or disable flushing the file system. */
   flushEnabled: boolean
@@ -66,11 +66,11 @@ export class MinioS3Adapter implements Adapter {
   async * snapshot (): AsyncGenerator<[string, SnapshotEntry]> {
     for await (const bucketName of this.listBuckets('snapshot')) {
       try {
-        for await (const blobItem of this.listObjects(bucketName, 'snapshot')) {
-          const contents = await this.readBlob(client, blobItem.name, 'snapshot')
+        for await (const bucketItem of this.listObjects(bucketName, 'snapshot')) {
+          const contents = await this.readObject(bucketName, bucketItem.name, 'snapshot')
           const snapshotName = this.isGlobal
-            ? '/' + name + '/' + blobItem.name
-            : '/' + blobItem.name
+            ? '/' + bucketName + '/' + bucketItem.name
+            : '/' + bucketItem.name
 
           // Need to add glob behavior to include files from the options.
           yield [snapshotName, { type: 'file', contents }]
@@ -78,7 +78,7 @@ export class MinioS3Adapter implements Adapter {
       } catch (error) {
         this.journal.push({
           level: 'error',
-          message: `Could not list blobs in container '${name}'.`,
+          message: `Could not list objects in bucket '${bucketName}'.`,
           op: 'snapshot',
           error
         })
@@ -89,15 +89,13 @@ export class MinioS3Adapter implements Adapter {
   /** Create a file or write the contents of a file to persistent storage. */
   async write (path: string, contents: Buffer = Buffer.alloc(0)): Promise<void> {
     const parsed = parse(path, this.root)
-    const container = await this.getContainer(parsed.container, 'write')
-    const blobClient = container.getBlockBlobClient(parsed.blobName)
 
     try {
-      await blobClient.uploadData(contents)
+      await this.minioClient.putObject(parsed.bucketName, parsed.objectName, contents)
     } catch (error) {
       this.journal.push({
         level: 'error',
-        message: `Could not upload blob '${parsed.blobName}' to container '${parsed.container}'.`,
+        message: `Could not upload object '${parsed.objectName}' to bucket '${parsed.bucketName}'.`,
         op: 'write',
         error
       })
@@ -107,21 +105,19 @@ export class MinioS3Adapter implements Adapter {
   /** Make a directory or directory tree in persistent storage. Technically unsupported by Microsoft, as 'directories' are virtual. */
   async mkdir (path: string): Promise<void> {}
 
-  /** Create a link in persistent storage. Definitely unsupported by Microsoft, so we copy the file contents from an existing blob. */
+  /** Create a link in persistent storage. Definitely unsupported by S3, so we try copy the file contents from an existing object. */
   async link (linkPath: string, linkTarget: string, type: LinkType): Promise<void> {
     const parsedPath = parse(linkPath, this.root)
     const parsedTarget = parse(linkTarget, this.root)
-    const containerFrom = await this.getContainer(parsedTarget.container, 'link')
-    const containerTo = await this.getContainer(parsedPath.container, 'link')
-    const blobFrom = containerFrom.getBlockBlobClient(parsedTarget.blobName)
-    const blobTo = containerTo.getBlockBlobClient(parsedPath.blobName)
 
     try {
-      await blobTo.syncCopyFromURL(blobFrom.url)
+      const conditions = new CopyConditions()
+
+      await this.minioClient.copyObject(parsedPath.bucketName, parsedPath.objectName, `/${parsedTarget.bucketName}/${parsedTarget.objectName}`, conditions)
     } catch (error) {
       this.journal.push({
         level: 'error',
-        message: `Could not copy blob to '${parsedPath.blobName}' in container '${parsedPath.container}' from '${parsedTarget.blobName}' in container '${parsedTarget.container}'.`,
+        message: `Could not copy object to '${parsedPath.objectName}' in bucket '${parsedPath.bucketName}' from '${parsedTarget.objectName}' in bucket '${parsedTarget.bucketName}'.`,
         op: 'link',
         error
       })
@@ -131,19 +127,17 @@ export class MinioS3Adapter implements Adapter {
   /** Remove items from persistent storage. */
   async remove (path: string, type: ItemType): Promise<void> {
     const parsed = parse(path, this.root)
-    const container = await this.getContainer(parsed.container, 'remove')
-    const blobClient = container.getBlockBlobClient(parsed.blobName)
 
     switch (type) {
       case 'file':
       case 'hardlink':
       case 'softlink':
         try {
-          await blobClient.deleteIfExists()
+          await this.minioClient.removeObject(parsed.bucketName, parsed.objectName)
         } catch (error) {
           this.journal.push({
             level: 'error',
-            message: `Could not delete blob '${parsed.blobName}' from container '${parsed.container}'.`,
+            message: `Could not delete object '${parsed.objectName}' from bucket '${parsed.bucketName}'.`,
             op: 'remove',
             error
           })
@@ -154,37 +148,44 @@ export class MinioS3Adapter implements Adapter {
   /** Flush the underlying file system to prepare for a commit. */
   async flush (): Promise<void> {
     if (this.flushEnabled) {
-      for await (const [name, client] of this.listBuckets('flush')) {
-        for await (const blobItem of client.listBlobsFlat()) {
-          const blobClient = client.getBlockBlobClient(blobItem.name)
+      for await (const bucketName of this.listBuckets('flush')) {
+        const objectNames: string[] = []
 
+        for await (const bucketItem of this.listObjects(bucketName, 'flush')) {
           // Need to add glob behavior to include files from the options.
-          try {
-            await blobClient.deleteIfExists()
-          } catch (error) {
-            this.journal.push({
-              level: 'error',
-              message: `Could not delete blob '${blobItem.name}' from container '${name}'.`,
-              op: 'flush',
-              error
-            })
-          }
+          objectNames.push(bucketItem.name)
+        }
+
+        try {
+          await this.minioClient.removeObjects(bucketName, objectNames)
+        } catch (error) {
+          this.journal.push({
+            level: 'error',
+            message: `Could not delete list of ${objectNames.length} objects from bucket '${bucketName}'.`,
+            op: 'flush',
+            error,
+            objectNames
+          })
         }
       }
     }
   }
 
-  /** Reads a blob from blob storage. */
-  private async readBlob (container: string | ContainerClient, blobName: string, op: JournalOp): Promise<Buffer> {
-    const containerClient = typeof container === 'string' ? await this.getContainer(container, 'snapshot') : container
-    const blobClient = containerClient.getBlockBlobClient(blobName)
-
+  /** Reads an object from a bucket. */
+  private async readObject (bucketName: string, objectName: string, op: JournalOp): Promise<Buffer> {
     try {
-      return await blobClient.downloadToBuffer()
+      const chunks: Buffer[] = []
+      const generator = streamToAsyncGenerator<Buffer>(await this.minioClient.getObject(bucketName, objectName))
+
+      for await (const chunk of generator) {
+        chunks.push(chunk)
+      }
+
+      return Buffer.concat(chunks)
     } catch (error) {
       this.journal.push({
         level: 'error',
-        message: `Could not read blob '${blobName}' from container '${containerClient.containerName}'.`,
+        message: `Could not read object '${objectName}' from bucket '${bucketName}'.`,
         op,
         error
       })
@@ -200,7 +201,7 @@ export class MinioS3Adapter implements Adapter {
     }
   }
 
-  /** Get or initialize the given container by name. */
+  /** Get or initialize the given bucket by name. */
   private async getBucket (name: string, op: JournalOp, exists: boolean = false): Promise<string> {
     const bucketCached = this.bucketCache.has(name)
 
@@ -230,8 +231,8 @@ export class MinioS3Adapter implements Adapter {
       if (this.isGlobal) {
         const bucketItems = await this.minioClient.listBuckets()
 
-        for (const containerItem of bucketItems) {
-          yield await this.getBucket(containerItem.name, op, true)
+        for (const bucketItem of bucketItems) {
+          yield await this.getBucket(bucketItem.name, op, true)
         }
       } else {
         yield await this.getBucket(this.root, op)
