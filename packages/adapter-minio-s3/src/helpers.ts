@@ -29,26 +29,26 @@ export function parse (path: string, root: string): PathParseResult {
 export function streamToAsyncGenerator<T> (reader: Readable, chunkSize?: number): AsyncGenerator<T, void, unknown> {
   async function signalReadable (reader: Readable): Promise<void> {
     return await new Promise(resolve => {
-        reader.once("readable", resolve)
+      reader.once('readable', resolve)
     })
   }
 
   async function signalEnd (reader: Readable): Promise<void> {
     return await new Promise(resolve => {
-      reader.once("end", resolve)
+      reader.once('end', resolve)
     })
   }
 
-  async function * generator() {
+  async function * generator () {
     const endPromise = signalEnd(reader)
 
     while (!reader.readableEnded) {
       while (reader.readable) {
-        const val = reader.read(chunkSize) || reader.read();
+        const val = reader.read(chunkSize) || reader.read()
 
         if (typeof val !== 'undefined') {
           yield val
-        } else{
+        } else {
           break
         }
       }
