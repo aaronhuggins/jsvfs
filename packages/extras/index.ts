@@ -124,7 +124,7 @@ export class Journal<T extends JournalEntry> extends Array<T> {
 
 export class Matcher {
   constructor (include: string[] | readonly string[] = []) {
-    this.include = Array.isArray(include) && include.length > 0 ? Array.from(include) : ['*']
+    this.include = Array.isArray(include) && include.length > 0 ? Array.from(include) : ['**']
     this.match = picomatch(this.include)
   }
 
