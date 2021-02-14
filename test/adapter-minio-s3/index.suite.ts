@@ -90,7 +90,15 @@ describe('Module @jsvfs/adapter-minio-s3', () => {
     })
 
     await doesNotReject(async () => {
+      await adapter.read('/no-bucket/file.txt')
+    })
+
+    await doesNotReject(async () => {
       await adapter.write('/no-bucket/file.txt')
+    })
+
+    await doesNotReject(async () => {
+      await adapter.read('/no-bucket/file.txt')
     })
 
     await doesNotReject(async () => {

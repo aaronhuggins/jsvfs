@@ -1,5 +1,5 @@
 import * as sinon from 'sinon'
-import { doesNotReject, doesNotThrow, strictEqual, throws } from 'assert'
+import { doesNotReject, doesNotThrow, rejects, strictEqual, throws } from 'assert'
 import { dirname } from 'path'
 import { VirtualFileSystem } from '../../packages/core/index'
 import { NoopAdapter } from '../../packages/adapter-noop/index'
@@ -15,7 +15,7 @@ describe('Module @jsvfs/core', () => {
     strictEqual(vfs.separator, '/')
   })
 
-  it('should read and write file items', () => {
+  it('should read and write file items', async () => {
     const adapter = new NoopAdapter()
     const vfs = new VirtualFileSystem(adapter)
     const testMsg = 'Hello, world!'
@@ -24,7 +24,7 @@ describe('Module @jsvfs/core', () => {
       vfs.write(testFilePath)
     })
 
-    const result1 = vfs.read(testFilePath)
+    const result1 = await vfs.read(testFilePath)
 
     strictEqual(Buffer.isBuffer(result1), true)
     strictEqual(result1.length, 0)
@@ -33,7 +33,7 @@ describe('Module @jsvfs/core', () => {
       vfs.write(testFilePath, testMsg)
     })
 
-    const result2 = vfs.read(testFilePath)
+    const result2 = await vfs.read(testFilePath)
 
     strictEqual(Buffer.isBuffer(result2), true)
     strictEqual(result2.toString('utf8'), testMsg)
@@ -42,7 +42,7 @@ describe('Module @jsvfs/core', () => {
       vfs.write(testFilePath, String(testMsg))
     })
 
-    const result3 = vfs.read(testFilePath)
+    const result3 = await vfs.read(testFilePath)
 
     strictEqual(Buffer.isBuffer(result3), true)
     strictEqual(result3.toString('utf8'), testMsg)
@@ -51,13 +51,20 @@ describe('Module @jsvfs/core', () => {
       vfs.write(testFilePath, testMsg, true)
     })
 
-    const result4 = vfs.read(testFilePath)
+    const result4 = await vfs.read(testFilePath)
 
     strictEqual(Buffer.isBuffer(result4), true)
     strictEqual(result4.toString('utf8'), testMsg + testMsg)
 
-    throws(() => {
-      vfs.read(testFolderPath)
+    await rejects(async () => {
+      await vfs.read(testFolderPath)
+    })
+
+    // Fake read on adapter noop.
+    Object.defineProperty(adapter, 'read', { value: async () => Buffer.alloc(0) })
+
+    await doesNotReject(async () => {
+      await vfs.read('/nope.log')
     })
 
     throws(() => {

@@ -127,11 +127,19 @@ describe('Module @jsvfs/adapter-node-fs', () => {
     const nodeFs = new NodeFSAdapter({ cwd: 'fake' })
 
     await doesNotReject(async () => {
+      await nodeFs.read('/file2.txt')
+    })
+
+    await doesNotReject(async () => {
       await nodeFs.write('/file2.txt')
     })
 
     await doesNotReject(async () => {
       await nodeFs.write('/file4.txt', Buffer.from([1, 2]))
+    })
+
+    await doesNotReject(async () => {
+      await nodeFs.read('/file4.txt')
     })
 
     await doesNotReject(async () => {

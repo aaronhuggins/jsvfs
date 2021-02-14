@@ -94,7 +94,15 @@ describe('Module @jsvfs/adapter-azure-blob', () => {
     })
 
     await doesNotReject(async () => {
+      await adapter.read('/no-container/file.txt')
+    })
+
+    await doesNotReject(async () => {
       await adapter.write('/no-container/file.txt')
+    })
+
+    await doesNotReject(async () => {
+      await adapter.read('/no-container/file.txt')
     })
 
     await doesNotReject(async () => {

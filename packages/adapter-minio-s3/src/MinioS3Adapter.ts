@@ -87,6 +87,24 @@ export class MinioS3Adapter implements Adapter {
     }
   }
 
+  /** Read a file from persistent storage. */
+  async read (path: string): Promise<Buffer> {
+    const parsed = parse(path, this.root)
+    const bucketName = await this.getBucket(parsed.bucketName, 'write')
+
+    try {
+      return await this.readObject(bucketName, parsed.objectName, 'read')
+    } catch (error) {
+      this.journal.push({
+        level: 'error',
+        message: `Could not get contents of object '${parsed.objectName}' in bucket '${bucketName}'.`,
+        op: 'read',
+        error
+      })
+      return Buffer.alloc(0)
+    }
+  }
+
   /** Create a file or write the contents of a file to persistent storage. */
   async write (path: string, contents: Buffer = Buffer.alloc(0)): Promise<void> {
     const parsed = parse(path, this.root)

@@ -89,6 +89,23 @@ export class AzureBlobAdapter implements Adapter {
     }
   }
 
+  /** Read a file from persistent storage. */
+  async read (path: string): Promise<Buffer> {
+    const parsed = parse(path, this.root)
+
+    try {
+      return await this.readBlob(parsed.container, parsed.blobName, 'read')
+    } catch (error) {
+      this.journal.push({
+        level: 'error',
+        message: `Could not get contents of blob '${parsed.blobName}' in container '${parsed.container}'.`,
+        op: 'read',
+        error
+      })
+      return Buffer.alloc(0)
+    }
+  }
+
   /** Create a file or write the contents of a file to persistent storage. */
   async write (path: string, contents: Buffer = Buffer.alloc(0)): Promise<void> {
     const parsed = parse(path, this.root)
