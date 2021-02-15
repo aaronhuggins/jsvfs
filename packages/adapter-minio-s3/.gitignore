@@ -1,3 +1,5 @@
-index.d.ts
-index.js
-index.js.map
+*.d.ts
+*.js
+*.js.map
+!types/**/
+!types/**/*.d.ts

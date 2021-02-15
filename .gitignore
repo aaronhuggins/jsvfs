@@ -114,6 +114,10 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# Development files
 *.d.ts
 *.js
 .azurite
+!packages/**/types/**/
+!packages/**/types/**/*.d.ts
