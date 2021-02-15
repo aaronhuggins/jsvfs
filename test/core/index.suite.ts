@@ -3,6 +3,7 @@ import { doesNotReject, doesNotThrow, rejects, strictEqual, throws } from 'asser
 import { dirname } from 'path'
 import { VirtualFileSystem } from '../../packages/core/index'
 import { NoopAdapter } from '../../packages/adapter-noop/index'
+import { basename } from '../../packages/core/src/helpers'
 
 describe('Module @jsvfs/core', () => {
   const testFolderPath = 'folder/subfolder'
@@ -266,6 +267,16 @@ describe('Module @jsvfs/core', () => {
 
     await doesNotReject(async () => {
       await vfs.commit()
+    })
+  })
+
+  it('should test helpers', () => {
+    doesNotThrow(() => {
+      basename('///')
+    })
+
+    doesNotThrow(() => {
+      basename('')
     })
   })
 })
