@@ -1,0 +1,36 @@
+{
+  "name": "@jsvfs/adapter-multi",
+  "version": "0.1.0",
+  "description": "An adapter of multiple adapters for JSVFS.",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "scripts": {
+    "prepack": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "engines": {
+    "node": ">=12.10.0"
+  },
+  "homepage": "https://github.com/ahuggins-nhs/jsvfs/tree/main/packages/adapter-multi",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:ahuggins-nhs/jsvfs.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "author": "Aaron Huggins <aaron.huggins@gmail.com>",
+  "keywords": [
+    "jsvfs",
+    "vfs",
+    "virtual file system",
+    "file system",
+    "adapter",
+    "jsvfs adapter"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "@jsvfs/extras": "^0.1.0",
+    "@jsvfs/types": "^0.1.0"
+  }
+}
