@@ -1,8 +1,9 @@
-import { doesNotReject, strictEqual, throws } from 'assert'
+import { doesNotReject, doesNotThrow, strictEqual, throws } from 'assert'
 import { BlobServiceClient } from '@azure/storage-blob'
 import { AzureBlobAdapter } from '../../packages/adapter-azure-blob/index'
 import { azurite, connection } from './helpers'
 import { SnapshotEntry } from '../../packages/types/index'
+import { parse } from '../../packages/adapter-azure-blob/src/helpers'
 
 const blobService = BlobServiceClient.fromConnectionString(connection)
 
@@ -94,7 +95,15 @@ describe('Module @jsvfs/adapter-azure-blob', () => {
     })
 
     await doesNotReject(async () => {
+      await adapter.read('/no-container/file.txt')
+    })
+
+    await doesNotReject(async () => {
       await adapter.write('/no-container/file.txt')
+    })
+
+    await doesNotReject(async () => {
+      await adapter.read('/no-container/file.txt')
     })
 
     await doesNotReject(async () => {
@@ -103,6 +112,24 @@ describe('Module @jsvfs/adapter-azure-blob', () => {
 
     await doesNotReject(async () => {
       await adapter.remove('/no-container/file.txt', 'file')
+    })
+  })
+
+  it('should parse path into component parts', () => {
+    doesNotThrow(() => {
+      parse('/container/file', '/')
+    })
+
+    doesNotThrow(() => {
+      parse('container/file', '/')
+    })
+
+    doesNotThrow(() => {
+      parse('/file', 'container')
+    })
+
+    doesNotThrow(() => {
+      parse('file', 'container')
     })
   })
 })

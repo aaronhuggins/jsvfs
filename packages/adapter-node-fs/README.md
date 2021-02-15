@@ -9,11 +9,29 @@ this option defaults to `false` and must be intentionally enabled.
 
 If you're looking to create new adapters, please use `@jsvfs/types` and look to this module as an example.
 
+## Supported Features
+
+- Async commits
+- Pass-through reads
+- Snapshots
+- Flush
+- Journaling
+
 ## Installation
 
 Get it from npm:
 ```shell
 npm install --save @jsvfs/adapter-node-fs
+```
+
+### Usage
+
+This adapter requires no options, but it will bind by default to the current working directory of the process. Pass a directory in the `cwd` property to bind to that instead.
+
+```TypeScript
+import { NodeFSAdapter } from '@jsvfs/adapter-node-fs'
+
+const adapter = new NodeFSAdapter({ cwd: '/tmp' })
 ```
 
 ## Documentation

@@ -101,6 +101,23 @@ export class NodeFSAdapter implements Adapter {
     }
   }
 
+  /** Read a file from persistent storage; assumes 'utf8' file encoding. */
+  async read (path: string): Promise<Buffer> {
+    const newPath = join(this.root, path)
+
+    try {
+      return await readFile(newPath)
+    } catch (error) {
+      this.journal.push({
+        level: 'error',
+        message: `Could not get contents of '${newPath}'.`,
+        op: 'read',
+        error
+      })
+      return Buffer.alloc(0)
+    }
+  }
+
   /** Create a file or write the contents of a file to persistent storage. */
   async write (path: string, contents?: Buffer): Promise<void> {
     const newPath = join(this.root, path)

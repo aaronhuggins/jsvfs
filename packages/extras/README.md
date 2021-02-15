@@ -9,6 +9,7 @@ This module implements classes that can be used for developing adapters.
 ## Exports
 
 - `Journal`: The error handling library for JSVFS adapters, providing classes for the official adapters.
+- `Matcher`: The glob matching facility for JSVFS adapters.
 
 ## Installation
 

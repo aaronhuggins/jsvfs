@@ -49,15 +49,39 @@ export class VirtualFileSystem {
     this.rmCache.set(normalize(path), type)
   }
 
-  /** Read the contents of a file. */
-  read (path: string): Buffer {
-    const item = getItemAtPath(this.root, path)
+  /**
+   * Read the contents of a file. If the adapter supports pass-through read, the file
+   * will be read from persistent storage if it is not in the virtual dile system.
+   */
+  async read (path: string): Promise<Buffer> {
+    try {
+      const item = getItemAtPath(this.root, path)
 
-    switch (item.type) {
-      case 'file':
-        return item.contents
-      default:
-        throw new TypeError(`Expected a file, encountered a folder at path ${path}`)
+      switch (item.type) {
+        case 'file':
+          return item.contents
+        default:
+          throw new TypeError(`Expected a file, encountered a folder at path ${path}`)
+      }
+    } catch (error) {
+      if (
+        error instanceof ReferenceError &&
+        error.message.startsWith('Item does not exist at path') &&
+        typeof this.adapter.read === 'function'
+      ) {
+        const file = new File({
+          adapter: this.adapter,
+          contents: await this.adapter.read(path),
+          name: basename(path),
+          path
+        })
+
+        setItemAtPath(this.root, file)
+
+        return file.contents
+      } else {
+        throw error
+      }
     }
   }
 
@@ -81,6 +105,7 @@ export class VirtualFileSystem {
       switch (item.type) {
         case 'file':
           item.contents = Buffer.concat([item.contents, contents])
+          item.committed = false
           break
         default:
           throw new TypeError(`Expected a file, encountered a folder at path ${path}`)
@@ -90,6 +115,7 @@ export class VirtualFileSystem {
         switch (item.type) {
           case 'file':
             item.contents = Buffer.from(contents)
+            item.committed = false
             break
           default:
             throw new ReferenceError(`Item of type ${item.type} already exists at path ${path}`)
@@ -255,7 +281,7 @@ export class VirtualFileSystem {
     return false
   }
 
-  /** Check to see if a path exists in the file system tree. */
+  /** Check to see if a path exists in the virtual file system tree. */
   exists (path: string): boolean {
     let item: Item
 

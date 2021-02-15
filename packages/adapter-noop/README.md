@@ -8,6 +8,16 @@ This module is the default noop backend for `jsvfs` and already imported if you 
 
 If you're looking to create new adapters, please use `@jsvfs/types` and look to `@jsvfs/adapter-node-fs` as an example.
 
+## Supported Features
+
+- Async commits: nope.
+- Pass-through reads: nada.
+- Snapshots: nay.
+- Flush: nein.
+- Journaling: 番号
+
+😀 Because everything is a no-op!
+
 ## Installation
 
 Get it from npm:

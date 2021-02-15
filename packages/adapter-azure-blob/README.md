@@ -12,11 +12,29 @@ default and must be enabled by intentionally setting `flushEnabled` to true.
 
 If you're looking to create new adapters, please use `@jsvfs/types` and look to `@jsvfs/adapter-node-fs` as an example.
 
+## Supported Features
+
+- Async commits
+- Pass-through reads
+- Snapshots
+- Flush
+- Journaling
+
 ## Installation
 
 Get it from npm:
 ```shell
 npm install --save @jsvfs/adapter-azure-blob
+```
+
+### Usage
+
+This adapter requires either an account connection string or the storage account and storage key in order to work.
+
+```TypeScript
+import { AzureBlobAdapter } from '@jsvfs/adapter-azure-blob'
+
+const adapter = new AzureBlobAdapter({ access: { connectionString: process.env.MY_CONNECTION_STRING } })
 ```
 
 ## Documentation

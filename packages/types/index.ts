@@ -49,12 +49,14 @@ export const JSON_SCHEMA = {
  * Rules for implementing an adapter:
  * 1. Throwing errors is unacceptable; log errors to the journal.
  * 2. Adapters must create paths recursively.
- * 3. Adapters must implement all methods.
- * 4. Unsupported methods must be a noop.
+ * 3. Adapters must implement all required methods.
+ * 4. Unsupported required methods must be a noop.
  */
 export interface Adapter {
   /** Snapshot of the underlying file system; an asynchronous iterable which returns an entry of path and data. */
   snapshot: () => AsyncGenerator<[string, SnapshotEntry]>
+  /** Read a file from persistent storage. */
+  read?: (path: string) => Promise<Buffer>
   /** Create a file or write the contents of a file to persistent storage. */
   write: (path: string, contents?: Buffer) => Promise<void>
   /** Make a directory or directory tree in persistent storage. */
@@ -85,7 +87,7 @@ export type SnapshotEntry = SnapshotFileEntry | SnapshotFolderEntry | SnapshotLi
 /** Metadata about an event for the adapter journal. */
 export interface JournalEntry {
   id?: string | number
-  op: 'snapshot' | 'write' | 'mkdir' | 'link' | 'remove' | 'flush'
+  op: 'snapshot' | 'write' | 'mkdir' | 'link' | 'remove' | 'flush' | 'read'
   level: 'info' | 'warn' | 'error' | 'crit'
   message: string
   [property: string]: any
