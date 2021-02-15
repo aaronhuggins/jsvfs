@@ -10,7 +10,7 @@ import { Adapter, ItemType, JournalEntry, LinkType, SnapshotEntry } from '@jsvfs
  * Observe an array or journal in order to capture each push.
  * @hidden
  */
-function observe (journal: any[], observer: (...item: any[]) => void): void {
+export function observe (journal: any[], observer: (...item: any[]) => void): void {
   if (Array.isArray(journal)) {
     const originalPush = journal.push
 
