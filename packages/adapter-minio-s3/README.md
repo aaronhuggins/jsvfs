@@ -1,12 +1,12 @@
-# @jsvfs/adapter-minio-s3
+# JSVFS Adapter: MinIO S3
 
-An adapter for `@jsvfs/core` using MinIO's Amazon S3 compatible `minio` module.
+The official adapter for [`@jsvfs/core`](https://ahuggins-nhs.github.io/jsvfs/modules/_jsvfs_core.html) using MinIO's Amazon S3 compatible [`minio`](https://github.com/minio/minio-js) module.
 
 Snapshots and flushes can be limited by setting one or more globs in the `include` option. This limits
 any potentially destructive behavior to just those blob names which match the given patterns. Flushes are disabled by
 default and must be enabled by intentionally setting `flushEnabled` to true.
 
-If you're looking to create new adapters, please use `@jsvfs/types` and look to `@jsvfs/adapter-node-fs` as an example.
+If you're looking to create new adapters, please use [`@jsvfs/types`](https://ahuggins-nhs.github.io/jsvfs/modules/_jsvfs_types.html) and look to [`@jsvfs/adapter-node-fs`](https://ahuggins-nhs.github.io/jsvfs/modules/_jsvfs_adapter_node_fs.html) as an example.
 
 ## Supported Features
 
@@ -18,7 +18,7 @@ If you're looking to create new adapters, please use `@jsvfs/types` and look to 
 
 ## Installation
 
-Get it from npm:
+Get it from [npm](https://www.npmjs.com/package/@jsvfs/adapter-minio-s3):
 ```shell
 npm install --save @jsvfs/adapter-minio-s3
 ```

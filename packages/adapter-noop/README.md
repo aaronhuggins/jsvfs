@@ -6,7 +6,7 @@ If you're looking to use `jsvfs`, it's probably best to start with `@jsvfs/core`
 
 This module is the default noop backend for `jsvfs` and already imported if you have installed `@jsvfs/core`.
 
-If you're looking to create new adapters, please use `@jsvfs/types` and look to `@jsvfs/adapter-node-fs` as an example.
+If you're looking to create new adapters, please use `@jsvfs/types` and look to [`@jsvfs/adapter-node-fs`](https://ahuggins-nhs.github.io/jsvfs/modules/_jsvfs_adapter_node_fs.html) as an example.
 
 ## Supported Features
 
@@ -20,7 +20,7 @@ If you're looking to create new adapters, please use `@jsvfs/types` and look to 
 
 ## Installation
 
-Get it from npm:
+Get it from [npm](https://www.npmjs.com/package/@jsvfs/adapter-noop):
 ```shell
 npm install --save @jsvfs/adapter-noop
 ```

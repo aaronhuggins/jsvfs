@@ -1,6 +1,11 @@
 # JavaScript Virtual File System
 
-A library `@jsvfs/core` and a set of modules for creating an in-memory (hence "virtual") representation of a file system and adapting that system to different back-end persistent stores.
+A library [`@jsvfs/core`](https://ahuggins-nhs.github.io/jsvfs/modules/_jsvfs_core.html) and a set of modules for creating an in-memory (hence "virtual") representation of a file system and adapting that system to different back-end persistent stores.
+
+Get it from [npm](https://www.npmjs.com/package/@jsvfs/core):
+```shell
+npm install --save @jsvfs/core
+```
 
 ## How does it work
 

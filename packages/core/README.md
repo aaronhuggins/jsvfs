@@ -4,7 +4,7 @@ The core module for JS Virtual File System. Provides the main `VirtualFileSystem
 
 ## Installation
 
-Get it from npm:
+Get it from [npm](https://www.npmjs.com/package/@jsvfs/core):
 ```shell
 npm install --save @jsvfs/core
 ```
@@ -13,10 +13,11 @@ npm install --save @jsvfs/core
 
 Without an adapter which implements a persistent storage, the JS Virtual File System will simply be a non-persistent store. These are the officially supported adapters.
 
-- Amazon S3-compatible `@jsvfs/adapter-minio-s3`
-- Microsoft Azure Storage `@jsvfs/adapter-azure-blob`
-- Node's `fs` module `@jsvfs/adapter-node-fs`
-- Non-persistent noop `@jsvfs/adapter-noop`; this is included as the default adapter.
+- Amazon S3-compatible [`@jsvfs/adapter-minio-s3`](https://ahuggins-nhs.github.io/jsvfs/modules/_jsvfs_adapter_minio_s3.html)
+- Microsoft Azure Storage [`@jsvfs/adapter-azure-blob`](https://ahuggins-nhs.github.io/jsvfs/modules/_jsvfs_adapter_azure_blob.html)
+- Multi-adapter [`@jsvfs/adapter-multi`](https://ahuggins-nhs.github.io/jsvfs/modules/_jsvfs_adapter_multi.html)
+- Node's `fs` module [`@jsvfs/adapter-node-fs`](https://ahuggins-nhs.github.io/jsvfs/modules/_jsvfs_adapter_node_fs.html)
+- Non-persistent noop [`@jsvfs/adapter-noop`](https://ahuggins-nhs.github.io/jsvfs/modules/_jsvfs_adapter_noop.html); this is included as the default adapter.
 
 ### Other adapters
 
