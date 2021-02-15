@@ -74,11 +74,22 @@
 						<p>The default adapter for <code>jsvfs</code>. Useful for testing or for using <code>jsvfs</code> purely in-memory with no access to persistent storage.</p>
 						<p>If you&#39;re looking to use <code>jsvfs</code>, it&#39;s probably best to start with <code>@jsvfs/core</code>.</p>
 						<p>This module is the default noop backend for <code>jsvfs</code> and already imported if you have installed <code>@jsvfs/core</code>.</p>
-						<p>If you&#39;re looking to create new adapters, please use <code>@jsvfs/types</code> and look to <code>@jsvfs/adapter-node-fs</code> as an example.</p>
+						<p>If you&#39;re looking to create new adapters, please use <code>@jsvfs/types</code> and look to <a href="https://ahuggins-nhs.github.io/jsvfs/modules/_jsvfs_adapter_node_fs.html"><code>@jsvfs/adapter-node-fs</code></a> as an example.</p>
+						<a href="#supported-features" id="supported-features" style="color: inherit; text-decoration: none;">
+							<h2>Supported Features</h2>
+						</a>
+						<ul>
+							<li>Async commits: nope.</li>
+							<li>Pass-through reads: nada.</li>
+							<li>Snapshots: nay.</li>
+							<li>Flush: nein.</li>
+							<li>Journaling: 番号</li>
+						</ul>
+						<p>😀 Because everything is a no-op!</p>
 						<a href="#installation" id="installation" style="color: inherit; text-decoration: none;">
 							<h2>Installation</h2>
 						</a>
-						<p>Get it from npm:</p>
+						<p>Get it from <a href="https://www.npmjs.com/package/@jsvfs/adapter-noop">npm</a>:</p>
 						<pre><code class="language-shell"><span style="color: #000000">npm install --save @jsvfs/adapter-noop</span>
 </code></pre>
 						<a href="#documentation" id="documentation" style="color: inherit; text-decoration: none;">
@@ -112,6 +123,12 @@
 						<a href="_jsvfs_adapter_azure_blob.html">@jsvfs/adapter-<wbr>azure-<wbr>blob</a>
 					</li>
 					<li class=" tsd-kind-module">
+						<a href="_jsvfs_adapter_minio_s3.html">@jsvfs/adapter-<wbr>minio-<wbr>s3</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="_jsvfs_adapter_multi.html">@jsvfs/adapter-<wbr>multi</a>
+					</li>
+					<li class=" tsd-kind-module">
 						<a href="_jsvfs_adapter_node_fs.html">@jsvfs/adapter-<wbr>node-<wbr>fs</a>
 					</li>
 					<li class="current tsd-kind-module">
@@ -119,6 +136,9 @@
 					</li>
 					<li class=" tsd-kind-module">
 						<a href="_jsvfs_core.html">@jsvfs/core</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="_jsvfs_extras.html">@jsvfs/extras</a>
 					</li>
 					<li class=" tsd-kind-module">
 						<a href="_jsvfs_types.html">@jsvfs/types</a>
@@ -140,13 +160,15 @@
 		<h2>Legend</h2>
 		<div class="tsd-legend-group">
 			<ul class="tsd-legend">
+				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
 				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
 			</ul>
 			<ul class="tsd-legend">
-				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
 			</ul>
 			<ul class="tsd-legend">
-				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
 			</ul>
 		</div>
 	</div>

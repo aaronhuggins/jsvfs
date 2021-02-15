@@ -61,26 +61,47 @@
 				<a href="#javascript-virtual-file-system" id="javascript-virtual-file-system" style="color: inherit; text-decoration: none;">
 					<h1>JavaScript Virtual File System</h1>
 				</a>
-				<p>A library <code>@jsvfs/core</code> and a set of modules for creating an in-memory (hence &quot;virtual&quot;) representation of a file system and adapting that system to different back-end persistent stores.</p>
+				<p>A library <a href="https://ahuggins-nhs.github.io/jsvfs/modules/_jsvfs_core.html"><code>@jsvfs/core</code></a> and a set of modules for creating an in-memory (hence &quot;virtual&quot;) representation of a file system and adapting that system to different back-end persistent stores.</p>
+				<p>Get it from <a href="https://www.npmjs.com/package/@jsvfs/core">npm</a>:</p>
+				<pre><code class="language-shell"><span style="color: #000000">npm install --save @jsvfs/core</span>
+</code></pre>
+				<a href="#how-does-it-work" id="how-does-it-work" style="color: inherit; text-decoration: none;">
+					<h2>How does it work</h2>
+				</a>
+				<p>The advantage is in consistent APIs for dealing with storage. Adapters provide a common set of APIs around their storage for the virtual file system to use. The virtual file system provides an efficient API on top of these adapters for ease of use.</p>
+				<p>The main module <code>@jsvfs/core</code> provides a class <code>VirtualFileSystem</code> that uses a noop back-end <code>@jsvfs/adapter-noop</code> by default. Other adapters can be passed when constructing this class, such as <code>@jsvfs/adapter-node-fs</code> to allow backing the virtual file system with local disk storage.</p>
+				<a href="#features" id="features" style="color: inherit; text-decoration: none;">
+					<h2>Features</h2>
+				</a>
+				<ul>
+					<li>Asynchronous Commit<blockquote>
+							<p>Work with your files entirely in-memory; commit the file system when finished or as needed.</p>
+						</blockquote>
+					</li>
+					<li>Adapter Journal<blockquote>
+							<p>Adapters must implement an array property <code>journal</code> containing any errors encountered. The journal can be accessed before finishing for recovery or other means.</p>
+						</blockquote>
+					</li>
+					<li>Pass-through Read<blockquote>
+							<p>Read a file from persistent storage if it is not already in-memory. Supported by some adapters.</p>
+						</blockquote>
+					</li>
+					<li>Storage Snaphot<blockquote>
+							<p>Snapshot the persistent storage into memory ahead of working with the files. Not available for all adapters.</p>
+						</blockquote>
+					</li>
+					<li>Storage Flush<blockquote>
+							<p>Flushes the persistent storage on commit automatically, allowing for a clean write. Not available for all adapters.</p>
+						</blockquote>
+					</li>
+				</ul>
 				<a href="#why" id="why" style="color: inherit; text-decoration: none;">
 					<h2>Why</h2>
 				</a>
 				<p>For a lot of different reasons there was a need to have an in-memory representation of files, folders, and links, not the least of which was the ability to easily mockup different files. The main driver was the need to quickly switch the persistent storage of a particular application, wether it be a local file system, a cloud provider such as S3, or anything else.</p>
 				<p>Evaluating other solutions similar to this one, it was clear that there was no consistent API or modular approach. That&#39;s why <code>jsvfs</code> exists.</p>
-				<a href="#how-does-it-work" id="how-does-it-work" style="color: inherit; text-decoration: none;">
-					<h2>How does it work</h2>
-				</a>
-				<p>The main module <code>@jsvfs/core</code> provides a class <code>VirtualFileSystem</code> that uses a noop back-end <code>@jsvfs/adapter-noop</code> by default. Other back-ends can be passed when constructing this class, such as <code>@jsvfs/adapter-node-fs</code> to allow backing the virtual fs with real storage.</p>
-				<ul>
-					<li>Before using the virtual file system, the class method <code>snapshot</code> can be used to pre-fill the vfs with data for an adapter which supports snapshotting.</li>
-					<li>During the lifecycle of the application, synchronous methods can be called to manage the files, folders, and links of the vfs.</li>
-					<li>When it makes sense, the class method <code>commit</code> can be called to persist any uncommitted changes in the vfs to persistent storage.<blockquote>
-							<p>NOTE: If the adapter supports flushing the persistent storage, the back-end will be flushed (whatever that means for the particular adapter) before persisting the vfs.</p>
-						</blockquote>
-					</li>
-				</ul>
-				<a href="#a-word-about-engines" id="a-word-about-engines" style="color: inherit; text-decoration: none;">
-					<h2>A word about engines</h2>
+				<a href="#a-word-about-node-engines" id="a-word-about-node-engines" style="color: inherit; text-decoration: none;">
+					<h2>A word about Node engines</h2>
 				</a>
 				<p>Node 12.10.0 or higher is required to run the tests in this repository. Only certain modules in this monorepo depend on more recent features of Node, so it&#39;s not an overall requirement for using <code>jsvfs</code>.</p>
 				<a href="#documentation" id="documentation" style="color: inherit; text-decoration: none;">
@@ -99,6 +120,12 @@
 						<a href="modules/_jsvfs_adapter_azure_blob.html">@jsvfs/adapter-<wbr>azure-<wbr>blob</a>
 					</li>
 					<li class=" tsd-kind-module">
+						<a href="modules/_jsvfs_adapter_minio_s3.html">@jsvfs/adapter-<wbr>minio-<wbr>s3</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_jsvfs_adapter_multi.html">@jsvfs/adapter-<wbr>multi</a>
+					</li>
+					<li class=" tsd-kind-module">
 						<a href="modules/_jsvfs_adapter_node_fs.html">@jsvfs/adapter-<wbr>node-<wbr>fs</a>
 					</li>
 					<li class=" tsd-kind-module">
@@ -106,6 +133,9 @@
 					</li>
 					<li class=" tsd-kind-module">
 						<a href="modules/_jsvfs_core.html">@jsvfs/core</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_jsvfs_extras.html">@jsvfs/extras</a>
 					</li>
 					<li class=" tsd-kind-module">
 						<a href="modules/_jsvfs_types.html">@jsvfs/types</a>
@@ -124,13 +154,15 @@
 		<h2>Legend</h2>
 		<div class="tsd-legend-group">
 			<ul class="tsd-legend">
+				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
 				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
 			</ul>
 			<ul class="tsd-legend">
-				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
 			</ul>
 			<ul class="tsd-legend">
-				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
 			</ul>
 		</div>
 	</div>

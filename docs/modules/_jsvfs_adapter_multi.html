@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>@jsvfs/adapter-node-fs | JSVFS</title>
+	<title>@jsvfs/adapter-multi | JSVFS</title>
 	<meta name="description" content="Documentation for JSVFS">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -55,10 +55,10 @@
 					<a href="../modules.html">JSVFS</a>
 				</li>
 				<li>
-					<a href="_jsvfs_adapter_node_fs.html">@jsvfs/adapter-node-fs</a>
+					<a href="_jsvfs_adapter_multi.html">@jsvfs/adapter-multi</a>
 				</li>
 			</ul>
-			<h1>Module @jsvfs/adapter-node-fs</h1>
+			<h1>Module @jsvfs/adapter-multi</h1>
 		</div>
 	</div>
 </header>
@@ -68,38 +68,51 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<a href="#jsvfs-adapter-node-fs" id="jsvfs-adapter-node-fs" style="color: inherit; text-decoration: none;">
-							<h1>JSVFS Adapter: Node fs</h1>
+						<a href="#jsvfs-adapter-multi-adapter" id="jsvfs-adapter-multi-adapter" style="color: inherit; text-decoration: none;">
+							<h1>JSVFS Adapter: Multi Adapter</h1>
 						</a>
-						<p>The official adapter for <a href="https://ahuggins-nhs.github.io/jsvfs/modules/_jsvfs_core.html"><code>@jsvfs/core</code></a> supporting Node&#39;s <a href="https://nodejs.org/api/fs.html"><code>fs</code></a> module as a back-end for <code>jsvfs</code>.</p>
-						<p>Allows a developer to define the current working directory that acts as the root of the adapter, and to enable the
-							<code>flush</code> functionality of the adapter. This second option is important, as flush in this adapter attempts to completely
-							remove all files and folders from the root of the adapter. To protect developers against accidentally destroying files,
-						this option defaults to <code>false</code> and must be intentionally enabled.</p>
-						<p>If you&#39;re looking to create new adapters, please use <a href="https://ahuggins-nhs.github.io/jsvfs/modules/_jsvfs_types.html"><code>@jsvfs/types</code></a> and look to this module as an example.</p>
+						<p>The official adapter for <a href="https://ahuggins-nhs.github.io/jsvfs/modules/_jsvfs_core.html"><code>@jsvfs/core</code></a> using multiple other adapters.</p>
+						<p>If you&#39;re looking to create new adapters, please use <a href="https://ahuggins-nhs.github.io/jsvfs/modules/_jsvfs_types.html"><code>@jsvfs/types</code></a> and look to <a href="https://ahuggins-nhs.github.io/jsvfs/modules/_jsvfs_adapter_node_fs.html"><code>@jsvfs/adapter-node-fs</code></a> as an example.</p>
 						<a href="#supported-features" id="supported-features" style="color: inherit; text-decoration: none;">
 							<h2>Supported Features</h2>
 						</a>
+						<p>So long as other adapters support these features, this adapter supports:</p>
 						<ul>
 							<li>Async commits</li>
 							<li>Pass-through reads</li>
+							<li>Journaling</li>
+						</ul>
+						<p>This adapter does not support:</p>
+						<ul>
 							<li>Snapshots</li>
 							<li>Flush</li>
-							<li>Journaling</li>
 						</ul>
 						<a href="#installation" id="installation" style="color: inherit; text-decoration: none;">
 							<h2>Installation</h2>
 						</a>
-						<p>Get it from <a href="https://www.npmjs.com/package/@jsvfs/adapter-node-fs">npm</a>:</p>
-						<pre><code class="language-shell"><span style="color: #000000">npm install --save @jsvfs/adapter-node-fs</span>
+						<p>Get it from <a href="https://www.npmjs.com/package/@jsvfs/adapter-multi">npm</a>:</p>
+						<pre><code class="language-shell"><span style="color: #000000">npm install --save @jsvfs/adapter-multi</span>
 </code></pre>
 						<a href="#usage" id="usage" style="color: inherit; text-decoration: none;">
 							<h3>Usage</h3>
 						</a>
-						<p>This adapter requires no options, but it will bind by default to the current working directory of the process. Pass a directory in the <code>cwd</code> property to bind to that instead.</p>
-						<pre><code class="language-TypeScript"><span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">NodeFSAdapter</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;@jsvfs/adapter-node-fs&#039;</span>
+						<p>This adapter requires other adapters. After creating an instance, register other adapters to use them together.</p>
+						<pre><code class="language-TypeScript"><span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">MultiAdapter</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;@jsvfs/adapter-multi&#039;</span>
+<span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">MinioS3Adapter</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;@jsvfs/adapter-minio-s3&#039;</span>
+<span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">NodeFSAdapter</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;@jsvfs/adapter-node-fs&#039;</span>
 
-<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">adapter</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">NodeFSAdapter</span><span style="color: #000000">({ </span><span style="color: #001080">cwd:</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;/tmp&#039;</span><span style="color: #000000"> })</span>
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">adapter</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">MultiAdapter</span><span style="color: #000000">()</span>
+
+<span style="color: #001080">adapter</span><span style="color: #000000">.</span><span style="color: #795E26">register</span><span style="color: #000000">(</span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">NodeFSAdapter</span><span style="color: #000000">({ </span><span style="color: #001080">cwd:</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;/tmp&#039;</span><span style="color: #000000"> }))</span>
+<span style="color: #001080">adapter</span><span style="color: #000000">.</span><span style="color: #795E26">register</span><span style="color: #000000">(</span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">MinioS3Adapter</span><span style="color: #000000">({</span>
+<span style="color: #000000">  </span><span style="color: #001080">access:</span><span style="color: #000000"> {</span>
+<span style="color: #000000">    </span><span style="color: #001080">endPoint:</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;localhost&#039;</span><span style="color: #000000">,</span>
+<span style="color: #000000">    </span><span style="color: #001080">port:</span><span style="color: #000000"> </span><span style="color: #098658">4568</span><span style="color: #000000">,</span>
+<span style="color: #000000">    </span><span style="color: #001080">useSSL:</span><span style="color: #000000"> </span><span style="color: #0000FF">false</span><span style="color: #000000">,</span>
+<span style="color: #000000">    </span><span style="color: #001080">accessKey:</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;S3RVER&#039;</span><span style="color: #000000">,</span>
+<span style="color: #000000">    </span><span style="color: #001080">secretKey:</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;S3RVER&#039;</span>
+<span style="color: #000000">  }</span>
+<span style="color: #000000">}))</span>
 </code></pre>
 						<a href="#documentation" id="documentation" style="color: inherit; text-decoration: none;">
 							<h2>Documentation</h2>
@@ -115,14 +128,7 @@
 						<section class="tsd-index-section ">
 							<h3>Classes</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-class tsd-parent-kind-module"><a href="../classes/_jsvfs_adapter_node_fs.nodefsadapter.html" class="tsd-kind-icon">NodeFSAdapter</a></li>
-							</ul>
-						</section>
-						<section class="tsd-index-section ">
-							<h3>Interfaces</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-interface tsd-parent-kind-module"><a href="../interfaces/_jsvfs_adapter_node_fs.nodefsadapteropts.html" class="tsd-kind-icon">NodeFSAdapter<wbr>Opts</a></li>
-								<li class="tsd-kind-interface tsd-parent-kind-module"><a href="../interfaces/_jsvfs_adapter_node_fs.nodefsjournalentry.html" class="tsd-kind-icon">NodeFSJournal<wbr>Entry</a></li>
+								<li class="tsd-kind-class tsd-parent-kind-module"><a href="../classes/_jsvfs_adapter_multi.multiadapter.html" class="tsd-kind-icon">Multi<wbr>Adapter</a></li>
 							</ul>
 						</section>
 					</div>
@@ -141,10 +147,10 @@
 					<li class=" tsd-kind-module">
 						<a href="_jsvfs_adapter_minio_s3.html">@jsvfs/adapter-<wbr>minio-<wbr>s3</a>
 					</li>
-					<li class=" tsd-kind-module">
+					<li class="current tsd-kind-module">
 						<a href="_jsvfs_adapter_multi.html">@jsvfs/adapter-<wbr>multi</a>
 					</li>
-					<li class="current tsd-kind-module">
+					<li class=" tsd-kind-module">
 						<a href="_jsvfs_adapter_node_fs.html">@jsvfs/adapter-<wbr>node-<wbr>fs</a>
 					</li>
 					<li class=" tsd-kind-module">
@@ -164,13 +170,7 @@
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
 					<li class=" tsd-kind-class tsd-parent-kind-module">
-						<a href="../classes/_jsvfs_adapter_node_fs.nodefsadapter.html" class="tsd-kind-icon">NodeFSAdapter</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-module">
-						<a href="../interfaces/_jsvfs_adapter_node_fs.nodefsadapteropts.html" class="tsd-kind-icon">NodeFSAdapter<wbr>Opts</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-module">
-						<a href="../interfaces/_jsvfs_adapter_node_fs.nodefsjournalentry.html" class="tsd-kind-icon">NodeFSJournal<wbr>Entry</a>
+						<a href="../classes/_jsvfs_adapter_multi.multiadapter.html" class="tsd-kind-icon">Multi<wbr>Adapter</a>
 					</li>
 				</ul>
 			</nav>

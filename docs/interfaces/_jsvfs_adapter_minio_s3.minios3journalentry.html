@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>SnapshotFileEntry | JSVFS</title>
+	<title>MinioS3JournalEntry | JSVFS</title>
 	<meta name="description" content="Documentation for JSVFS">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -55,13 +55,13 @@
 					<a href="../modules.html">JSVFS</a>
 				</li>
 				<li>
-					<a href="../modules/_jsvfs_types.html">@jsvfs/types</a>
+					<a href="../modules/_jsvfs_adapter_minio_s3.html">@jsvfs/adapter-minio-s3</a>
 				</li>
 				<li>
-					<a href="_jsvfs_types.snapshotfileentry.html">SnapshotFileEntry</a>
+					<a href="_jsvfs_adapter_minio_s3.minios3journalentry.html">MinioS3JournalEntry</a>
 				</li>
 			</ul>
-			<h1>Interface SnapshotFileEntry</h1>
+			<h1>Interface MinioS3JournalEntry</h1>
 		</div>
 	</div>
 </header>
@@ -72,10 +72,10 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="tsd-signature-type">SnapshotEntryBase</span>
+						<span class="tsd-signature-type">JournalEntry</span>
 						<ul class="tsd-hierarchy">
 							<li>
-								<span class="target">SnapshotFileEntry</span>
+								<span class="target">MinioS3JournalEntry</span>
 							</li>
 						</ul>
 					</li>
@@ -88,8 +88,11 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_jsvfs_types.snapshotfileentry.html#contents" class="tsd-kind-icon">contents</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_jsvfs_types.snapshotfileentry.html#type" class="tsd-kind-icon">type</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_jsvfs_adapter_minio_s3.minios3journalentry.html#error" class="tsd-kind-icon">error</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_jsvfs_adapter_minio_s3.minios3journalentry.html#id" class="tsd-kind-icon">id</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_jsvfs_adapter_minio_s3.minios3journalentry.html#level" class="tsd-kind-icon">level</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_jsvfs_adapter_minio_s3.minios3journalentry.html#message" class="tsd-kind-icon">message</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_jsvfs_adapter_minio_s3.minios3journalentry.html#op" class="tsd-kind-icon">op</a></li>
 							</ul>
 						</section>
 					</div>
@@ -98,27 +101,52 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="contents" class="tsd-anchor"></a>
-					<h3>contents</h3>
-					<div class="tsd-signature tsd-kind-icon">contents<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Buffer</span></div>
+					<a name="error" class="tsd-anchor"></a>
+					<h3>error</h3>
+					<div class="tsd-signature tsd-kind-icon">error<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Error</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/ahuggins-nhs/jsvfs/blob/ef491e0/packages/types/index.ts#L106">packages/types/index.ts:106</a></li>
+							<li>Defined in <a href="https://github.com/ahuggins-nhs/jsvfs/blob/ef491e0/packages/adapter-minio-s3/src/types.ts#L5">packages/adapter-minio-s3/src/types.ts:5</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>The contents of the file as a buffer.</p>
-						</div>
-					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="type" class="tsd-anchor"></a>
-					<h3>type</h3>
-					<div class="tsd-signature tsd-kind-icon">type<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;file&quot;</span></div>
+					<a name="id" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> id</h3>
+					<div class="tsd-signature tsd-kind-icon">id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/ahuggins-nhs/jsvfs/blob/ef491e0/packages/types/index.ts#L104">packages/types/index.ts:104</a></li>
+							<li>Defined in packages/types/index.d.ts:70</li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="level" class="tsd-anchor"></a>
+					<h3>level</h3>
+					<div class="tsd-signature tsd-kind-icon">level<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;info&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;warn&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;error&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;crit&quot;</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in packages/types/index.d.ts:72</li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="message" class="tsd-anchor"></a>
+					<h3>message</h3>
+					<div class="tsd-signature tsd-kind-icon">message<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in packages/types/index.d.ts:73</li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="op" class="tsd-anchor"></a>
+					<h3>op</h3>
+					<div class="tsd-signature tsd-kind-icon">op<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;snapshot&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;write&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;mkdir&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;link&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;remove&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;flush&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;read&quot;</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in packages/types/index.d.ts:71</li>
 						</ul>
 					</aside>
 				</section>
@@ -133,7 +161,7 @@
 					<li class=" tsd-kind-module">
 						<a href="../modules/_jsvfs_adapter_azure_blob.html">@jsvfs/adapter-<wbr>azure-<wbr>blob</a>
 					</li>
-					<li class=" tsd-kind-module">
+					<li class="current tsd-kind-module">
 						<a href="../modules/_jsvfs_adapter_minio_s3.html">@jsvfs/adapter-<wbr>minio-<wbr>s3</a>
 					</li>
 					<li class=" tsd-kind-module">
@@ -151,54 +179,48 @@
 					<li class=" tsd-kind-module">
 						<a href="../modules/_jsvfs_extras.html">@jsvfs/extras</a>
 					</li>
-					<li class="current tsd-kind-module">
+					<li class=" tsd-kind-module">
 						<a href="../modules/_jsvfs_types.html">@jsvfs/types</a>
 					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-					<li class=" tsd-kind-interface tsd-parent-kind-module">
-						<a href="_jsvfs_types.adapter.html" class="tsd-kind-icon">Adapter</a>
+					<li class=" tsd-kind-class tsd-parent-kind-module">
+						<a href="../classes/_jsvfs_adapter_minio_s3.minios3adapter.html" class="tsd-kind-icon">Minio<wbr>S3Adapter</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-module">
-						<a href="_jsvfs_types.journalentry.html" class="tsd-kind-icon">Journal<wbr>Entry</a>
+						<a href="_jsvfs_adapter_minio_s3.minios3adapteropts.html" class="tsd-kind-icon">Minio<wbr>S3Adapter<wbr>Opts</a>
 					</li>
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface tsd-parent-kind-module">
-						<a href="_jsvfs_types.snapshotfileentry.html" class="tsd-kind-icon">Snapshot<wbr>File<wbr>Entry</a>
+						<a href="_jsvfs_adapter_minio_s3.minios3journalentry.html" class="tsd-kind-icon">Minio<wbr>S3Journal<wbr>Entry</a>
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_jsvfs_types.snapshotfileentry.html#contents" class="tsd-kind-icon">contents</a>
+								<a href="_jsvfs_adapter_minio_s3.minios3journalentry.html#error" class="tsd-kind-icon">error</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_jsvfs_types.snapshotfileentry.html#type" class="tsd-kind-icon">type</a>
+								<a href="_jsvfs_adapter_minio_s3.minios3journalentry.html#id" class="tsd-kind-icon">id</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_jsvfs_adapter_minio_s3.minios3journalentry.html#level" class="tsd-kind-icon">level</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_jsvfs_adapter_minio_s3.minios3journalentry.html#message" class="tsd-kind-icon">message</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_jsvfs_adapter_minio_s3.minios3journalentry.html#op" class="tsd-kind-icon">op</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
 					<li class=" tsd-kind-interface tsd-parent-kind-module">
-						<a href="_jsvfs_types.snapshotfolderentry.html" class="tsd-kind-icon">Snapshot<wbr>Folder<wbr>Entry</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-module">
-						<a href="_jsvfs_types.snapshotlinkentry.html" class="tsd-kind-icon">Snapshot<wbr>Link<wbr>Entry</a>
+						<a href="_jsvfs_adapter_minio_s3.pathparseresult.html" class="tsd-kind-icon">Path<wbr>Parse<wbr>Result</a>
 					</li>
 					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
-						<a href="../modules/_jsvfs_types.html#foldertype" class="tsd-kind-icon">Folder<wbr>Type</a>
-					</li>
-					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
-						<a href="../modules/_jsvfs_types.html#itemtype" class="tsd-kind-icon">Item<wbr>Type</a>
-					</li>
-					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
-						<a href="../modules/_jsvfs_types.html#linktype" class="tsd-kind-icon">Link<wbr>Type</a>
-					</li>
-					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
-						<a href="../modules/_jsvfs_types.html#snapshotentry" class="tsd-kind-icon">Snapshot<wbr>Entry</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-module">
-						<a href="../modules/_jsvfs_types.html#json_schema" class="tsd-kind-icon">JSON_<wbr>SCHEMA</a>
+						<a href="../modules/_jsvfs_adapter_minio_s3.html#journalop" class="tsd-kind-icon">Journal<wbr>Op</a>
 					</li>
 				</ul>
 			</nav>

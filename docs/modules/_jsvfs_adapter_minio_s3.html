@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>@jsvfs/adapter-azure-blob | JSVFS</title>
+	<title>@jsvfs/adapter-minio-s3 | JSVFS</title>
 	<meta name="description" content="Documentation for JSVFS">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -55,10 +55,10 @@
 					<a href="../modules.html">JSVFS</a>
 				</li>
 				<li>
-					<a href="_jsvfs_adapter_azure_blob.html">@jsvfs/adapter-azure-blob</a>
+					<a href="_jsvfs_adapter_minio_s3.html">@jsvfs/adapter-minio-s3</a>
 				</li>
 			</ul>
-			<h1>Module @jsvfs/adapter-azure-blob</h1>
+			<h1>Module @jsvfs/adapter-minio-s3</h1>
 		</div>
 	</div>
 </header>
@@ -68,14 +68,11 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<a href="#jsvfs-adapter-azure-blob" id="jsvfs-adapter-azure-blob" style="color: inherit; text-decoration: none;">
-							<h1>JSVFS Adapter: Azure Blob</h1>
+						<a href="#jsvfs-adapter-minio-s3" id="jsvfs-adapter-minio-s3" style="color: inherit; text-decoration: none;">
+							<h1>JSVFS Adapter: MinIO S3</h1>
 						</a>
-						<p>The official adapter for <a href="https://ahuggins-nhs.github.io/jsvfs/modules/_jsvfs_core.html"><code>@jsvfs/core</code></a> using Microsoft&#39;s <a href="https://github.com/Azure/azure-sdk-for-js/tree/master/sdk/storage/storage-blob"><code>@azure/storage-blob</code></a> module with block blobs as the back-end.</p>
-						<p>Allows a developer to set either a storage account or a blob container as the root of the adapter. When the root is a
-							storage account, the first name in a path will be parsed as the container name, with the remaining part of the path
-						considered the blob name. When a container is the root, all file paths are considered a blob name.</p>
-						<p>Additionally, snapshots and flushes can be limited by setting one or more globs in the <code>include</code> option. This limits
+						<p>The official adapter for <a href="https://ahuggins-nhs.github.io/jsvfs/modules/_jsvfs_core.html"><code>@jsvfs/core</code></a> using MinIO&#39;s Amazon S3 compatible <a href="https://github.com/minio/minio-js"><code>minio</code></a> module.</p>
+						<p>Snapshots and flushes can be limited by setting one or more globs in the <code>include</code> option. This limits
 							any potentially destructive behavior to just those blob names which match the given patterns. Flushes are disabled by
 						default and must be enabled by intentionally setting <code>flushEnabled</code> to true.</p>
 						<p>If you&#39;re looking to create new adapters, please use <a href="https://ahuggins-nhs.github.io/jsvfs/modules/_jsvfs_types.html"><code>@jsvfs/types</code></a> and look to <a href="https://ahuggins-nhs.github.io/jsvfs/modules/_jsvfs_adapter_node_fs.html"><code>@jsvfs/adapter-node-fs</code></a> as an example.</p>
@@ -92,16 +89,24 @@
 						<a href="#installation" id="installation" style="color: inherit; text-decoration: none;">
 							<h2>Installation</h2>
 						</a>
-						<p>Get it from <a href="https://www.npmjs.com/package/@jsvfs/adapter-azure-blob">npm</a>:</p>
-						<pre><code class="language-shell"><span style="color: #000000">npm install --save @jsvfs/adapter-azure-blob</span>
+						<p>Get it from <a href="https://www.npmjs.com/package/@jsvfs/adapter-minio-s3">npm</a>:</p>
+						<pre><code class="language-shell"><span style="color: #000000">npm install --save @jsvfs/adapter-minio-s3</span>
 </code></pre>
 						<a href="#usage" id="usage" style="color: inherit; text-decoration: none;">
 							<h3>Usage</h3>
 						</a>
-						<p>This adapter requires either an account connection string or the storage account and storage key in order to work.</p>
-						<pre><code class="language-TypeScript"><span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">AzureBlobAdapter</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;@jsvfs/adapter-azure-blob&#039;</span>
+						<p>This adapter requires client options to be passed per <a href="https://docs.min.io/docs/javascript-client-api-reference.html#MinioClient_endpoint">MinIO&#39;s documentation</a>.</p>
+						<pre><code class="language-TypeScript"><span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">MinioS3Adapter</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;@jsvfs/adapter-minio-s3&#039;</span>
 
-<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">adapter</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">AzureBlobAdapter</span><span style="color: #000000">({ </span><span style="color: #001080">access:</span><span style="color: #000000"> { </span><span style="color: #001080">connectionString:</span><span style="color: #000000"> </span><span style="color: #001080">process</span><span style="color: #000000">.</span><span style="color: #001080">env</span><span style="color: #000000">.</span><span style="color: #0070C1">MY_CONNECTION_STRING</span><span style="color: #000000"> } })</span>
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">adapter</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">MinioS3Adapter</span><span style="color: #000000">({</span>
+<span style="color: #000000">  </span><span style="color: #001080">access:</span><span style="color: #000000"> {</span>
+<span style="color: #000000">    </span><span style="color: #001080">endPoint:</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;localhost&#039;</span><span style="color: #000000">,</span>
+<span style="color: #000000">    </span><span style="color: #001080">port:</span><span style="color: #000000"> </span><span style="color: #098658">4568</span><span style="color: #000000">,</span>
+<span style="color: #000000">    </span><span style="color: #001080">useSSL:</span><span style="color: #000000"> </span><span style="color: #0000FF">false</span><span style="color: #000000">,</span>
+<span style="color: #000000">    </span><span style="color: #001080">accessKey:</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;S3RVER&#039;</span><span style="color: #000000">,</span>
+<span style="color: #000000">    </span><span style="color: #001080">secretKey:</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;S3RVER&#039;</span>
+<span style="color: #000000">  }</span>
+<span style="color: #000000">})</span>
 </code></pre>
 						<a href="#documentation" id="documentation" style="color: inherit; text-decoration: none;">
 							<h2>Documentation</h2>
@@ -117,23 +122,21 @@
 						<section class="tsd-index-section ">
 							<h3>Classes</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-class tsd-parent-kind-module"><a href="../classes/_jsvfs_adapter_azure_blob.azureblobadapter.html" class="tsd-kind-icon">Azure<wbr>Blob<wbr>Adapter</a></li>
+								<li class="tsd-kind-class tsd-parent-kind-module"><a href="../classes/_jsvfs_adapter_minio_s3.minios3adapter.html" class="tsd-kind-icon">Minio<wbr>S3Adapter</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Interfaces</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-interface tsd-parent-kind-module"><a href="../interfaces/_jsvfs_adapter_azure_blob.azblobjournalentry.html" class="tsd-kind-icon">Az<wbr>Blob<wbr>Journal<wbr>Entry</a></li>
-								<li class="tsd-kind-interface tsd-parent-kind-module"><a href="../interfaces/_jsvfs_adapter_azure_blob.azureblobaccountandkey.html" class="tsd-kind-icon">Azure<wbr>Blob<wbr>Account<wbr>And<wbr>Key</a></li>
-								<li class="tsd-kind-interface tsd-parent-kind-module"><a href="../interfaces/_jsvfs_adapter_azure_blob.azureblobadapteropts.html" class="tsd-kind-icon">Azure<wbr>Blob<wbr>Adapter<wbr>Opts</a></li>
-								<li class="tsd-kind-interface tsd-parent-kind-module"><a href="../interfaces/_jsvfs_adapter_azure_blob.azureblobconnectionstring.html" class="tsd-kind-icon">Azure<wbr>Blob<wbr>Connection<wbr>String</a></li>
-								<li class="tsd-kind-interface tsd-parent-kind-module"><a href="../interfaces/_jsvfs_adapter_azure_blob.pathparseresult.html" class="tsd-kind-icon">Path<wbr>Parse<wbr>Result</a></li>
+								<li class="tsd-kind-interface tsd-parent-kind-module"><a href="../interfaces/_jsvfs_adapter_minio_s3.minios3adapteropts.html" class="tsd-kind-icon">Minio<wbr>S3Adapter<wbr>Opts</a></li>
+								<li class="tsd-kind-interface tsd-parent-kind-module"><a href="../interfaces/_jsvfs_adapter_minio_s3.minios3journalentry.html" class="tsd-kind-icon">Minio<wbr>S3Journal<wbr>Entry</a></li>
+								<li class="tsd-kind-interface tsd-parent-kind-module"><a href="../interfaces/_jsvfs_adapter_minio_s3.pathparseresult.html" class="tsd-kind-icon">Path<wbr>Parse<wbr>Result</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Type aliases</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-type-alias tsd-parent-kind-module"><a href="_jsvfs_adapter_azure_blob.html#journalop" class="tsd-kind-icon">Journal<wbr>Op</a></li>
+								<li class="tsd-kind-type-alias tsd-parent-kind-module"><a href="_jsvfs_adapter_minio_s3.html#journalop" class="tsd-kind-icon">Journal<wbr>Op</a></li>
 							</ul>
 						</section>
 					</div>
@@ -144,10 +147,10 @@
 				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-module">
 					<a name="journalop" class="tsd-anchor"></a>
 					<h3>Journal<wbr>Op</h3>
-					<div class="tsd-signature tsd-kind-icon">Journal<wbr>Op<span class="tsd-signature-symbol">:</span> <a href="../interfaces/_jsvfs_adapter_azure_blob.azblobjournalentry.html" class="tsd-signature-type" data-tsd-kind="Interface">AzBlobJournalEntry</a><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">&quot;op&quot;</span><span class="tsd-signature-symbol">]</span></div>
+					<div class="tsd-signature tsd-kind-icon">Journal<wbr>Op<span class="tsd-signature-symbol">:</span> <a href="../interfaces/_jsvfs_adapter_minio_s3.minios3journalentry.html" class="tsd-signature-type" data-tsd-kind="Interface">MinioS3JournalEntry</a><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">&quot;op&quot;</span><span class="tsd-signature-symbol">]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/ahuggins-nhs/jsvfs/blob/ef491e0/packages/adapter-azure-blob/src/types.ts#L7">packages/adapter-azure-blob/src/types.ts:7</a></li>
+							<li>Defined in <a href="https://github.com/ahuggins-nhs/jsvfs/blob/ef491e0/packages/adapter-minio-s3/src/types.ts#L8">packages/adapter-minio-s3/src/types.ts:8</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -159,10 +162,10 @@
 					<li class=" ">
 						<a href="../modules.html">Modules</a>
 					</li>
-					<li class="current tsd-kind-module">
+					<li class=" tsd-kind-module">
 						<a href="_jsvfs_adapter_azure_blob.html">@jsvfs/adapter-<wbr>azure-<wbr>blob</a>
 					</li>
-					<li class=" tsd-kind-module">
+					<li class="current tsd-kind-module">
 						<a href="_jsvfs_adapter_minio_s3.html">@jsvfs/adapter-<wbr>minio-<wbr>s3</a>
 					</li>
 					<li class=" tsd-kind-module">
@@ -188,25 +191,19 @@
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
 					<li class=" tsd-kind-class tsd-parent-kind-module">
-						<a href="../classes/_jsvfs_adapter_azure_blob.azureblobadapter.html" class="tsd-kind-icon">Azure<wbr>Blob<wbr>Adapter</a>
+						<a href="../classes/_jsvfs_adapter_minio_s3.minios3adapter.html" class="tsd-kind-icon">Minio<wbr>S3Adapter</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-module">
-						<a href="../interfaces/_jsvfs_adapter_azure_blob.azblobjournalentry.html" class="tsd-kind-icon">Az<wbr>Blob<wbr>Journal<wbr>Entry</a>
+						<a href="../interfaces/_jsvfs_adapter_minio_s3.minios3adapteropts.html" class="tsd-kind-icon">Minio<wbr>S3Adapter<wbr>Opts</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-module">
-						<a href="../interfaces/_jsvfs_adapter_azure_blob.azureblobaccountandkey.html" class="tsd-kind-icon">Azure<wbr>Blob<wbr>Account<wbr>And<wbr>Key</a>
+						<a href="../interfaces/_jsvfs_adapter_minio_s3.minios3journalentry.html" class="tsd-kind-icon">Minio<wbr>S3Journal<wbr>Entry</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-module">
-						<a href="../interfaces/_jsvfs_adapter_azure_blob.azureblobadapteropts.html" class="tsd-kind-icon">Azure<wbr>Blob<wbr>Adapter<wbr>Opts</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-module">
-						<a href="../interfaces/_jsvfs_adapter_azure_blob.azureblobconnectionstring.html" class="tsd-kind-icon">Azure<wbr>Blob<wbr>Connection<wbr>String</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-module">
-						<a href="../interfaces/_jsvfs_adapter_azure_blob.pathparseresult.html" class="tsd-kind-icon">Path<wbr>Parse<wbr>Result</a>
+						<a href="../interfaces/_jsvfs_adapter_minio_s3.pathparseresult.html" class="tsd-kind-icon">Path<wbr>Parse<wbr>Result</a>
 					</li>
 					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
-						<a href="_jsvfs_adapter_azure_blob.html#journalop" class="tsd-kind-icon">Journal<wbr>Op</a>
+						<a href="_jsvfs_adapter_minio_s3.html#journalop" class="tsd-kind-icon">Journal<wbr>Op</a>
 					</li>
 				</ul>
 			</nav>
