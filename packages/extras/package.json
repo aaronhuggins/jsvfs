@@ -1,6 +1,6 @@
 {
   "name": "@jsvfs/extras",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Shared classes and helpers for JSVFS adapters.",
   "main": "index.js",
   "types": "index.d.ts",
@@ -27,7 +27,7 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "@jsvfs/types": "^0.1.0",
+    "@jsvfs/types": "^1.0.0",
     "ajv": "^7.1.0",
     "picomatch": "^2.2.2"
   },

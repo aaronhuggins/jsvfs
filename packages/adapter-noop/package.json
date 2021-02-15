@@ -1,6 +1,6 @@
 {
   "name": "@jsvfs/adapter-noop",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "The default adapter for `@jsvfs/core`.",
   "main": "index.js",
   "types": "index.d.ts",
@@ -28,6 +28,6 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "@jsvfs/types": "^0.1.0"
+    "@jsvfs/types": "^1.0.0"
   }
 }

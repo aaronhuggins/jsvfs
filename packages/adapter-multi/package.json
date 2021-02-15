@@ -1,6 +1,6 @@
 {
   "name": "@jsvfs/adapter-multi",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "An adapter of multiple adapters for JSVFS.",
   "main": "index.js",
   "types": "index.d.ts",
@@ -30,7 +30,7 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "@jsvfs/extras": "^0.1.0",
-    "@jsvfs/types": "^0.1.0"
+    "@jsvfs/extras": "^1.0.0",
+    "@jsvfs/types": "^1.0.0"
   }
 }

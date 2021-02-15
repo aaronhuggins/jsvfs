@@ -1,6 +1,6 @@
 {
   "name": "@jsvfs/adapter-azure-blob",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "An adapter for Azure Storage Blobs.",
   "main": "index.js",
   "types": "index.d.ts",
@@ -30,8 +30,8 @@
   "license": "MIT",
   "dependencies": {
     "@azure/storage-blob": "^12.4.1",
-    "@jsvfs/extras": "^0.1.0",
-    "@jsvfs/types": "^0.1.0"
+    "@jsvfs/extras": "^1.0.0",
+    "@jsvfs/types": "^1.0.0"
   },
   "devDependencies": {
     "@types/node-fetch": "^2.5.8"

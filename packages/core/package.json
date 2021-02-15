@@ -1,6 +1,6 @@
 {
   "name": "@jsvfs/core",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "The JavaScript Virtual File System - an extensible engine for file operations.",
   "main": "index.js",
   "files": [
@@ -30,7 +30,7 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "@jsvfs/adapter-noop": "^0.1.0",
-    "@jsvfs/types": "^0.1.0"
+    "@jsvfs/adapter-noop": "^1.0.0",
+    "@jsvfs/types": "^1.0.0"
   }
 }
