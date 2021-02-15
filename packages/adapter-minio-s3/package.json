@@ -1,0 +1,39 @@
+{
+  "name": "@jsvfs/adapter-minio-s3",
+  "version": "0.1.0",
+  "description": "An adapter for Amazon S3 compatible storage using the MinIO JS library.",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "scripts": {
+    "prepack": "tsc"
+  },
+  "homepage": "https://github.com/ahuggins-nhs/jsvfs/tree/main/packages/adapter-minio-s3",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:ahuggins-nhs/jsvfs.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "author": "Aaron Huggins <aaron.huggins@gmail.com>",
+  "keywords": [
+    "jsvfs",
+    "vfs",
+    "virtual file system",
+    "file system",
+    "adapter",
+    "jsvfs adapter",
+    "amazon",
+    "amazon s3",
+    "s3",
+    "minio",
+    "storage"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "@jsvfs/extras": "^0.1.0",
+    "@jsvfs/types": "^0.1.0",
+    "@types/minio": "^7.0.7",
+    "minio": "^7.0.18"
+  }
+}

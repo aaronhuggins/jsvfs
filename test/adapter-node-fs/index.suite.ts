@@ -7,7 +7,7 @@ import { NodeFSAdapter } from '../../packages/adapter-node-fs/index'
 
 const { existsSync, mkdirSync, symlinkSync, writeFileSync } = fs
 
-describe ('Module @jsvfs/adapter-node-fs', () => {
+describe('Module @jsvfs/adapter-node-fs', () => {
   before(function () {
     // Weird issue where, sometimes, the before hook times out in Mocha.
     this.timeout(5000)
@@ -92,14 +92,14 @@ describe ('Module @jsvfs/adapter-node-fs', () => {
     writeFileSync('fake/file.txt', Buffer.alloc(0))
 
     const nodeFs = new NodeFSAdapter({ cwd: 'fake' })
-    const checkSnapshot = async (expected: number) => {
-      let counter = 0
+    const checkSnapshot = async (expected: number): Promise<void> => {
+      const accumulator = []
 
       for await (const a of nodeFs.snapshot()) {
-        counter += 1
+        accumulator.push(a)
       }
-  
-      strictEqual(counter, expected)
+
+      strictEqual(accumulator.length, expected)
     }
 
     await checkSnapshot(5)
@@ -123,15 +123,15 @@ describe ('Module @jsvfs/adapter-node-fs', () => {
     await checkSnapshot(0)
   })
 
-  it ('should handle individual file/folder APIs', async () => {
+  it('should handle individual file/folder APIs', async () => {
     const nodeFs = new NodeFSAdapter({ cwd: 'fake' })
 
     await doesNotReject(async () => {
-      nodeFs.write('/file2.txt')
+      await nodeFs.write('/file2.txt')
     })
 
     await doesNotReject(async () => {
-      nodeFs.write('/file4.txt', Buffer.from([1, 2]))
+      await nodeFs.write('/file4.txt', Buffer.from([1, 2]))
     })
 
     await doesNotReject(async () => {
@@ -143,7 +143,7 @@ describe ('Module @jsvfs/adapter-node-fs', () => {
     })
 
     await doesNotReject(async () => {
-      nodeFs.mkdir('/folder')
+      await nodeFs.mkdir('/folder')
     })
   })
 

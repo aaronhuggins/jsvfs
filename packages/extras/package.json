@@ -1,0 +1,37 @@
+{
+  "name": "@jsvfs/extras",
+  "version": "0.1.0",
+  "description": "Shared classes and helpers for JSVFS adapters.",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "scripts": {
+    "prepack": "tsc",
+    "test": "tsc --noEmit"
+  },
+  "homepage": "https://github.com/ahuggins-nhs/jsvfs/tree/main/packages/extras",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:ahuggins-nhs/jsvfs.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "author": "Aaron Huggins <aaron.huggins@gmail.com>",
+  "keywords": [
+    "jsvfs",
+    "vfs",
+    "virtual file system",
+    "file system",
+    "typescript",
+    "errors"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "@jsvfs/types": "^0.1.0",
+    "ajv": "^7.1.0",
+    "picomatch": "^2.2.2"
+  },
+  "devDependencies": {
+    "@types/picomatch": "^2.2.1"
+  }
+}

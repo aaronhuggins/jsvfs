@@ -1,0 +1,39 @@
+{
+  "name": "@jsvfs/adapter-azure-blob",
+  "version": "0.1.0",
+  "description": "An adapter for Azure Storage Blobs.",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "scripts": {
+    "prepack": "tsc"
+  },
+  "homepage": "https://github.com/ahuggins-nhs/jsvfs/tree/main/packages/adapter-azure-blob",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:ahuggins-nhs/jsvfs.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "author": "Aaron Huggins <aaron.huggins@gmail.com>",
+  "keywords": [
+    "jsvfs",
+    "vfs",
+    "virtual file system",
+    "file system",
+    "adapter",
+    "jsvfs adapter",
+    "azure",
+    "azure blob",
+    "azure storage blob"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "@azure/storage-blob": "^12.4.1",
+    "@jsvfs/extras": "^0.1.0",
+    "@jsvfs/types": "^0.1.0"
+  },
+  "devDependencies": {
+    "@types/node-fetch": "^2.5.8"
+  }
+}

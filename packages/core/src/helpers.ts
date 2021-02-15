@@ -15,7 +15,7 @@ export function destructure (path: string): string[] {
 }
 
 /** Perform a POSIX join on one or more strings. */
-export function join (...paths: string[]) {
+export function join (...paths: string[]): string {
   return normalize(paths.join(SEPARATOR))
 }
 
@@ -91,7 +91,7 @@ export function getItemAtPath (root: Root, path: string, resolveLinks: boolean =
         }
         break
       default:
-        throw new TypeError(`FATAL: Unexpected item type ${(current as any).type} encountered.`)
+        throw new TypeError(`FATAL: Unexpected item type ${(current as Item).type} encountered.`)
     }
   }
 
