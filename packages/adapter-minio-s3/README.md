@@ -23,6 +23,24 @@ Get it from npm:
 npm install --save @jsvfs/adapter-minio-s3
 ```
 
+### Usage
+
+This adapter requires client options to be passed per [MinIO's documentation](https://docs.min.io/docs/javascript-client-api-reference.html#MinioClient_endpoint).
+
+```TypeScript
+import { MinioS3Adapter } from '@jsvfs/adapter-minio-s3'
+
+const adapter = new MinioS3Adapter({
+  access: {
+    endPoint: 'localhost',
+    port: 4568,
+    useSSL: false,
+    accessKey: 'S3RVER',
+    secretKey: 'S3RVER'
+  }
+})
+```
+
 ## Documentation
 
 Complete documentation of `jsvfs` can be found at the [jsvfs site](https://ahuggins-nhs.github.io/jsvfs/).

@@ -27,6 +27,16 @@ Get it from npm:
 npm install --save @jsvfs/adapter-azure-blob
 ```
 
+### Usage
+
+This adapter requires either an account connection string or the storage account and storage key in order to work.
+
+```TypeScript
+import { AzureBlobAdapter } from '@jsvfs/adapter-azure-blob'
+
+const adapter = new AzureBlobAdapter({ access: { connectionString: process.env.MY_CONNECTION_STRING } })
+```
+
 ## Documentation
 
 Complete documentation of `jsvfs` can be found at the [jsvfs site](https://ahuggins-nhs.github.io/jsvfs/).

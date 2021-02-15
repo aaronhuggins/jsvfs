@@ -24,6 +24,16 @@ Get it from npm:
 npm install --save @jsvfs/adapter-node-fs
 ```
 
+### Usage
+
+This adapter requires no options, but it will bind by default to the current working directory of the process. Pass a directory in the `cwd` property to bind to that instead.
+
+```TypeScript
+import { NodeFSAdapter } from '@jsvfs/adapter-node-fs'
+
+const adapter = new NodeFSAdapter({ cwd: '/tmp' })
+```
+
 ## Documentation
 
 Complete documentation of `jsvfs` can be found at the [jsvfs site](https://ahuggins-nhs.github.io/jsvfs/).
