@@ -1,8 +1,8 @@
 # JSVFS Adapter: Multi Adapter
 
-The official adapter for using multiple other adapters.
+The official adapter for [`@jsvfs/core`](https://ahuggins-nhs.github.io/jsvfs/modules/_jsvfs_core.html) using multiple other adapters.
 
-If you're looking to create new adapters, please use `@jsvfs/types` and look to `@jsvfs/adapter-node-fs` as an example.
+If you're looking to create new adapters, please use [`@jsvfs/types`](https://ahuggins-nhs.github.io/jsvfs/modules/_jsvfs_types.html) and look to [`@jsvfs/adapter-node-fs`](https://ahuggins-nhs.github.io/jsvfs/modules/_jsvfs_adapter_node_fs.html) as an example.
 
 ## Supported Features
 
@@ -19,7 +19,7 @@ This adapter does not support:
 
 ## Installation
 
-Get it from npm:
+Get it from [npm](https://www.npmjs.com/package/@jsvfs/adapter-multi):
 ```shell
 npm install --save @jsvfs/adapter-multi
 ```

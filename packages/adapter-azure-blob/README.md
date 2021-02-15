@@ -1,6 +1,6 @@
 # JSVFS Adapter: Azure Blob
 
-The official adapter for `@jsvfs/core` using Microsoft's `@azure/storage-blob` module with block blobs as the back-end.
+The official adapter for [`@jsvfs/core`](https://ahuggins-nhs.github.io/jsvfs/modules/_jsvfs_core.html) using Microsoft's [`@azure/storage-blob`](https://github.com/Azure/azure-sdk-for-js/tree/master/sdk/storage/storage-blob) module with block blobs as the back-end.
 
 Allows a developer to set either a storage account or a blob container as the root of the adapter. When the root is a
 storage account, the first name in a path will be parsed as the container name, with the remaining part of the path
@@ -10,7 +10,7 @@ Additionally, snapshots and flushes can be limited by setting one or more globs 
 any potentially destructive behavior to just those blob names which match the given patterns. Flushes are disabled by
 default and must be enabled by intentionally setting `flushEnabled` to true.
 
-If you're looking to create new adapters, please use `@jsvfs/types` and look to `@jsvfs/adapter-node-fs` as an example.
+If you're looking to create new adapters, please use [`@jsvfs/types`](https://ahuggins-nhs.github.io/jsvfs/modules/_jsvfs_types.html) and look to [`@jsvfs/adapter-node-fs`](https://ahuggins-nhs.github.io/jsvfs/modules/_jsvfs_adapter_node_fs.html) as an example.
 
 ## Supported Features
 
@@ -22,7 +22,7 @@ If you're looking to create new adapters, please use `@jsvfs/types` and look to 
 
 ## Installation
 
-Get it from npm:
+Get it from [npm](https://www.npmjs.com/package/@jsvfs/adapter-azure-blob):
 ```shell
 npm install --save @jsvfs/adapter-azure-blob
 ```
