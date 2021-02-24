@@ -31,7 +31,7 @@ export async function * streamToAsyncGenerator<T = any> (reader: Readable, chunk
   const signalEnd = new Promise<void>(resolve => {
     reader.once('end', () => {
       // Manage readableEnded, because not all implementors of Readable set this to true on end.
-      if (!readableEnded) readableEnded = true
+      readableEnded = true
 
       resolve()
     })
