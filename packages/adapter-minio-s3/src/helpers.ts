@@ -26,12 +26,18 @@ export function parse (path: string, root: string): PathParseResult {
 }
 
 /** Convert a Readable stream to an Async Generator. Based on https://www.derpturkey.com/nodejs-async-generators-for-streaming */
-export async function * streamToAsyncGenerator<T> (reader: Readable, chunkSize?: number): AsyncGenerator<T> {
+export async function * streamToAsyncGenerator<T = any> (reader: Readable, chunkSize?: number): AsyncGenerator<T> {
+  let readableEnded = false
   const signalEnd = new Promise<void>(resolve => {
-    reader.once('end', resolve)
+    reader.once('end', () => {
+      // Manage readableEnded, because not all implementors of Readable set this to true on end.
+      if (!readableEnded) readableEnded = true
+
+      resolve()
+    })
   })
 
-  while (!reader.readableEnded) {
+  while (!readableEnded) {
     while (reader.readable) {
       const val: T = typeof chunkSize === 'number'
         ? reader.read(chunkSize) ?? reader.read()
