@@ -1,6 +1,6 @@
 {
   "name": "@jsvfs/adapter-minio-s3",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "An adapter for Amazon S3 compatible storage using the MinIO JS library.",
   "main": "index.js",
   "types": "index.d.ts",
