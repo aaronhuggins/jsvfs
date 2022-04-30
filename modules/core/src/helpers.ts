@@ -1,4 +1,4 @@
-import { Folder, Item, ParentItem, RealItem, Root } from './Item'
+import { Folder, Item, ParentItem, RealItem, Root } from './Item.ts'
 
 export const SEPARATOR = '/'
 
@@ -38,7 +38,7 @@ export function basename (path: string): string {
 export function getItemAtPath (root: Root, path: string): RealItem
 export function getItemAtPath (root: Root, path: string, resolveLinks: false): Item
 export function getItemAtPath (root: Root, path: string, resolveLinks: true): RealItem
-export function getItemAtPath (root: Root, path: string, resolveLinks: boolean = true): Item {
+export function getItemAtPath (root: Root, path: string, resolveLinks = true): Item {
   const tree = destructure(path)
   let item: Item = root
 
