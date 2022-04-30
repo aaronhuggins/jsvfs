@@ -1,8 +1,5 @@
-/**
- * [[include:packages/types/README.md]]
- * @packageDocumentation
- * @module @jsvfs/types
- */
+// deno-lint-ignore-file no-explicit-any
+import type { Buffer } from "https://deno.land/std@0.137.0/node/buffer.ts"
 
 export const JSON_SCHEMA = {
   JournalEntry: {
