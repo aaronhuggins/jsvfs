@@ -1,11 +1,7 @@
-/**
- * [[include:packages/extras/README.md]]
- * @packageDocumentation
- * @module @jsvfs/extras
- */
-import { JournalEntry, JSON_SCHEMA } from '@jsvfs/types'
-import Ajv from 'ajv'
-import * as picomatch from 'picomatch'
+// deno-lint-ignore-file no-explicit-any
+import { JournalEntry, JSON_SCHEMA } from '../types/mod.ts'
+import Ajv from 'https://cdn.skypack.dev/ajv@v7.2.4?dts'
+import picomatch from 'https://cdn.skypack.dev/picomatch@v2.3.1?dts'
 
 type JournalOp = JournalEntry['op']
 
@@ -19,11 +15,7 @@ export class Journal<T extends JournalEntry> extends Array<T> {
   /** Constructs an instance of Journal; typical usage will not pass options, and if options are passed they will be validated. */
   constructor (...items: T[])
   constructor (...inputs: [number] | T[]) {
-    if (inputs.length === 1 && typeof inputs[0] === 'number') {
-      super(inputs[0])
-    } else {
-      super()
-    }
+    super(inputs.length === 1 && typeof inputs[0] === 'number' ? inputs[0] : 0)
 
     if (inputs.length > 0 && typeof inputs[0] === 'object') {
       this.push(...inputs as T[])
