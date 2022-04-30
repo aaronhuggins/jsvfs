@@ -1,14 +1,16 @@
-import type { Adapter, FolderType, ItemType, LinkType } from '@jsvfs/types'
+// deno-lint-ignore-file no-explicit-any
+import type { Buffer } from "https://deno.land/std@0.137.0/node/buffer.ts"
+import type { Adapter, FolderType, ItemType, LinkType } from '../../types/mod.ts'
 
 export type RealItem = File | Folder | Root
 export type Item = RealItem | Link
 
 abstract class ItemBase {
   constructor (item: Partial<ItemBase>) {
-    this.adapter = item.adapter
-    this.type = item.type
-    this.path = item.path
-    this.name = item.name
+    this.adapter = item.adapter as Adapter
+    this.type = item.type as ItemType
+    this.path = item.path as string
+    this.name = item.name as string
     this.contents = item.contents
     this.parent = item.parent
     this.committed = false
@@ -45,21 +47,21 @@ export class ParentItem extends ItemBase {
   }
 
   /** The type of item, root or a folder. */
-  type: FolderType
+  declare type: FolderType
   /** The children of the folder. */
   contents: Map<string, Item>
 
   list (): string[]
   list (long: true): Item[]
-  list (long: boolean): string[] | Item[]
-  list (long: boolean = false): string[] | Item[] {
+  list (long: false): string[]
+  list (long = false): string[] | Item[] {
     if (long) return Array.from(this.contents.values())
 
     return Array.from(this.contents.keys())
   }
 
   get (name: string): Item {
-    return this.contents.get(name)
+    return this.contents.get(name) as Item
   }
 
   set (name: string, item: Item): void {
@@ -112,7 +114,7 @@ export class Folder extends ParentItem {
   }
 
   /** The type of item, a folder. */
-  type: 'folder'
+  declare type: 'folder'
 }
 
 /** A special item; represents the top-level of the file system. */
@@ -126,7 +128,7 @@ export class Root extends ParentItem {
   }
 
   /** The type of item, a root folder. */
-  type: 'root'
+  declare type: 'root'
 }
 
 /** Represents a file item in the file system. */
@@ -139,8 +141,8 @@ export class File extends ItemBase {
   }
 
   /** The type of item, a file. */
-  type: 'file'
-  contents: Buffer
+  declare type: 'file'
+  declare contents: Buffer
 
   get size (): number {
     return this.contents.length
@@ -166,8 +168,8 @@ export class Link extends ItemBase {
   }
 
   /** The type of item, either a hardlink or softlink. */
-  type: LinkType
-  contents: RealItem
+  declare type: LinkType
+  declare contents: RealItem
 
   get size (): number {
     return 0
