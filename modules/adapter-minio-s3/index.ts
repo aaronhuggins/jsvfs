@@ -1,8 +1,2 @@
-/**
- * [[include:packages/adapter-minio-s3/README.md]]
- * @packageDocumentation
- * @module @jsvfs/adapter-minio-s3
- */
-
-export * from './src/MinioS3Adapter'
-export * from './src/types'
+export * from './src/MinioS3Adapter.ts'
+export * from './src/types.ts'
