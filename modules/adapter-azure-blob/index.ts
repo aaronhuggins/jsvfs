@@ -1,8 +1,2 @@
-/**
- * [[include:packages/adapter-azure-blob/README.md]]
- * @packageDocumentation
- * @module @jsvfs/adapter-azure-blob
- */
-
-export * from './src/AzureBlobAdapter'
-export * from './src/types'
+export * from './src/AzureBlobAdapter.ts'
+export * from './src/types.ts'
