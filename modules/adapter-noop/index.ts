@@ -1,10 +1,6 @@
-/**
- * [[include:packages/adapter-noop/README.md]]
- * @packageDocumentation
- * @module @jsvfs/adapter-noop
- */
-
-import type { Adapter, ItemType, JournalEntry, LinkType, SnapshotEntry } from '@jsvfs/types'
+// deno-lint-ignore-file no-unused-vars
+import type { Buffer } from "https://deno.land/std@0.137.0/node/buffer.ts"
+import type { Adapter, ItemType, JournalEntry, LinkType, SnapshotEntry } from '../types/mod.ts'
 
 /** An adapter for No-Operation; essentially makes the VFS a memory-only instance. */
 export class NoopAdapter implements Adapter {
