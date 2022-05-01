@@ -1,9 +1,10 @@
-import { PathParseResult } from './types'
+// deno-lint-ignore-file no-explicit-any
+import { PathParseResult } from './types.ts'
 
 /** Function for iterating over a string and ensuring it is a valid container name.
  * See [Microsofts documentation](https://docs.microsoft.com/en-us/rest/api/storageservices/naming-and-referencing-containers--blobs--and-metadata#container-names)
  */
-export function isContainerName (str: string): boolean {
+export function isContainerName (str: any): str is string {
   const validChars = '-abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
   const minLength = 3
   const maxLength = 63

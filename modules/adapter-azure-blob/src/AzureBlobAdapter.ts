@@ -1,8 +1,10 @@
-import { Journal, Matcher } from '@jsvfs/extras'
-import { BlobServiceClient, ContainerClient, StorageSharedKeyCredential as BlobCredential } from '@azure/storage-blob'
-import { isContainerName, parse } from './helpers'
-import type { Adapter, ItemType, LinkType, SnapshotEntry } from '@jsvfs/types'
-import type { AzureBlobAdapterOpts, AzBlobJournalEntry, JournalOp } from './types'
+// deno-lint-ignore-file no-unused-vars no-inferrable-types
+import { Buffer } from "https://deno.land/std@0.137.0/node/buffer.ts"
+import { BlobServiceClient, ContainerClient, StorageSharedKeyCredential as BlobCredential } from 'https://cdn.skypack.dev/@azure/storage-blob@v12.9.0?dts'
+import { Journal, Matcher } from '../../extras/mod.ts'
+import { isContainerName, parse } from './helpers.ts'
+import type { Adapter, ItemType, LinkType, SnapshotEntry } from '../../types/mod.ts'
+import type { AzureBlobAdapterOpts, AzBlobJournalEntry, JournalOp } from './types.ts'
 
 /** An adapter for Azure Storage Blobs. */
 export class AzureBlobAdapter implements Adapter {

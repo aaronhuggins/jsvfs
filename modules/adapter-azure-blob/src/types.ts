@@ -1,4 +1,4 @@
-import { JournalEntry } from '@jsvfs/types'
+import { JournalEntry } from '../../types/mod.ts'
 
 export interface AzBlobJournalEntry extends JournalEntry {
   error: Error
