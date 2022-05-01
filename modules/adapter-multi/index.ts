@@ -1,10 +1,7 @@
-/**
- * [[include:packages/adapter-multi/README.md]]
- * @packageDocumentation
- * @module @jsvfs/adapter-multi
- */
-import { Journal } from '@jsvfs/extras'
-import { Adapter, ItemType, JournalEntry, LinkType, SnapshotEntry } from '@jsvfs/types'
+// deno-lint-ignore-file no-explicit-any
+import { Buffer } from "https://deno.land/std@0.137.0/node/buffer.ts"
+import { Journal } from '../extras/mod.ts'
+import { Adapter, ItemType, JournalEntry, LinkType, SnapshotEntry } from '../types/mod.ts'
 
 /**
  * Observe an array or journal in order to capture each push.
