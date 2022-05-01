@@ -1,14 +1,16 @@
+// deno-lint-ignore-file ban-types no-inferrable-types no-fallthrough
 /* eslint-disable no-fallthrough */
-import { NoopAdapter } from '@jsvfs/adapter-noop'
-import { basename, destructure, getItemAtPath, join, normalize, SEPARATOR, setItemAtPath } from './helpers'
-import { File, Folder, Item, Link, RealItem, Root } from './Item'
-import type { Adapter, ItemType, LinkType, SnapshotLinkEntry } from '@jsvfs/types'
+import { Buffer } from "https://deno.land/std@0.137.0/node/buffer.ts"
+import { NoopAdapter } from '../../adapter-noop/mod.ts'
+import { basename, destructure, getItemAtPath, join, normalize, SEPARATOR, setItemAtPath } from './helpers.ts'
+import { File, Folder, Item, Link, RealItem, Root } from './Item.ts'
+import type { Adapter, ItemType, LinkType, SnapshotLinkEntry } from '../../types/mod.ts'
 
 /** Create a JavaScript virtual file system in memory. */
 export class VirtualFileSystem {
   /** @param {Adapter} [adapter] - The adapter for this instance; if none is provided, then it defaults to noop. */
   constructor (adapter?: Adapter) {
-    this.adapter = adapter
+    this.adapter = adapter as Adapter
 
     if (typeof this.adapter === 'undefined') {
       this.adapter = new NoopAdapter()
@@ -93,11 +95,11 @@ export class VirtualFileSystem {
       contents = Buffer.from(contents, 'utf8')
     }
 
-    let item: RealItem
+    let item: RealItem | undefined
 
     try {
       item = getItemAtPath(this.root, path)
-    } catch (error) {
+    } catch (_error) {
       // Ignore errors; will create directory tree and encounter errors later as needed.
     }
 
@@ -135,11 +137,11 @@ export class VirtualFileSystem {
 
   /** Delete a file; if the target is a hardlink, also deletes the link contents. Returns false if the item does not exist. */
   delete (path: string): boolean {
-    let item: Item
+    let item: Item | undefined
 
     try {
       item = getItemAtPath(this.root, path, false)
-    } catch (error) {}
+    } catch (_error) { /* Noop */ }
 
     if (typeof item === 'undefined') {
       this.addRmCache(path, 'file')
@@ -149,18 +151,18 @@ export class VirtualFileSystem {
     switch (item.type) {
       case 'file':
         this.addRmCache(path, item.type)
-        return item.parent.delete(item.name)
+        return item.parent?.delete(item.name) ?? false
       case 'hardlink':
         if (item.contents.type === 'file') {
           this.addRmCache(path, item.type)
           this.rmCache.set(normalize(item.contents.path), item.contents.type)
-          return item.parent.delete(item.name) &&
-            item.contents.parent.delete(item.contents.name)
+          return (item.parent?.delete(item.name) ?? false) &&
+            (item.contents.parent?.delete(item.contents.name) ?? false)
         }
       case 'softlink':
         if (item.contents.type === 'file') {
           this.addRmCache(path, item.type)
-          return item.parent.delete(item.name)
+          return item.parent?.delete(item.name) ?? false
         }
       default:
         throw new TypeError(`Expected a file, encountered a folder at path ${path}`)
@@ -185,11 +187,11 @@ export class VirtualFileSystem {
   readdir (path: string, long: true): Item[]
   readdir (path: string, long: boolean): string[] | Item[]
   readdir (path: string, long: boolean = false): string[] | Item[] {
-    let item: RealItem
+    let item: RealItem | undefined
 
     try {
       item = getItemAtPath(this.root, path)
-    } catch (error) {}
+    } catch (_error) { /* Noop */ }
 
     if (typeof item === 'undefined') return []
 
@@ -204,11 +206,11 @@ export class VirtualFileSystem {
 
   /** Remove a directory and it's contents. If the path is a folder link, both the link and the link target will be removed. */
   rmdir (path: string): boolean {
-    let item: Item
+    let item: Item | undefined
 
     try {
       item = getItemAtPath(this.root, path, false)
-    } catch (error) {}
+    } catch (_error) { /* Noop */ }
 
     if (typeof item === 'undefined') {
       this.addRmCache(path, 'folder')
@@ -219,7 +221,7 @@ export class VirtualFileSystem {
       case 'folder':
       case 'root':
         this.addRmCache(path, item.type)
-        return item.parent.delete(item.name)
+        return item.parent?.delete(item.name) ?? false
       case 'hardlink':
       case 'softlink':
         switch (item.contents.type) {
@@ -227,8 +229,8 @@ export class VirtualFileSystem {
           case 'root':
             this.addRmCache(path, item.type)
             this.rmCache.set(normalize(item.contents.path), item.contents.type)
-            return item.parent.delete(item.name) &&
-              item.contents.parent.delete(item.contents.name)
+            return (item.parent?.delete(item.name) ?? false) &&
+              (item.contents.parent?.delete(item.contents.name) ?? false)
         }
       default:
         throw new TypeError(`Expected a file, encountered a folder at path ${path}`)
@@ -250,7 +252,7 @@ export class VirtualFileSystem {
         }))
 
         return true
-      } catch (error) {
+      } catch (_error) {
         return false
       }
     }
@@ -260,11 +262,11 @@ export class VirtualFileSystem {
 
   /** Remove a link; returns false if not a link. Does not delete files, this is not a Node API. */
   unlink (path: string): boolean {
-    let item: Item
+    let item: Item | undefined
 
     try {
       item = getItemAtPath(this.root, path, false)
-    } catch (error) {}
+    } catch (_error) { /* Noop */ }
 
     if (typeof item === 'undefined') {
       this.addRmCache(path, 'softlink')
@@ -275,7 +277,7 @@ export class VirtualFileSystem {
       case 'hardlink':
       case 'softlink':
         this.addRmCache(path, item.type)
-        return item.parent.delete(item.name)
+        return item.parent?.delete(item.name) ?? false
     }
 
     return false
@@ -283,11 +285,11 @@ export class VirtualFileSystem {
 
   /** Check to see if a path exists in the virtual file system tree. */
   exists (path: string): boolean {
-    let item: Item
+    let item: Item | undefined
 
     try {
       item = getItemAtPath(this.root, path, false)
-    } catch (error) {
+    } catch (_error) {
       // Ignore errors; just checking for existence.
     }
 
