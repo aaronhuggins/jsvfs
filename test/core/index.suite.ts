@@ -1,9 +1,12 @@
-import * as sinon from 'sinon'
-import { doesNotReject, doesNotThrow, rejects, strictEqual, throws } from 'assert'
-import { dirname } from 'path'
-import { VirtualFileSystem } from '../../packages/core/index'
-import { NoopAdapter } from '../../packages/adapter-noop/index'
-import { basename } from '../../packages/core/src/helpers'
+// deno-lint-ignore-file no-explicit-any
+import sinon from "https://cdn.skypack.dev/sinon@11.1.2?dts"
+import { Buffer } from "https://deno.land/std@0.137.0/node/buffer.ts"
+import { describe, it } from "https://deno.land/x/deno_mocha@0.3.0/mod.ts"
+import { doesNotReject, doesNotThrow, rejects, strictEqual, throws } from 'https://deno.land/std@0.137.0/node/assert.ts'
+import { dirname } from 'https://deno.land/std@0.137.0/node/path.ts'
+import { VirtualFileSystem } from '../../modules/core/mod.ts'
+import { NoopAdapter } from '../../modules/adapter-noop/mod.ts'
+import { basename } from '../../modules/core/src/helpers.ts'
 
 describe('Module @jsvfs/core', () => {
   const testFolderPath = 'folder/subfolder'
@@ -62,6 +65,7 @@ describe('Module @jsvfs/core', () => {
     })
 
     // Fake read on adapter noop.
+    // deno-lint-ignore require-await
     Object.defineProperty(adapter, 'read', { value: async () => Buffer.alloc(0) })
 
     await doesNotReject(async () => {
