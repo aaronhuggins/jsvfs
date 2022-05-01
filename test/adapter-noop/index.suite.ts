@@ -1,5 +1,6 @@
-import { strictEqual } from 'assert'
-import { NoopAdapter } from '../../packages/adapter-noop/index'
+import { describe, it } from "https://deno.land/x/deno_mocha@0.3.0/mod.ts"
+import { strictEqual } from 'https://deno.land/std@0.137.0/node/assert.ts'
+import { NoopAdapter } from '../../modules/adapter-noop/mod.ts'
 
 describe('Module @jsvfs/adapter-noop', () => {
   it('should return void on all operations', async () => {
