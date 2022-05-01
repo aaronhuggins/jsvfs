@@ -1,5 +1,7 @@
-import { doesNotThrow, strictEqual } from 'assert'
-import { Journal } from '../../packages/extras/index'
+// deno-lint-ignore-file no-explicit-any
+import { describe, it } from "https://deno.land/x/deno_mocha@0.3.0/mod.ts"
+import { doesNotThrow, strictEqual } from 'https://deno.land/std@0.137.0/node/assert.ts'
+import { Journal } from '../../modules/extras/mod.ts'
 
 describe('Module @jsvfs/extras', () => {
   it('should construct a journal', () => {
