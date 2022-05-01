@@ -1,9 +1,13 @@
-import { BucketItem, Client, ClientOptions, CopyConditions } from 'minio'
-import { isValidBucketName } from 'minio/dist/main/helpers'
-import { Journal, Matcher } from '@jsvfs/extras'
-import { parse, streamToAsyncGenerator } from './helpers'
-import type { Adapter, ItemType, LinkType, SnapshotEntry } from '@jsvfs/types'
-import type { JournalOp, MinioS3AdapterOpts, MinioS3JournalEntry } from './types'
+// deno-lint-ignore-file no-explicit-any no-unused-vars no-inferrable-types
+import { Buffer } from "https://deno.land/std@0.137.0/node/buffer.ts"
+import { BucketItem, Client, ClientOptions, CopyConditions } from 'https://cdn.skypack.dev/minio@v7.0.28?dts'
+import { isValidBucketName as isValidBucketNameImpl } from 'https://cdn.skypack.dev/minio@v7.0.28/dist/main/helpers?dts'
+import { Journal, Matcher } from '../../extras/mod.ts'
+import { parse, streamToAsyncGenerator } from './helpers.ts'
+import type { Adapter, ItemType, LinkType, SnapshotEntry } from '../../types/mod.ts'
+import type { JournalOp, MinioS3AdapterOpts, MinioS3JournalEntry } from './types.ts'
+
+const isValidBucketName: (bucketName: any) => bucketName is string = isValidBucketNameImpl
 
 /** An adapter for Amazon S3 compatible storage. */
 export class MinioS3Adapter implements Adapter {
@@ -35,7 +39,7 @@ export class MinioS3Adapter implements Adapter {
   }
 
   /** The backing options for MinIO client. */
-  readonly minioOptions: ClientOptions
+  readonly minioOptions!: ClientOptions
   /** The backing instance of MinIO client. */
   readonly minioClient: Client
   /** The real root of this file system which will be committed to. */
@@ -224,7 +228,7 @@ export class MinioS3Adapter implements Adapter {
   }
 
   private async * listObjects (name: string, op: JournalOp): AsyncGenerator<BucketItem> {
-    const generator = streamToAsyncGenerator<BucketItem>(this.minioClient.listObjects(name, '', false))
+    const generator = streamToAsyncGenerator<BucketItem>(this.minioClient.listObjects(name, '', false) as any)
 
     for await (const item of generator) {
       yield item

@@ -1,5 +1,6 @@
-import { Readable } from 'stream'
-import { PathParseResult } from './types'
+// deno-lint-ignore-file no-explicit-any
+import { Readable } from 'https://deno.land/std@0.137.0/node/stream.ts'
+import { PathParseResult } from './types.ts'
 
 /** Parses a given path into a bucket and object name. */
 export function parse (path: string, root: string): PathParseResult {

@@ -1,5 +1,5 @@
-import type { ClientOptions } from 'minio'
-import { JournalEntry } from '@jsvfs/types'
+import type { ClientOptions } from 'https://cdn.skypack.dev/minio@v7.0.28?dts'
+import { JournalEntry } from '../../types/mod.ts'
 
 export interface MinioS3JournalEntry extends JournalEntry {
   error: Error
