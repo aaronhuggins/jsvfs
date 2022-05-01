@@ -54,6 +54,7 @@ export class ParentItem extends ItemBase {
   list (): string[]
   list (long: true): Item[]
   list (long: false): string[]
+  list (long: boolean): string[] | Item[]
   list (long = false): string[] | Item[] {
     if (long) return Array.from(this.contents.values())
 
