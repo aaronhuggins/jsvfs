@@ -1,12 +1,10 @@
-/**
- * [[include:packages/adapter-node-fs/README.md]]
- * @packageDocumentation
- * @module @jsvfs/adapter-node-fs
- */
-import { Journal } from '@jsvfs/extras'
-import { Dirent, promises } from 'fs'
-import { dirname, join, posix, resolve, relative } from 'path'
-import type { Adapter, ItemType, JournalEntry, SnapshotEntry } from '@jsvfs/types'
+// deno-lint-ignore-file no-inferrable-types
+import { Dirent, promises } from 'https://deno.land/std@0.137.0/node/fs.ts'
+import { dirname, join, posix, resolve, relative } from 'https://deno.land/std@0.137.0/node/path.ts'
+import { process } from 'https://deno.land/std@0.137.0/node/process.ts'
+import { Buffer } from "https://deno.land/std@0.137.0/node/buffer.ts"
+import { Journal } from '../extras/mod.ts'
+import type { Adapter, ItemType, JournalEntry, SnapshotEntry } from '../types/mod.ts'
 
 const { link, mkdir, readFile, readlink, rmdir, symlink, unlink, writeFile } = promises
 
@@ -62,7 +60,7 @@ export class NodeFSAdapter implements Adapter {
     }
 
     for (const entry of result) {
-      const newPath = posix.join(path, entry.name)
+      const newPath = posix.join(path, entry.name ?? '')
 
       try {
         switch (true) {
@@ -232,7 +230,7 @@ export class NodeFSAdapter implements Adapter {
       }
 
       for (const entry of result) {
-        const path = join(this.root, entry.name)
+        const path = join(this.root, entry.name ?? '')
 
         try {
           switch (true) {
