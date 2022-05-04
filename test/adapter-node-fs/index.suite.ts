@@ -1,29 +1,26 @@
-import * as mockFs from 'mock-fs'
-import * as sinon from 'sinon'
-import * as fs from 'fs'
-import { join, resolve } from 'path'
-import { doesNotReject, strictEqual } from 'assert'
-import { NodeFSAdapter } from '../../packages/adapter-node-fs/index'
+// deno-lint-ignore-file require-await no-explicit-any
+import sinon from "https://cdn.skypack.dev/sinon@11.1.2?dts"
+import * as fs from "https://deno.land/std@0.137.0/node/fs.ts";
+import { describe, it } from "https://deno.land/x/deno_mocha@0.3.0/mod.ts"
+import { resolve } from 'https://deno.land/std@0.137.0/node/path.ts'
+import { doesNotReject, strictEqual } from 'https://deno.land/std@0.137.0/node/assert.ts'
+import { process } from 'https://deno.land/std@0.137.0/node/process.ts'
+import { Buffer } from "https://deno.land/std@0.137.0/node/buffer.ts"
+import { NodeFSAdapter } from '../../modules/adapter-node-fs/mod.ts'
 
-const { existsSync, mkdirSync, symlinkSync, writeFileSync } = fs
+const { access, mkdir, symlink, writeFile } = fs.promises
+
+async function exists (file: string): Promise<boolean> {
+  try {
+    await access(file, 0)
+  } catch (_error) {
+    return false
+  }
+
+  return true
+}
 
 describe('Module @jsvfs/adapter-node-fs', () => {
-  before(function () {
-    // Weird issue where, sometimes, the before hook times out in Mocha.
-    this.timeout(5000)
-
-    mockFs({
-      // Allows the files to be accessible during the filesystem mock, without actually being deleted.
-      '.nyc_output': mockFs.load(join(process.cwd(), '.nyc_output'), { lazy: true }),
-      node_modules: mockFs.load(join(process.cwd(), 'node_modules'), { lazy: true }),
-      packages: mockFs.load(join(process.cwd(), 'packages'), { lazy: true }),
-      test: mockFs.load(join(process.cwd(), 'test'), { lazy: true })
-    })
-  })
-
-  after(() => {
-    mockFs.restore()
-  })
 
   it('should construct an instance', () => {
     const nodeFs = new NodeFSAdapter()
@@ -37,7 +34,7 @@ describe('Module @jsvfs/adapter-node-fs', () => {
   })
 
   it('should handle flush API', async () => {
-    sinon.stub(fs.promises, 'readdir').callsFake(async (path: any): Promise<any[]> => {
+    sinon.stub(fs.promises, 'readdir').callsFake(async (path: any): Promise<any[] | undefined> => {
       switch (path) {
         case resolve('fake'):
           return [
@@ -85,11 +82,11 @@ describe('Module @jsvfs/adapter-node-fs', () => {
           throw new Error('FAKE')
       }
     })
-    mkdirSync('fake')
-    mkdirSync('fake/folder')
-    mkdirSync('fake/folder/subfolder')
-    symlinkSync('fake/folder/subfolder', 'fake/folder/sublink', 'dir')
-    writeFileSync('fake/file.txt', Buffer.alloc(0))
+    await mkdir(Deno.cwd() + '/fake')
+    await mkdir(Deno.cwd() + '/fake/folder')
+    await mkdir(Deno.cwd() + '/fake/folder/subfolder')
+    await symlink(Deno.cwd() + '/fake/folder/subfolder', Deno.cwd() + '/fake/folder/sublink', 'dir')
+    await writeFile(Deno.cwd() + '/fake/file.txt', Buffer.alloc(0))
 
     const nodeFs = new NodeFSAdapter({ cwd: 'fake' })
     const checkSnapshot = async (expected: number): Promise<void> => {
@@ -156,30 +153,30 @@ describe('Module @jsvfs/adapter-node-fs', () => {
   })
 
   it('should handle remove item API', async () => {
-    const cwd = 'fake2'
+    const cwd = Deno.cwd() + '/fake2'
     const folder = '/folder'
     const file = '/file.txt'
 
-    mkdirSync(cwd)
-    mkdirSync(cwd + folder)
-    writeFileSync(cwd + file, Buffer.alloc(0))
+    await mkdir(cwd)
+    await mkdir(cwd + folder)
+    await writeFile(cwd + file, Buffer.alloc(0))
 
     const nodeFs = new NodeFSAdapter({ cwd })
 
-    strictEqual(existsSync(cwd + folder), true)
-    strictEqual(existsSync(cwd + file), true)
+    strictEqual(await exists(cwd + folder), true)
+    strictEqual(await exists(cwd + file), true)
 
     await doesNotReject(async () => {
       await nodeFs.remove(folder, 'folder')
     })
 
-    strictEqual(existsSync(cwd + folder), false)
+    strictEqual(await exists(cwd + folder), false)
 
     await doesNotReject(async () => {
       await nodeFs.remove(file, 'file')
     })
 
-    strictEqual(existsSync(cwd + file), false)
+    strictEqual(await exists(cwd + file), false)
 
     await doesNotReject(async () => {
       await nodeFs.remove('/', 'root')

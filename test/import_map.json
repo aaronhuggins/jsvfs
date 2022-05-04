@@ -1,0 +1,6 @@
+{
+  "imports": {
+    "https://cdn.skypack.dev/error/node:punycode?from=memfs": "./adapter-node-fs/nomod.ts",
+    "https://deno.land/std@0.137.0/node/fs.ts": "./adapter-node-fs/mem-node-fs.ts"
+  }
+}
