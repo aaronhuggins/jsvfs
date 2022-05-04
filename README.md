@@ -39,3 +39,5 @@ Node 12.10.0 or higher is required to run the tests in this repository. Only cer
 ## Documentation
 
 Complete documentation of `jsvfs` can be found at the [jsvfs site](https://ahuggins-nhs.github.io/jsvfs/).
+
+> Note: Tests for node-fs adapter require: `deno test --no-check=remote --import-map=test/import_map.json --allow-read test/adapter-node-fs/index.suite.ts`
